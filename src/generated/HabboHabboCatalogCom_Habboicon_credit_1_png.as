@@ -1,0 +1,10 @@
+﻿package 
+{
+    import flash.display.Bitmap;
+
+    [Embed(source = "/images/HabboHabboCatalogCom_Habboicon_credit_1_png.png")]
+   public class HabboHabboCatalogCom_Habboicon_credit_1_png extends Bitmap 
+    {
+
+    }
+}

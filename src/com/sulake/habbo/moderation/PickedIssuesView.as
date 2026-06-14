@@ -1,0 +1,43 @@
+﻿package com.sulake.habbo.moderation
+{
+    import com.sulake.core.window.IWindowContainer;
+    import com.sulake.core.window.components.IItemListWindow;
+
+    public class PickedIssuesView implements IIssueBrowserView 
+    {
+
+        private var _issueManager:IssueManager;
+        private var _issueBrowser:IssueBrowser;
+        private var _view:IWindowContainer;
+        private var _issueListView:IssueListView;
+
+        public function PickedIssuesView(_arg_1:IssueManager, _arg_2:IssueBrowser, _arg_3:IWindowContainer)
+        {
+            _issueManager = _arg_1;
+            _issueBrowser = _arg_2;
+            _view = _arg_3;
+            _view.visible = false;
+
+            var _local_4:IItemListWindow = (_view.findChildByName("issue_list") as IItemListWindow);
+            _issueListView = new IssueListView(_arg_1, _arg_2, _local_4);
+        }
+
+        public function get view():IWindowContainer
+        {
+            return (_view);
+        }
+
+        public function set visible(_arg_1:Boolean):void
+        {
+            _view.visible = _arg_1;
+        }
+
+        public function update():void
+        {
+            var _local_1:Array = _issueManager.getBundles("issue_bundle_picked");
+            _issueListView.update(_local_1);
+        }
+
+    }
+}
+

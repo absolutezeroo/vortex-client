@@ -1,0 +1,22 @@
+# Build output
+/bin/
+/out/
+
+# FlashDevelop intermediate files
+/obj/
+
+# Local server and reference sources
+/server/
+/sources/
+
+# VSCode local settings
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Flash/AS3 temp files
+*.swp
+*.bak
