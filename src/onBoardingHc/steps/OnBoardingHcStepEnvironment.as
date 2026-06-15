@@ -64,7 +64,18 @@ package onBoardingHc.steps
         {
             LoaderUI.alignAnchors(this, 0, "c", _selectionOverlay);
             LoaderUI.alignAnchors(_selectionOverlay, 0, "r", _loginButton);
-            LoaderUI.lineUpHorizontallyRevers(_loginButton, 20, _loginWithCodeButton);
+            if ((_context) && (_context.isSsoEnabled))
+            {
+                _loginWithCodeButton.visible = true;
+                LoaderUI.lineUpHorizontallyRevers(_loginButton, 20, _loginWithCodeButton);
+            }
+            else
+            {
+                if (_loginWithCodeButton)
+                {
+                    _loginWithCodeButton.visible = false;
+                };
+            };
         }
 
         public function dispose():void
@@ -87,16 +98,43 @@ package onBoardingHc.steps
         {
             _environments = _context.getProperty("live.environment.list").split("/");
             _flags = new Vector.<Bitmap>();
-            _flags.push(Bitmap(new flag_icon_en_png()));
-            _flags.push(Bitmap(new flag_icon_pt_png()));
-            _flags.push(Bitmap(new flag_icon_de_png()));
-            _flags.push(Bitmap(new flag_icon_es_png()));
-            _flags.push(Bitmap(new flag_icon_fi_png()));
-            _flags.push(Bitmap(new flag_icon_fr_png()));
-            _flags.push(Bitmap(new flag_icon_it_png()));
-            _flags.push(Bitmap(new flag_icon_nl_png()));
-            _flags.push(Bitmap(new flag_icon_tr_png()));
-            _flags.push(Bitmap(new flag_icon_dev_png()));
+
+            var _local_1:String;
+            var _local_2:Bitmap;
+
+            for each (_local_1 in _environments)
+            {
+                if ((_local_1 == null) || (_local_1.length == 0))
+                {
+                    continue;
+                };
+
+                _local_2 = resolveEnvironmentFlag(_local_1.toLowerCase());
+                _flags.push(_local_2);
+            }
+
+            if (_flags.length == 0)
+            {
+                _flags.push(resolveEnvironmentFlag("en"));
+                _environments = new Array("en");
+            }
+            else
+            {
+                if (_flags.length < _environments.length)
+                {
+                    while (_flags.length < _environments.length)
+                    {
+                        _flags.push(resolveEnvironmentFlag("dev"));
+                    };
+                }
+                else
+                {
+                    if (_flags.length > _environments.length)
+                    {
+                        _flags.splice(_environments.length, (_flags.length - _environments.length));
+                    };
+                };
+            };
         }
 
         public function init():void
@@ -236,8 +274,43 @@ package onBoardingHc.steps
 
         private function onButtonSelectToken(_arg_1:DisplayObject):void
         {
+            if (!(_context && _context.isSsoEnabled))
+            {
+                return;
+            };
+
             _context.updateEnvironment(_environments[_selectedIndex], false);
             _context.showScreen(OnBoardingHc.SCREEN_SSO_TOKEN);
+        }
+
+        private function resolveEnvironmentFlag(_arg_1:String):Bitmap
+        {
+            switch (_arg_1)
+            {
+                case "en":
+                    return (Bitmap(new flag_icon_en_png()));
+                case "pt":
+                    return (Bitmap(new flag_icon_pt_png()));
+                case "de":
+                    return (Bitmap(new flag_icon_de_png()));
+                case "es":
+                    return (Bitmap(new flag_icon_es_png()));
+                case "fi":
+                    return (Bitmap(new flag_icon_fi_png()));
+                case "fr":
+                    return (Bitmap(new flag_icon_fr_png()));
+                case "it":
+                    return (Bitmap(new flag_icon_it_png()));
+                case "nl":
+                    return (Bitmap(new flag_icon_nl_png()));
+                case "tr":
+                    return (Bitmap(new flag_icon_tr_png()));
+                case "s2":
+                case "dev":
+                    return (Bitmap(new flag_icon_dev_png()));
+                default:
+                    return (Bitmap(new flag_icon_dev_png()));
+            };
         }
 
         private function updateDescription():void

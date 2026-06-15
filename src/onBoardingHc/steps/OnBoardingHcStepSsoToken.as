@@ -21,6 +21,7 @@ package onBoardingHc.steps
         private var _titleField:TextField;
         private var _playButton:ColouredButton;
         private var _cancelButton:ColouredButton;
+        private var _registerButton:ColouredButton;
         private var _loginAreaWidth:int = 640;
         private var _tokenField:InputField;
         private var _initialized:Boolean;
@@ -36,6 +37,19 @@ package onBoardingHc.steps
         {
             if (_tokenField)
                 _tokenField.removeEventListener("change", onInputChange);
+
+            if (_registerButton)
+            {
+                _registerButton.dispose();
+            }
+        }
+
+        private function onAlignButtons():void
+        {
+            LoaderUI.alignAnchors(_tokenField, 0, "r", _playButton);
+            LoaderUI.alignAnchors(_playButton, (-20 - _cancelButton.width), "l", _cancelButton);
+            LoaderUI.lineUpVertically(_cancelButton, 20, _registerButton);
+            LoaderUI.alignAnchors(_cancelButton, 0, "l", _registerButton);
         }
 
         private function onAddedToStage(_arg_1:Event):void
@@ -47,8 +61,7 @@ package onBoardingHc.steps
 
         private function onAlignElements(_arg_1:TimerEvent):void
         {
-            LoaderUI.alignAnchors(_tokenField, 0, "r", _playButton);
-            LoaderUI.alignAnchors(_playButton, (-20 - _cancelButton.width), "l", _cancelButton);
+            onAlignButtons();
         }
 
         public function init():void
@@ -118,6 +131,16 @@ package onBoardingHc.steps
             _playButton = new ColouredButton("gfreen", "${connection.login.play}", new Rectangle(0, 300, 0, 40), true, onLogin, 0xD8D8D8);
             _playButton.active = false;
             addChild(_playButton);
+
+            _registerButton = new ColouredButton("gfreen", "${connection.login.register}", new Rectangle(0, 350, 0, 40), true, onRegister, 0xD8D8D8);
+            addChild(_registerButton);
+
+            onAlignButtons();
+        }
+
+        private function onRegister(_arg_1:Button):void
+        {
+            _context.showScreen(OnBoardingHc.SCREEN_REGISTER);
         }
 
         private function onLogin(_arg_1:Button):void

@@ -247,7 +247,14 @@ package onBoardingHc
 
             _stepEnvironment.init();
             loadBackgroundImages();
-            showScreen(SCREEN_SSO_TOKEN);
+            if (isSsoTokenEnabled())
+            {
+                showScreen(SCREEN_SSO_TOKEN);
+            }
+            else
+            {
+                showScreen(SCREEN_LOGIN);
+            };
             layoutElements();
 
             addEventListener("addedToStage", onAddedToStage);
@@ -578,11 +585,31 @@ package onBoardingHc
             return (_local_3);
         }
 
+        public function get isSsoEnabled():Boolean
+        {
+            return (isSsoTokenEnabled());
+        }
+
         public function createCaptchaView():ICaptchaView
         {
             addChild(_closeButton);
             layoutElements();
             return (null);
+        }
+
+        private function isSsoTokenEnabled():Boolean
+        {
+            if (!_configuration)
+            {
+                return (false);
+            };
+
+            if (_configuration.propertyExists("use.sso"))
+            {
+                return (_configuration.getBoolean("use.sso"));
+            };
+
+            return (_configuration.getProperty("connection.info.login") == null);
         }
 
         public function captchaReady():void

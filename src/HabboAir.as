@@ -1,5 +1,6 @@
 package {
     import flash.display.MovieClip;
+    import onBoardingHc.OnBoardingHc;
     import login.LoginFlow;
     import flash.utils.Dictionary;
     import flash.utils.getTimer;
@@ -60,7 +61,7 @@ package {
         private var _preloadComplete:Boolean;
         private var _loadingScreen:IHabboLoadingScreen;
         private var _startTime:int;
-        private var _loginFlow:LoginFlow = null;
+        private var _loginFlow:* = null;
         private var _stageReady:Boolean;
         private var _argumentsParsed:Boolean;
         private var _loginScreenEnabled:Boolean = true;
@@ -282,7 +283,8 @@ package {
         private function onLoginFLowFinished(event:Event):void {
             _parameters["sso.token"] = _loginFlow.ssoToken;
             _parameters["environment.id"] = CommunicationUtils.readSOLString("environment");
-            _loginFlow.removeEventListener("LOGIN_FLOW_FINISHED_EVENT", onLoginFLowFinished);
+            _loginFlow.removeEventListener(LoginFlow.LOGIN_FLOW_FINISHED_EVENT, onLoginFLowFinished);
+            _loginFlow.removeEventListener(OnBoardingHc.FLOW_FINISHED_EVENT, onLoginFLowFinished);
             _loginFlow.dispose();
             _loginFlow = null;
             _loadingScreen = null;
@@ -379,8 +381,8 @@ package {
 
         private function createNewUserLobbyOrLoadingScreen():void {
             if (((!(ssoTokenAvailable)) && (_loginScreenEnabled))) {
-                _loginFlow = new LoginFlow(clone(_parameters));
-                _loginFlow.addEventListener("LOGIN_FLOW_FINISHED_EVENT", onLoginFLowFinished);
+                _loginFlow = new OnBoardingHc(clone(_parameters));
+                _loginFlow.addEventListener(OnBoardingHc.FLOW_FINISHED_EVENT, onLoginFLowFinished);
                 stage.addChild(_loginFlow);
                 _loginFlow.init();
                 updateLoadingBarProgress();
