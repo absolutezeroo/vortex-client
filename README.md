@@ -30,6 +30,7 @@ Legacy Flash/AIR client for Vortex (ActionScript 3, Flash Player 25), compiled t
 - `src/com/sulake/habbo/toolbar/*` : toolbar/quick actions
 - `src/binaryData/*` : embedded config and localization bundles
 - `bin/`, `obj/` : build artifacts (do not edit manually)
+- `HaxeClient/` : staged migration scaffold to Haxe (bootstrap + protocol skeleton)
 
 ## Common areas to touch
 - Onboarding flow:
@@ -60,3 +61,15 @@ Legacy Flash/AIR client for Vortex (ActionScript 3, Flash Player 25), compiled t
 - Do not modify `bin/` and `obj/` for regular feature work.
 - Avoid mixing unrelated areas in the same patch unless specifically requested.
 - Keep user-facing text in localization files, not hardcoded in AS.
+
+## Haxe migration (starter)
+- `HaxeClient/build.hxml` contains a JS build entry for the migration skeleton.
+- `HaxeClient/src/` contains:
+  - `Main.hx`
+  - `vortex/client/haxe/Bootstrap.hx`
+  - `vortex/client/haxe/config/ClientConfig.hx`
+  - `vortex/client/haxe/core/AppState.hx`
+  - `vortex/client/haxe/net/HabboPacket.hx`
+  - `vortex/client/haxe/net/MockSocket.hx`
+- Build locally with:
+  - `haxe HaxeClient/build.hxml`
