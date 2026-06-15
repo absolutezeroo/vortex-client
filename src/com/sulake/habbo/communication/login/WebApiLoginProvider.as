@@ -509,6 +509,36 @@
             _session.selectAvatar(_arg_1);
         }
 
+        public function register(_arg_1:String, _arg_2:String):void
+        {
+            if (_session == null)
+            {
+                return;
+            };
+
+            _session.register(_arg_1, _arg_2, 0, 0, 0, true, null);
+        }
+
+        public function createAvatar(_arg_1:String, _arg_2:String, _arg_3:String):void
+        {
+            if (_session == null)
+            {
+                return;
+            };
+
+            _session.createAvatar(_arg_1, _arg_2, _arg_3);
+        }
+
+        public function checkName(_arg_1:String):void
+        {
+            if (_session == null)
+            {
+                return;
+            };
+
+            _session.nameCheck(_arg_1);
+        }
+
     }
 }
 

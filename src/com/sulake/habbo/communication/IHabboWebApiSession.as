@@ -113,7 +113,7 @@
         [HabboWebApiRoute(uri="/api/user/email/change", method="POST")]
         function changeEmail(_arg_1:String, _arg_2:String):void;
         [HabboWebApiRoute(uri="/api/user/avatars", method="POST")]
-        function createAvatar(_arg_1:String):void;
+        function createAvatar(_arg_1:String, _arg_2:String="", _arg_3:String="M"):void;
         [HabboWebApiRoute(uri="/api/user/profile", method="GET")]
         function profile():void;
         [HabboWebApiRoute(uri="/api/ssotoken", method="GET")]

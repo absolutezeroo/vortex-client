@@ -686,11 +686,14 @@
             executeRequest(getFunctionName(changeEmail), _local_3);
         }
 
-        public function createAvatar(_arg_1:String):void
+        public function createAvatar(_arg_1:String, _arg_2:String="", _arg_3:String="M"):void
         {
-            var _local_2:URLVariables = new URLVariables();
-            _local_2.name = _arg_1;
-            executeRequest(getFunctionName(createAvatar), _local_2);
+            var _local_4:URLVariables = new URLVariables();
+            _local_4.name = _arg_1;
+            if (_arg_2 && _arg_2.length > 0)
+                _local_4.figure = _arg_2;
+            _local_4.gender = _arg_3;
+            executeRequest(getFunctionName(createAvatar), _local_4);
         }
 
         public function profile():void
