@@ -13,75 +13,75 @@
 
         public function dispose():void
         {
-            var _local_2:int;
-            var _local_1:PlaneTextureBitmap;
+            var index:int;
+            var planeTextureBitmap:PlaneTextureBitmap;
 
             if (_bitmaps != null)
             {
-                _local_2 = 0;
+                index = 0;
 
-                while (_local_2 < _bitmaps.length)
+                while (index < _bitmaps.length)
                 {
-                    _local_1 = (_bitmaps[_local_2] as PlaneTextureBitmap);
+                    planeTextureBitmap = (_bitmaps[index] as PlaneTextureBitmap);
 
-                    if (_local_1 != null)
+                    if (planeTextureBitmap != null)
                     {
-                        _local_1.dispose();
+                        planeTextureBitmap.dispose();
                     };
 
-                    _local_2++;
+                    index++;
                 };
 
                 _bitmaps = null;
             };
         }
 
-        public function addBitmap(_arg_1:BitmapData, _arg_2:Number=-1, _arg_3:Number=1, _arg_4:Number=-1, _arg_5:Number=1, _arg_6:String=null):void
+        public function addBitmap(bitmapData:BitmapData, normalMinX:Number=-1, normalMaxX:Number=1, normalMinY:Number=-1, normalMaxY:Number=1, assetName:String=null):void
         {
-            var _local_7:PlaneTextureBitmap = new PlaneTextureBitmap(_arg_1, _arg_2, _arg_3, _arg_4, _arg_5, _arg_6);
-            _bitmaps.push(_local_7);
+            var planeTextureBitmap:PlaneTextureBitmap = new PlaneTextureBitmap(bitmapData, normalMinX, normalMaxX, normalMinY, normalMaxY, assetName);
+            _bitmaps.push(planeTextureBitmap);
         }
 
-        public function getBitmap(_arg_1:IVector3d):BitmapData
+        public function getBitmap(normal:IVector3d):BitmapData
         {
-            var _local_2:PlaneTextureBitmap = getPlaneTextureBitmap(_arg_1);
-            return ((_local_2 == null) ? null : _local_2.bitmap);
+            var planeTextureBitmap:PlaneTextureBitmap = getPlaneTextureBitmap(normal);
+            return ((planeTextureBitmap == null) ? null : planeTextureBitmap.bitmap);
         }
 
-        public function getPlaneTextureBitmap(_arg_1:IVector3d):PlaneTextureBitmap
+        public function getPlaneTextureBitmap(normal:IVector3d):PlaneTextureBitmap
         {
-            var _local_3:int;
-            var _local_2:PlaneTextureBitmap;
+            var index:int;
+            var planeTextureBitmap:PlaneTextureBitmap;
 
-            if (_arg_1 == null)
+            if (normal == null)
             {
                 return (null);
             };
 
-            _local_3 = 0;
+            index = 0;
 
-            while (_local_3 < _bitmaps.length)
+            while (index < _bitmaps.length)
             {
-                _local_2 = (_bitmaps[_local_3] as PlaneTextureBitmap);
+                planeTextureBitmap = (_bitmaps[index] as PlaneTextureBitmap);
 
-                if (_local_2 != null)
+                if (planeTextureBitmap != null)
                 {
-                    if (((((_arg_1.x >= _local_2.normalMinX) && (_arg_1.x <= _local_2.normalMaxX)) && (_arg_1.y >= _local_2.normalMinY)) && (_arg_1.y <= _local_2.normalMaxY)))
+                    if (((((normal.x >= planeTextureBitmap.normalMinX) && (normal.x <= planeTextureBitmap.normalMaxX)) && (normal.y >= planeTextureBitmap.normalMinY)) && (normal.y <= planeTextureBitmap.normalMaxY)))
                     {
-                        return (_local_2);
+                        return (planeTextureBitmap);
                     };
                 };
 
-                _local_3++;
+                index++;
             };
 
             return (null);
         }
 
-        public function getAssetName(_arg_1:IVector3d):String
+        public function getAssetName(normal:IVector3d):String
         {
-            var _local_2:PlaneTextureBitmap = getPlaneTextureBitmap(_arg_1);
-            return ((_local_2 == null) ? null : _local_2.assetName);
+            var planeTextureBitmap:PlaneTextureBitmap = getPlaneTextureBitmap(normal);
+            return ((planeTextureBitmap == null) ? null : planeTextureBitmap.assetName);
         }
 
     }

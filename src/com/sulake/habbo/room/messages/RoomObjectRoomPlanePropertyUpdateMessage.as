@@ -11,11 +11,11 @@
         private var _type:String = "";
         private var _value:Number = 0;
 
-        public function RoomObjectRoomPlanePropertyUpdateMessage(_arg_1:String, _arg_2:Number)
+        public function RoomObjectRoomPlanePropertyUpdateMessage(type:String, value:Number)
         {
             super(null, null);
-            _type = _arg_1;
-            _value = _arg_2;
+            _type = type;
+            _value = value;
         }
 
         public function get type():String

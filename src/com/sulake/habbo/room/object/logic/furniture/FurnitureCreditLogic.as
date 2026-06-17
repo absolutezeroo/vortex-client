@@ -11,8 +11,8 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE__CREDITFURNI"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var _eventTypes:Array = ["ROWRE__CREDITFURNI"];
+            return (getAllEventTypes(super.getEventTypes(), _eventTypes));
         }
 
         override public function dispose():void
@@ -20,39 +20,39 @@
             super.dispose();
         }
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_model:XML):void
         {
-            var _local_2:IRoomObjectModelController;
-            super.initialize(_arg_1);
+            var _modelController:IRoomObjectModelController;
+            super.initialize(_model);
 
-            if (_arg_1 == null)
+            if (_model == null)
             {
                 return;
             };
 
-            var _local_4:XMLList = _arg_1.credits;
+            var _credits:XMLList = _model.credits;
 
-            if (_local_4.length() == 0)
+            if (_credits.length() == 0)
             {
                 return;
             };
 
-            var _local_3:Number = Number(_local_4[0].@value);
+            var _creditValue:Number = Number(_credits[0].@value);
 
             if (object != null)
             {
-                _local_2 = object.getModelController();
+                _modelController = object.getModelController();
 
-                if (_local_2 != null)
+                if (_modelController != null)
                 {
-                    _local_2.setNumber("furniture_credit_value", _local_3);
+                    _modelController.setNumber("furniture_credit_value", _creditValue);
                 };
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_mouseEvent:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_mouseEvent == null) || (_geometry == null)))
             {
                 return;
             };
@@ -62,25 +62,25 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_mouseEvent, _geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var _widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectWidgetRequestEvent("ROWRE__CREDITFURNI", object);
-                eventDispatcher.dispatchEvent(_local_1);
+                _widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE__CREDITFURNI", object);
+                eventDispatcher.dispatchEvent(_widgetRequestEvent);
             };
 
             super.useObject();

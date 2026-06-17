@@ -13,36 +13,36 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROPSIE_PLAY_SOUND_AT_PITCH"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var _eventTypes:Array = ["ROPSIE_PLAY_SOUND_AT_PITCH"];
+            return (getAllEventTypes(super.getEventTypes(), _eventTypes));
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_message:RoomObjectUpdateMessage):void
         {
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(_message);
 
-            var _local_2:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var _dataUpdateMessage:RoomObjectDataUpdateMessage = (_message as RoomObjectDataUpdateMessage);
 
-            if (_local_2 != null)
+            if (_dataUpdateMessage != null)
             {
-                if (((!(_state == -1)) && (!(_local_2.state == _state))))
+                if (((!(_state == -1)) && (!(_dataUpdateMessage.state == _state))))
                 {
                     playSoundAt(_loc.z);
                 };
 
-                _state = _local_2.state;
+                _state = _dataUpdateMessage.state;
             }
 
             else
             {
-                _loc = _arg_1.loc;
+                _loc = _message.loc;
             };
         }
 
-        private function playSoundAt(_arg_1:Number):void
+        private function playSoundAt(_pitchHeight:Number):void
         {
-            var _local_2:Number = Math.pow(2, (_arg_1 - 1.2));
-            eventDispatcher.dispatchEvent(new RoomObjectPlaySoundIdEvent("ROPSIE_PLAY_SOUND_AT_PITCH", object, "FURNITURE_cuckoo_clock", _local_2));
+            var _pitch:Number = Math.pow(2, (_pitchHeight - 1.2));
+            eventDispatcher.dispatchEvent(new RoomObjectPlaySoundIdEvent("ROPSIE_PLAY_SOUND_AT_PITCH", object, "FURNITURE_cuckoo_clock", _pitch));
         }
 
     }

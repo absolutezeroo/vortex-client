@@ -7,22 +7,22 @@
     public /*dynamic*/interface IRoomContentLoader {
 
         function dispose():void;
-        function getPlaceHolderType(_arg_1:String):String;
+        function getPlaceHolderType(_contentType:String):String;
         function getPlaceHolderTypes():Array;
-        function getContentType(_arg_1:String):String;
-        function hasInternalContent(_arg_1:String):Boolean;
-        function loadObjectContent(_arg_1:String, _arg_2:IEventDispatcher):Boolean;
-        function insertObjectContent(_arg_1:int, _arg_2:int, _arg_3:IAssetLibrary):Boolean;
-        function getVisualizationType(_arg_1:String):String;
-        function getLogicType(_arg_1:String):String;
-        function hasVisualizationXML(_arg_1:String):Boolean;
-        function getVisualizationXML(_arg_1:String):XML;
-        function hasAssetXML(_arg_1:String):Boolean;
-        function getAssetXML(_arg_1:String):XML;
-        function hasLogicXML(_arg_1:String):Boolean;
-        function getLogicXML(_arg_1:String):XML;
-        function getGraphicAssetCollection(_arg_1:String):IGraphicAssetCollection;
-        function roomObjectCreated(_arg_1:IRoomObject, _arg_2:String):void;
+        function getContentType(_contentType:String):String;
+        function hasInternalContent(_contentType:String):Boolean;
+        function loadObjectContent(_contentType:String, _events:IEventDispatcher):Boolean;
+        function insertObjectContent(_contentCategory:int, _objectType:int, _assetLibrary:IAssetLibrary):Boolean;
+        function getVisualizationType(_contentType:String):String;
+        function getLogicType(_contentType:String):String;
+        function hasVisualizationXML(_contentType:String):Boolean;
+        function getVisualizationXML(_contentType:String):XML;
+        function hasAssetXML(_contentType:String):Boolean;
+        function getAssetXML(_contentType:String):XML;
+        function hasLogicXML(_contentType:String):Boolean;
+        function getLogicXML(_contentType:String):XML;
+        function getGraphicAssetCollection(_contentType:String):IGraphicAssetCollection;
+        function roomObjectCreated(_roomObject:com.sulake.room.object.IRoomObject, _roomId:String):void;
 
     }
 }

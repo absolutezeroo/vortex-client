@@ -9,29 +9,29 @@
 
     public class RoomInstance implements IRoomInstance {
 
-        private var _numberDataList:Dictionary;
-        private var _stringDataList:Dictionary;
-        private var _numberReadOnlyList:Array;
-        private var _stringReadOnlyList:Array;
-        private var _managers:Map;
-        private var _updateCategories:Array;
+        private var _numberData:Dictionary;
+        private var _stringData:Dictionary;
+        private var _numberReadOnlyKeys:Array;
+        private var _stringReadOnlyKeys:Array;
+        private var _roomManagers:Map;
+        private var _roomUpdateCategories:Array;
         private var _renderer:IRoomRendererBase;
-        private var _container:IRoomInstanceContainer;
-        private var _id:String;
+        private var _roomContainer:IRoomInstanceContainer;
+        private var _roomId:String;
 
-        public function RoomInstance(_arg_1:String, _arg_2:IRoomInstanceContainer) {
-            _managers = new Map();
-            _updateCategories = [];
-            _container = _arg_2;
-            _id = _arg_1;
-            _numberDataList = new Dictionary();
-            _stringDataList = new Dictionary();
-            _numberReadOnlyList = [];
-            _stringReadOnlyList = [];
+        public function RoomInstance(roomId:String, roomContainer:IRoomInstanceContainer) {
+            _roomManagers = new Map();
+            _roomUpdateCategories = [];
+            _roomContainer = roomContainer;
+            _roomId = roomId;
+            _numberData = new Dictionary();
+            _stringData = new Dictionary();
+            _numberReadOnlyKeys = [];
+            _stringReadOnlyKeys = [];
         }
 
         public function get id():String {
-            return (_id);
+            return (_roomId);
         }
 
         public function dispose():void {
@@ -39,11 +39,11 @@
             var _local_1:IRoomObjectManager;
             var _local_3:String;
 
-            if (_managers != null) {
+            if (_roomManagers != null) {
                 _local_2 = 0;
 
-                while (_local_2 < _managers.length) {
-                    _local_1 = (_managers.getWithIndex(_local_2) as IRoomObjectManager);
+                while (_local_2 < _roomManagers.length) {
+                    _local_1 = (_roomManagers.getWithIndex(_local_2) as IRoomObjectManager);
 
                     if (_local_1 != null) {
                         _local_1.dispose();
@@ -54,8 +54,8 @@
                 }
                 ;
 
-                _managers.dispose();
-                _managers = null;
+                _roomManagers.dispose();
+                _roomManagers = null;
             }
             ;
 
@@ -65,91 +65,91 @@
             }
             ;
 
-            _container = null;
-            _updateCategories = null;
+            _roomContainer = null;
+            _roomUpdateCategories = null;
 
-            if (_numberDataList != null) {
-                for (_local_3 in _numberDataList) {
-                    delete _numberDataList[_local_3];
+            if (_numberData != null) {
+                for (_local_3 in _numberData) {
+                    delete _numberData[_local_3];
                 }
                 ;
 
-                _numberDataList = null;
+                _numberData = null;
             }
             ;
 
-            if (_stringDataList != null) {
-                for (_local_3 in _stringDataList) {
-                    delete _stringDataList[_local_3];
+            if (_stringData != null) {
+                for (_local_3 in _stringData) {
+                    delete _stringData[_local_3];
                 }
                 ;
 
-                _stringDataList = null;
+                _stringData = null;
             }
             ;
 
-            _stringReadOnlyList = [];
-            _numberReadOnlyList = [];
+            _stringReadOnlyKeys = [];
+            _numberReadOnlyKeys = [];
         }
 
-        public function getNumber(_arg_1:String):Number {
-            return (_numberDataList[_arg_1]);
+        public function getNumber(_key:String):Number {
+            return (_numberData[_key]);
         }
 
-        public function setNumber(_arg_1:String, _arg_2:Number, _arg_3:Boolean = false):void {
-            if (_numberReadOnlyList.indexOf(_arg_1) >= 0) {
+        public function setNumber(_key:String, _value:Number, _isReadOnly:Boolean = false):void {
+            if (_numberReadOnlyKeys.indexOf(_key) >= 0) {
                 return;
             }
             ;
 
-            if (_arg_3) {
-                _numberReadOnlyList.push(_arg_1);
+            if (_isReadOnly) {
+                _numberReadOnlyKeys.push(_key);
             }
             ;
 
-            if (_numberDataList[_arg_1] != _arg_2) {
-                _numberDataList[_arg_1] = _arg_2;
+            if (_numberData[_key] != _value) {
+                _numberData[_key] = _value;
             }
             ;
         }
 
-        public function getString(_arg_1:String):String {
-            return (_stringDataList[_arg_1]);
+        public function getString(_key:String):String {
+            return (_stringData[_key]);
         }
 
-        public function setString(_arg_1:String, _arg_2:String, _arg_3:Boolean = false):void {
-            if (_stringReadOnlyList.indexOf(_arg_1) >= 0) {
+        public function setString(_key:String, _value:String, _isReadOnly:Boolean = false):void {
+            if (_stringReadOnlyKeys.indexOf(_key) >= 0) {
                 return;
             }
             ;
 
-            if (_arg_3) {
-                _stringReadOnlyList.push(_arg_1);
+            if (_isReadOnly) {
+                _stringReadOnlyKeys.push(_key);
             }
             ;
 
-            if (_stringDataList[_arg_1] != _arg_2) {
-                _stringDataList[_arg_1] = _arg_2;
+            if (_stringData[_key] != _value) {
+                _stringData[_key] = _value;
             }
             ;
         }
 
-        public function addObjectUpdateCategory(_arg_1:int):void {
-            var _local_2:int = _updateCategories.indexOf(_arg_1);
+        public function addObjectUpdateCategory(_category:int):void {
+            var _local_2:int = _roomUpdateCategories.indexOf(_category);
 
             if (_local_2 >= 0) {
                 return;
             }
             ;
 
-            _updateCategories.push(_arg_1);
+            _roomUpdateCategories.push(_category);
         }
 
-        public function removeObjectUpdateCategory(_arg_1:int):void {
-            var _local_2:int = _updateCategories.indexOf(_arg_1);
+        public function removeObjectUpdateCategory(_category:int):void {
+            var _local_2:int = _roomUpdateCategories.indexOf(_category);
 
             if (_local_2 >= 0) {
-                _updateCategories.splice(_local_2, 1);
+                _roomUpdateCategories.splice(_local_2, 1);
             }
             ;
         }
@@ -162,10 +162,10 @@
             var _local_7:IRoomObjectController;
             var _local_5:IRoomObjectEventHandler;
             var _local_1:int = getTimer();
-            _local_3 = (_updateCategories.length - 1);
+            _local_3 = (_roomUpdateCategories.length - 1);
 
             while (_local_3 >= 0) {
-                _local_6 = _updateCategories[_local_3];
+                _local_6 = _roomUpdateCategories[_local_3];
                 _local_2 = getObjectManager(_local_6);
 
                 if (_local_2 != null) {
@@ -195,21 +195,21 @@
             ;
         }
 
-        public function createRoomObject(_arg_1:int, _arg_2:String, _arg_3:int):IRoomObject {
-            if (_container != null) {
-                return (_container.createRoomObject(_id, _arg_1, _arg_2, _arg_3));
+        public function createRoomObject(_objectId:int, _objectType:String, _category:int):IRoomObject {
+            if (_roomContainer != null) {
+                return (_roomContainer.createRoomObject(_roomId, _objectId, _objectType, _category));
             }
             ;
 
             return (null);
         }
 
-        public function createObjectInternal(_arg_1:int, _arg_2:int, _arg_3:String, _arg_4:int):IRoomObject {
+        public function createObjectInternal(_objectId:int, _instanceId:int, _objectType:String, _category:int):IRoomObject {
             var _local_6:IRoomObjectController;
-            var _local_5:IRoomObjectManager = createObjectManager(_arg_4);
+            var _local_5:IRoomObjectManager = createObjectManager(_category);
 
             if (_local_5 != null) {
-                _local_6 = _local_5.createObject(_arg_1, _arg_2, _arg_3);
+                _local_6 = _local_5.createObject(_objectId, _instanceId, _objectType);
 
                 if (_renderer != null) {
                     _renderer.feedRoomObject(_local_6);
@@ -223,35 +223,35 @@
             return (null);
         }
 
-        public function getObject(_arg_1:int, _arg_2:int):IRoomObject {
-            var _local_3:IRoomObjectManager = getObjectManager(_arg_2);
+        public function getObject(_objectId:int, _category:int):IRoomObject {
+            var _local_3:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_3 != null) {
-                return (_local_3.getObject(_arg_1));
+                return (_local_3.getObject(_objectId));
             }
             ;
 
             return (null);
         }
 
-        public function getObjects(_arg_1:int):Array {
-            var _local_2:IRoomObjectManager = getObjectManager(_arg_1);
+        public function getObjects(_category:int):Array {
+            var _local_2:IRoomObjectManager = getObjectManager(_category);
             return ((_local_2) ? _local_2.getObjects() : []);
         }
 
-        public function getObjectWithIndex(_arg_1:int, _arg_2:int):IRoomObject {
-            var _local_3:IRoomObjectManager = getObjectManager(_arg_2);
+        public function getObjectWithIndex(_index:int, _category:int):IRoomObject {
+            var _local_3:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_3 != null) {
-                return (_local_3.getObjectWithIndex(_arg_1));
+                return (_local_3.getObjectWithIndex(_index));
             }
             ;
 
             return (null);
         }
 
-        public function getObjectCount(_arg_1:int):int {
-            var _local_2:IRoomObjectManager = getObjectManager(_arg_1);
+        public function getObjectCount(_category:int):int {
+            var _local_2:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_2 != null) {
                 return (_local_2.getObjectCount());
@@ -261,34 +261,34 @@
             return (0);
         }
 
-        public function getObjectWithIndexAndType(_arg_1:int, _arg_2:String, _arg_3:int):IRoomObject {
-            var _local_4:IRoomObjectManager = getObjectManager(_arg_3);
+        public function getObjectWithIndexAndType(_index:int, _objectType:String, _category:int):IRoomObject {
+            var _local_4:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_4 != null) {
-                return (_local_4.getObjectWithIndexAndType(_arg_1, _arg_2));
+                return (_local_4.getObjectWithIndexAndType(_index, _objectType));
             }
             ;
 
             return (null);
         }
 
-        public function getObjectCountForType(_arg_1:String, _arg_2:int):int {
-            var _local_3:IRoomObjectManager = getObjectManager(_arg_2);
+        public function getObjectCountForType(_objectType:String, _category:int):int {
+            var _local_3:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_3 != null) {
-                return (_local_3.getObjectCountForType(_arg_1));
+                return (_local_3.getObjectCountForType(_objectType));
             }
             ;
 
             return (0);
         }
 
-        public function disposeObject(_arg_1:int, _arg_2:int):Boolean {
+        public function disposeObject(_objectId:int, _category:int):Boolean {
             var _local_4:IRoomObject;
-            var _local_3:IRoomObjectManager = getObjectManager(_arg_2);
+            var _local_3:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_3 != null) {
-                _local_4 = _local_3.getObject(_arg_1);
+                _local_4 = _local_3.getObject(_objectId);
 
                 if (_local_4 != null) {
                     _local_4.tearDown();
@@ -298,7 +298,7 @@
                     }
                     ;
 
-                    return (_local_3.disposeObject(_arg_1));
+                    return (_local_3.disposeObject(_objectId));
                 }
                 ;
             }
@@ -307,11 +307,11 @@
             return (false);
         }
 
-        public function disposeObjects(_arg_1:int):int {
+        public function disposeObjects(_category:int):int {
             var _local_4:int;
             var _local_5:IRoomObjectController;
             var _local_3:int;
-            var _local_2:IRoomObjectManager = getObjectManager(_arg_1);
+            var _local_2:IRoomObjectManager = getObjectManager(_category);
 
             if (_local_2 != null) {
                 _local_3 = _local_2.getObjectCount();
@@ -341,15 +341,15 @@
             return (_local_3);
         }
 
-        public function setRenderer(_arg_1:IRoomRendererBase):void {
+        public function setRenderer(_roomRenderer:IRoomRendererBase):void {
             var _local_3:int;
             var _local_6:int;
             var _local_2:int;
             var _local_4:int;
             var _local_7:IRoomObjectController;
-            Logger.log("Renderer: " + _arg_1);
+            Logger.log("Renderer: " + _roomRenderer);
 
-            if (_arg_1 == _renderer) {
+            if (_roomRenderer == _renderer) {
                 return;
             }
             ;
@@ -359,7 +359,7 @@
             }
             ;
 
-            _renderer = _arg_1;
+            _renderer = _roomRenderer;
 
             if (_renderer == null) {
                 return;
@@ -398,43 +398,43 @@
         }
 
         public function getObjectManagerIds():Array {
-            return (_managers.getKeys());
+            return (_roomManagers.getKeys());
         }
 
-        protected function createObjectManager(_arg_1:int):IRoomObjectManager {
-            var _local_3:String = String(_arg_1);
+        protected function createObjectManager(_category:int):IRoomObjectManager {
+            var _local_3:String = String(_category);
 
-            if (_managers.getValue(_local_3) != null) {
-                return (_managers.getValue(_local_3) as IRoomObjectManager);
+            if (_roomManagers.getValue(_local_3) != null) {
+                return (_roomManagers.getValue(_local_3) as IRoomObjectManager);
             }
             ;
 
-            if (_container == null) {
+            if (_roomContainer == null) {
                 return (null);
             }
             ;
 
-            var _local_2:IRoomObjectManager = _container.createRoomObjectManager();
+            var _local_2:IRoomObjectManager = _roomContainer.createRoomObjectManager();
 
             if (_local_2 != null) {
-                _managers.add(_local_3, _local_2);
+                _roomManagers.add(_local_3, _local_2);
             }
             ;
 
             return (_local_2);
         }
 
-        protected function getObjectManager(_arg_1:int):IRoomObjectManager {
-            return (_managers.getValue(String(_arg_1)) as IRoomObjectManager);
+        protected function getObjectManager(_category:int):IRoomObjectManager {
+            return (_roomManagers.getValue(String(_category)) as IRoomObjectManager);
         }
 
-        protected function disposeObjectManager(_arg_1:int):Boolean {
+        protected function disposeObjectManager(_category:int):Boolean {
             var _local_2:IRoomObjectManager;
-            var _local_3:String = String(_arg_1);
-            disposeObjects(_arg_1);
+            var _local_3:String = String(_category);
+            disposeObjects(_category);
 
-            if (_managers.getValue(_local_3) != null) {
-                _local_2 = (_managers.remove(_local_3) as IRoomObjectManager);
+            if (_roomManagers.getValue(_local_3) != null) {
+                _local_2 = (_roomManagers.remove(_local_3) as IRoomObjectManager);
 
                 if (_local_2 != null) {
                     _local_2.dispose();
@@ -452,7 +452,7 @@
             var _local_1:int;
             var _local_3:int;
 
-            for each (var _local_2:RoomObjectManager in _managers) {
+            for each (var _local_2:RoomObjectManager in _roomManagers) {
                 _local_1 = _local_2.getObjectCount();
                 _local_3 = 0;
 

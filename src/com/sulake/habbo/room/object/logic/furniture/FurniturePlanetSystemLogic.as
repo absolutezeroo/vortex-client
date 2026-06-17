@@ -5,30 +5,30 @@
     public class FurniturePlanetSystemLogic extends FurnitureLogic 
     {
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(data:XML):void
         {
-            var _local_3:IRoomObjectModelController;
-            super.initialize(_arg_1);
+            var modelController:IRoomObjectModelController;
+            super.initialize(data);
 
-            if (_arg_1 == null)
+            if (data == null)
             {
                 return;
             };
 
-            var _local_2:XMLList = _arg_1.planetsystem;
+            var planetSystemNodes:XMLList = data.planetsystem;
 
-            if (_local_2.length() == 0)
+            if (planetSystemNodes.length() == 0)
             {
                 return;
             };
 
             if (object != null)
             {
-                _local_3 = object.getModelController();
+                modelController = object.getModelController();
 
-                if (_local_3 != null)
+                if (modelController != null)
                 {
-                    _local_3.setString("furniture_planetsystem_data", _local_2);
+                    modelController.setString("furniture_planetsystem_data", planetSystemNodes);
                 };
             };
         }

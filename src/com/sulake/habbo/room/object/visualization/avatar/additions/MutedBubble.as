@@ -13,15 +13,15 @@
         private var _avatar:AvatarVisualization;
         private var _relativeDepth:Number = 0;
 
-        public function MutedBubble(_arg_1:int, _arg_2:AvatarVisualization)
+        public function MutedBubble(id:int, avatar:AvatarVisualization)
         {
-            _id = _arg_1;
-            _avatar = _arg_2;
+            _id = id;
+            _avatar = avatar;
         }
 
-        public function set relativeDepth(_arg_1:Number):void
+        public function set relativeDepth(value:Number):void
         {
-            _relativeDepth = _arg_1;
+            _relativeDepth = value;
         }
 
         public function get id():int
@@ -40,66 +40,66 @@
             _asset = null;
         }
 
-        public function animate(_arg_1:IRoomObjectSprite):Boolean
+        public function animate(sprite:IRoomObjectSprite):Boolean
         {
-            if (((_asset) && (_arg_1)))
+            if (((_asset) && (sprite)))
             {
-                _arg_1.asset = (_asset.content as BitmapData);
+                sprite.asset = (_asset.content as BitmapData);
             };
 
             return (false);
         }
 
-        public function update(_arg_1:IRoomObjectSprite, _arg_2:Number):void
+        public function update(sprite:IRoomObjectSprite, scale:Number):void
         {
-            var _local_3:int;
-            var _local_4:int;
+            var offsetX:int;
+            var offsetY:int;
 
-            if (!_arg_1)
+            if (!sprite)
             {
                 return;
             };
 
-            _arg_1.visible = true;
-            _arg_1.relativeDepth = _relativeDepth;
-            _arg_1.alpha = 0xFF;
+            sprite.visible = true;
+            sprite.relativeDepth = _relativeDepth;
+            sprite.alpha = 0xFF;
 
-            var _local_5:int = 64;
+            var postureOffset:int = 64;
 
-            if (_arg_2 < 48)
+            if (scale < 48)
             {
                 _asset = (_avatar.getAvatarRendererAsset("user_muted_small_png") as BitmapDataAsset);
-                _local_3 = -12;
-                _local_4 = -66;
-                _local_5 = 32;
+                offsetX = -12;
+                offsetY = -66;
+                postureOffset = 32;
             }
 
             else
             {
                 _asset = (_avatar.getAvatarRendererAsset("user_muted_png") as BitmapDataAsset);
-                _local_3 = -15;
-                _local_4 = -110;
+                offsetX = -15;
+                offsetY = -110;
             };
 
             if (_avatar.posture == "sit")
             {
-                _local_4 = int((_local_4 + (_local_5 / 2)));
+                offsetY = int((offsetY + (postureOffset / 2)));
             }
 
             else
             {
                 if (_avatar.posture == "lay")
                 {
-                    _local_4 = (_local_4 + _local_5);
+                    offsetY = (offsetY + postureOffset);
                 };
             };
 
             if (_asset != null)
             {
-                _arg_1.asset = (_asset.content as BitmapData);
-                _arg_1.offsetX = _local_3;
-                _arg_1.offsetY = _local_4;
-                _arg_1.relativeDepth = -0.02;
+                sprite.asset = (_asset.content as BitmapData);
+                sprite.offsetX = offsetX;
+                sprite.offsetY = offsetY;
+                sprite.relativeDepth = -0.02;
             };
         }
 

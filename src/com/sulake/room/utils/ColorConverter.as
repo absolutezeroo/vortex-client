@@ -3,11 +3,11 @@
     public class ColorConverter 
     {
 
-        public static function rgbToHSL(_arg_1:int):int
+        public static function rgbToHSL(color:int):int
         {
-            var _local_10:Number = (((_arg_1 >> 16) & 0xFF) / 0xFF);
-            var _local_6:Number = (((_arg_1 >> 8) & 0xFF) / 0xFF);
-            var _local_4:Number = ((_arg_1 & 0xFF) / 0xFF);
+            var _local_10:Number = (((color >> 16) & 0xFF) / 0xFF);
+            var _local_6:Number = (((color >> 8) & 0xFF) / 0xFF);
+            var _local_4:Number = ((color & 0xFF) / 0xFF);
             var _local_5:Number = Math.max(_local_10, _local_6, _local_4);
             var _local_11:Number = Math.min(_local_10, _local_6, _local_4);
             var _local_2:Number = (_local_5 - _local_11);
@@ -78,16 +78,16 @@
             return (((_local_7 << 16) + (_local_12 << 8)) + _local_8);
         }
 
-        public static function hslToRGB(_arg_1:int):int
+        public static function hslToRGB(hslColor:int):int
         {
             var _local_12:Number;
             var _local_11:Number;
             var _local_6:Number;
             var _local_16:Number;
             var _local_8:Number;
-            var _local_5:Number = (((_arg_1 >> 16) & 0xFF) / 0xFF);
-            var _local_14:Number = (((_arg_1 >> 8) & 0xFF) / 0xFF);
-            var _local_7:Number = ((_arg_1 & 0xFF) / 0xFF);
+            var _local_5:Number = (((hslColor >> 16) & 0xFF) / 0xFF);
+            var _local_14:Number = (((hslColor >> 8) & 0xFF) / 0xFF);
+            var _local_7:Number = ((hslColor & 0xFF) / 0xFF);
             var _local_10:Number = 0;
             var _local_3:Number = 0;
             var _local_15:Number = 0;
@@ -244,11 +244,11 @@
             return (_local_9);
         }
 
-        public static function rgb2xyz(_arg_1:int):IVector3d
+        public static function rgb2xyz(color:int):IVector3d
         {
-            var _local_2:Number = (((_arg_1 >> 16) & 0xFF) / 0xFF);
-            var _local_4:Number = (((_arg_1 >> 8) & 0xFF) / 0xFF);
-            var _local_3:Number = (((_arg_1 >> 0) & 0xFF) / 0xFF);
+            var _local_2:Number = (((color >> 16) & 0xFF) / 0xFF);
+            var _local_4:Number = (((color >> 8) & 0xFF) / 0xFF);
+            var _local_3:Number = (((color >> 0) & 0xFF) / 0xFF);
 
             if (_local_2 > 0.04045)
             {
@@ -286,11 +286,11 @@
             return (new Vector3d((((_local_2 * 0.4124) + (_local_4 * 0.3576)) + (_local_3 * 0.1805)), (((_local_2 * 0.2126) + (_local_4 * 0.7152)) + (_local_3 * 0.0722)), (((_local_2 * 0.0193) + (_local_4 * 0.1192)) + (_local_3 * 0.9505))));
         }
 
-        public static function xyz2CieLab(_arg_1:IVector3d):IVector3d
+        public static function xyz2CieLab(color:IVector3d):IVector3d
         {
-            var _local_2:Number = (_arg_1.x / 95.047);
-            var _local_3:Number = (_arg_1.y / 100);
-            var _local_4:Number = (_arg_1.z / 108.883);
+            var _local_2:Number = (color.x / 95.047);
+            var _local_3:Number = (color.y / 100);
+            var _local_4:Number = (color.z / 108.883);
 
             if (_local_2 > 0.008856)
             {
@@ -325,9 +325,9 @@
             return (new Vector3d(((116 * _local_3) - 16), (500 * (_local_2 - _local_3)), (200 * (_local_3 - _local_4))));
         }
 
-        public static function rgb2CieLab(_arg_1:int):IVector3d
+        public static function rgb2CieLab(color:int):IVector3d
         {
-            return (ColorConverter.xyz2CieLab(ColorConverter.rgb2xyz(_arg_1)));
+            return (ColorConverter.xyz2CieLab(ColorConverter.rgb2xyz(color)));
         }
 
     }

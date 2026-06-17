@@ -14,32 +14,32 @@
         private var _assetName:String;
         private var _fileType:String;
 
-        public function RoomContentLoaderURL(_arg_1:String, _arg_2:String=null, _arg_3:String=null, _arg_4:Boolean=false, _arg_5:String=null)
+        public function RoomContentLoaderURL(url:String, cacheKeyName:String=null, cacheRevision:String=null, isIcon:Boolean=false, assetName:String=null)
         {
-            _url = _arg_1;
+            _url = url;
 
-            var _local_7:String = ((_arg_4) ? "icon/" : "furni/");
-            _cacheKey = ((_arg_2) ? (_local_7 + _arg_2) : null);
-            _cacheRevision = _arg_3;
-            _assetName = _arg_5;
+            var cacheKeyPrefix:String = ((isIcon) ? "icon/" : "furni/");
+            _cacheKey = ((cacheKeyName) ? (cacheKeyPrefix + cacheKeyName) : null);
+            _cacheRevision = cacheRevision;
+            _assetName = assetName;
 
-            var _local_6:String = _arg_1.toLowerCase();
+            var lowerCaseUrl:String = url.toLowerCase();
 
-            if (_local_6.indexOf(".png") > -1)
+            if (lowerCaseUrl.indexOf(".png") > -1)
             {
                 _fileType = "png";
             }
 
             else
             {
-                if (_local_6.indexOf(".jpg") > -1)
+                if (lowerCaseUrl.indexOf(".jpg") > -1)
                 {
                     _fileType = "png";
                 }
 
                 else
                 {
-                    if (_local_6.indexOf(".jpeg") > -1)
+                    if (lowerCaseUrl.indexOf(".jpeg") > -1)
                     {
                         _fileType = "png";
                     };

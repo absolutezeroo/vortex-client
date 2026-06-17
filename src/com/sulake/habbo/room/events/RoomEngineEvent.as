@@ -15,9 +15,9 @@
 
         private var _roomId:int;
 
-        public function RoomEngineEvent(_arg_1:String, roomId:int, _arg_3:Boolean=false, _arg_4:Boolean=false)
+        public function RoomEngineEvent(type:String, roomId:int, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_3, _arg_4);
+            super(type, bubbles, cancelable);
             _roomId = roomId;
         }
 

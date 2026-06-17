@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object
+package com.sulake.room.object
 {
     import com.sulake.core.runtime.IUnknown;
     import com.sulake.room.object.visualization.IRoomObjectGraphicVisualization;
@@ -8,9 +8,10 @@
     public /*dynamic*/ interface IRoomObjectVisualizationFactory extends IUnknown 
     {
 
-        function createRoomObjectVisualization(_arg_1:String):IRoomObjectGraphicVisualization;
+        function createRoomObjectVisualization(_visualizationType:String):IRoomObjectGraphicVisualization;
         function createGraphicAssetCollection():IGraphicAssetCollection;
-        function getRoomObjectVisualizationData(_arg_1:String, _arg_2:String, _arg_3:XML):IRoomObjectVisualizationData;
+        function getRoomObjectVisualizationData(_type:String, _visualizationType:String, _visualizationData:XML):IRoomObjectVisualizationData;
 
     }
 }
+

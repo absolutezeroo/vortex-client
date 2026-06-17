@@ -10,15 +10,15 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROSCE_STATE_CHANGE"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var eventTypes:Array = ["ROSCE_STATE_CHANGE"];
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_arg_mouseEvent:RoomSpriteMouseEvent, _arg_geometry:IRoomGeometry):void
         {
-            var _local_3:RoomObjectEvent;
+            var stateChangeEvent:RoomObjectEvent;
 
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_arg_mouseEvent == null) || (_arg_geometry == null)))
             {
                 return;
             };
@@ -28,49 +28,49 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_arg_mouseEvent.type)
             {
                 case "doubleClick":
-                    switch (_arg_1.spriteTag)
+                    switch (_arg_mouseEvent.spriteTag)
                     {
                         case "off":
-                            _local_3 = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 3);
+                            stateChangeEvent = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 3);
                     };
 
                     break;
                 case "click":
-                    switch (_arg_1.spriteTag)
+                    switch (_arg_mouseEvent.spriteTag)
                     {
                         case "inc":
-                            _local_3 = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 2);
+                            stateChangeEvent = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 2);
                             break;
                         case "dec":
-                            _local_3 = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 1);
+                            stateChangeEvent = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 1);
                     };
             };
 
-            if (((!(eventDispatcher == null)) && (!(_local_3 == null))))
+            if (((!(eventDispatcher == null)) && (!(stateChangeEvent == null))))
             {
-                eventDispatcher.dispatchEvent(_local_3);
+                eventDispatcher.dispatchEvent(stateChangeEvent);
             }
 
             else
             {
-                super.mouseEvent(_arg_1, _arg_2);
+                super.mouseEvent(_arg_mouseEvent, _arg_geometry);
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var stateChangeEvent:RoomObjectEvent;
 
             if (object != null)
             {
-                _local_1 = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 3);
+                stateChangeEvent = new RoomObjectStateChangeEvent("ROSCE_STATE_CHANGE", object, 3);
 
                 if (eventDispatcher != null)
                 {
-                    eventDispatcher.dispatchEvent(_local_1);
+                    eventDispatcher.dispatchEvent(stateChangeEvent);
                 };
             };
         }

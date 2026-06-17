@@ -1,9 +1,9 @@
-﻿package com.sulake.habbo.room.object.visualization.furniture
+package com.sulake.habbo.room.object.visualization.furniture
 {
     import com.sulake.room.object.visualization.IRoomObjectVisualizationData;
     import com.sulake.core.utils.Map;
     import com.sulake.habbo.room.object.visualization.data.SizeData;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
 
     public class FurnitureVisualizationData implements IRoomObjectVisualizationData 
     {
@@ -132,7 +132,7 @@
             {
                 _local_2 = _local_10[_local_7];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_2, ["size", "layerCount", "angle"]))
+                if (!XmlUtil.checkRequiredAttributes(_local_2, ["size", "layerCount", "angle"]))
                 {
                     return (false);
                 };

@@ -1,4 +1,4 @@
-﻿package com.sulake.habbo.room.object.visualization.furniture
+package com.sulake.habbo.room.object.visualization.furniture
 {
     import flash.display.BitmapData;
     import com.sulake.core.assets.BitmapDataAsset;
@@ -6,7 +6,7 @@
     import com.sulake.room.object.visualization.utils.IGraphicAssetCollection;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-    import com.sulake.room.utils._SafeStr_217;
+    import com.sulake.room.utils.BitmapDataUtil;
 
     public class ShoreMaskCreatorUtility 
     {
@@ -18,135 +18,135 @@
         private static const MASK_COLOR_TRANSPARENT:uint = 0;
         private static const MASK_COLOR_SOLID:uint = 0xFFFFFFFF;
 
-        public static function createEmptyMask(_arg_1:int, _arg_2:int):BitmapData
+        public static function createEmptyMask(_arg_width:int, _arg_height:int):BitmapData
         {
-            return (new BitmapData(_arg_1, _arg_2, true, 0));
+            return (new BitmapData(_arg_width, _arg_height, true, 0));
         }
 
-        public static function getInstanceMaskName(_arg_1:int, _arg_2:int):String
+        public static function getInstanceMaskName(_arg_objectId:int, _arg_direction:int):String
         {
-            return ((("instance_mask_" + _arg_1) + "_") + _arg_2);
+            return ((("instance_mask_" + _arg_objectId) + "_") + _arg_direction);
         }
 
-        public static function getBorderType(_arg_1:int, _arg_2:int):int
+        public static function getBorderType(_arg_outerCorner:int, _arg_innerCorner:int):int
         {
-            return (_arg_1 + (_arg_2 * 3));
+            return (_arg_outerCorner + (_arg_innerCorner * 3));
         }
 
-        public static function getInstanceMask(_arg_1:int, _arg_2:int, _arg_3:IGraphicAssetCollection, _arg_4:IGraphicAsset):IGraphicAsset
+        public static function getInstanceMask(_arg_objectId:int, _arg_direction:int, _arg_assetCollection:IGraphicAssetCollection, _arg_sourceAsset:IGraphicAsset):IGraphicAsset
         {
-            var _local_8:BitmapDataAsset;
-            var _local_6:BitmapData;
-            var _local_7:String = getInstanceMaskName(_arg_1, _arg_2);
-            var _local_5:IGraphicAsset = _arg_3.getAsset(_local_7);
+            var _local_bitmapDataAsset:BitmapDataAsset;
+            var _local_sourceBitmapData:BitmapData;
+            var _local_maskName:String = getInstanceMaskName(_arg_objectId, _arg_direction);
+            var _local_maskAsset:IGraphicAsset = _arg_assetCollection.getAsset(_local_maskName);
 
-            if (_local_5 == null)
+            if (_local_maskAsset == null)
             {
-                if (_arg_4 != null)
+                if (_arg_sourceAsset != null)
                 {
-                    _local_8 = (_arg_4.asset as BitmapDataAsset);
+                    _local_bitmapDataAsset = (_arg_sourceAsset.asset as BitmapDataAsset);
 
-                    if (_local_8 != null)
+                    if (_local_bitmapDataAsset != null)
                     {
-                        _local_6 = (_local_8.content as BitmapData);
+                        _local_sourceBitmapData = (_local_bitmapDataAsset.content as BitmapData);
 
-                        if (_local_6 != null)
+                        if (_local_sourceBitmapData != null)
                         {
-                            _arg_3.addAsset(_local_7, new BitmapData(_local_6.width, _local_6.height, true, 0), false, _arg_4.offsetX, _arg_4.offsetY);
-                            _local_5 = _arg_3.getAsset(_local_7);
+                            _arg_assetCollection.addAsset(_local_maskName, new BitmapData(_local_sourceBitmapData.width, _local_sourceBitmapData.height, true, 0), false, _arg_sourceAsset.offsetX, _arg_sourceAsset.offsetY);
+                            _local_maskAsset = _arg_assetCollection.getAsset(_local_maskName);
                         };
                     };
                 };
             };
 
-            return (_local_5);
+            return (_local_maskAsset);
         }
 
-        public static function disposeInstanceMask(_arg_1:int, _arg_2:int, _arg_3:IGraphicAssetCollection):void
+        public static function disposeInstanceMask(_arg_objectId:int, _arg_direction:int, _arg_assetCollection:IGraphicAssetCollection):void
         {
-            var _local_4:String = getInstanceMaskName(_arg_1, _arg_2);
-            _arg_3.disposeAsset(_local_4);
+            var _local_maskName:String = getInstanceMaskName(_arg_objectId, _arg_direction);
+            _arg_assetCollection.disposeAsset(_local_maskName);
         }
 
-        public static function createShoreMask2x2(_arg_1:BitmapData, _arg_2:int, _arg_3:Array, _arg_4:Array, _arg_5:IGraphicAssetCollection):BitmapData
+        public static function createShoreMask2x2(_arg_targetBitmapData:BitmapData, _arg_objectId:int, _arg_cutFlags:Array, _arg_borderTypes:Array, _arg_assetCollection:IGraphicAssetCollection):BitmapData
         {
-            var _local_6:int;
-            var _local_7:String;
-            var _local_9:IGraphicAsset;
-            var _local_8:BitmapData;
-            _arg_1.fillRect(_arg_1.rect, 0);
-            _local_6 = 0;
+            var _local_index:int;
+            var _local_maskName:String;
+            var _local_maskAsset:IGraphicAsset;
+            var _local_maskBitmapData:BitmapData;
+            _arg_targetBitmapData.fillRect(_arg_targetBitmapData.rect, 0);
+            _local_index = 0;
 
-            while (_local_6 < _arg_3.length)
+            while (_local_index < _arg_cutFlags.length)
             {
-                if (_arg_3[_local_6] == true)
+                if (_arg_cutFlags[_local_index] == true)
                 {
-                    _local_7 = ((((("mask_" + _arg_2) + "_") + _local_6) + "_") + _arg_4[_local_6]);
-                    _local_9 = _arg_5.getAsset(_local_7);
+                    _local_maskName = ((((("mask_" + _arg_objectId) + "_") + _local_index) + "_") + _arg_borderTypes[_local_index]);
+                    _local_maskAsset = _arg_assetCollection.getAsset(_local_maskName);
 
-                    if (((!(_local_9 == null)) && (!(_local_9.asset == null))))
+                    if (((!(_local_maskAsset == null)) && (!(_local_maskAsset.asset == null))))
                     {
-                        _local_8 = (_local_9.asset.content as BitmapData);
+                        _local_maskBitmapData = (_local_maskAsset.asset.content as BitmapData);
 
-                        if (_local_8 != null)
+                        if (_local_maskBitmapData != null)
                         {
-                            _arg_1.copyPixels(_local_8, _local_8.rect, new Point(0, 0), _local_8, new Point(0, 0), true);
+                            _arg_targetBitmapData.copyPixels(_local_maskBitmapData, _local_maskBitmapData.rect, new Point(0, 0), _local_maskBitmapData, new Point(0, 0), true);
                         };
                     };
                 };
 
-                _local_6++;
+                _local_index++;
             };
 
-            return (_arg_1);
+            return (_arg_targetBitmapData);
         }
 
-        public static function initializeShoreMasks(_arg_1:int, _arg_2:IGraphicAssetCollection, _arg_3:IGraphicAsset):Boolean
+        public static function initializeShoreMasks(_arg_objectId:int, _arg_assetCollection:IGraphicAssetCollection, _arg_sourceAsset:IGraphicAsset):Boolean
         {
-            var _local_4:String;
-            var _local_7:BitmapDataAsset;
-            var _local_5:BitmapData;
-            var _local_9:Array;
-            var _local_8:Array;
-            var _local_10:BitmapData;
-            var _local_6:int;
+            var _local_masksDoneName:String;
+            var _local_bitmapDataAsset:BitmapDataAsset;
+            var _local_sourceBitmapData:BitmapData;
+            var _local_outerCorners:Array;
+            var _local_innerCorners:Array;
+            var _local_maskBitmapData:BitmapData;
+            var _local_index:int;
 
-            if (_arg_2 != null)
+            if (_arg_assetCollection != null)
             {
-                _local_4 = ("masks_done_" + _arg_1);
+                _local_masksDoneName = ("masks_done_" + _arg_objectId);
 
-                if (_arg_2.getAsset(_local_4) == null)
+                if (_arg_assetCollection.getAsset(_local_masksDoneName) == null)
                 {
-                    if (_arg_3 != null)
+                    if (_arg_sourceAsset != null)
                     {
-                        _local_7 = (_arg_3.asset as BitmapDataAsset);
+                        _local_bitmapDataAsset = (_arg_sourceAsset.asset as BitmapDataAsset);
 
-                        if (_local_7 != null)
+                        if (_local_bitmapDataAsset != null)
                         {
-                            _local_5 = (_local_7.content as BitmapData);
-                            _local_9 = [0, 1, 2, 0, 1, 2];
-                            _local_8 = [1, 1, 1, 2, 2, 2];
-                            _local_10 = null;
-                            _local_6 = 0;
+                            _local_sourceBitmapData = (_local_bitmapDataAsset.content as BitmapData);
+                            _local_outerCorners = [0, 1, 2, 0, 1, 2];
+                            _local_innerCorners = [1, 1, 1, 2, 2, 2];
+                            _local_maskBitmapData = null;
+                            _local_index = 0;
 
-                            if (_local_5 != null)
+                            if (_local_sourceBitmapData != null)
                             {
-                                _local_6 = 0;
+                                _local_index = 0;
 
-                                while (((_local_6 < _local_9.length) && (_local_6 < _local_8.length)))
+                                while (((_local_index < _local_outerCorners.length) && (_local_index < _local_innerCorners.length)))
                                 {
-                                    _local_10 = createMaskLeft(_local_5.width, _local_5.height);
-                                    cutLeftMask(_local_10, _arg_1, _local_9[_local_6], _local_8[_local_6]);
-                                    storeLeftMask(_arg_2, _local_10, _arg_1, _local_9[_local_6], _local_8[_local_6]);
-                                    _local_10 = createMaskRight(_local_5.width, _local_5.height);
-                                    cutRightMask(_local_10, _arg_1, _local_8[_local_6], _local_9[_local_6]);
-                                    storeRightMask(_arg_2, _local_10, _arg_1, _local_8[_local_6], _local_9[_local_6]);
-                                    _local_6++;
+                                    _local_maskBitmapData = createMaskLeft(_local_sourceBitmapData.width, _local_sourceBitmapData.height);
+                                    cutLeftMask(_local_maskBitmapData, _arg_objectId, _local_outerCorners[_local_index], _local_innerCorners[_local_index]);
+                                    storeLeftMask(_arg_assetCollection, _local_maskBitmapData, _arg_objectId, _local_outerCorners[_local_index], _local_innerCorners[_local_index]);
+                                    _local_maskBitmapData = createMaskRight(_local_sourceBitmapData.width, _local_sourceBitmapData.height);
+                                    cutRightMask(_local_maskBitmapData, _arg_objectId, _local_innerCorners[_local_index], _local_outerCorners[_local_index]);
+                                    storeRightMask(_arg_assetCollection, _local_maskBitmapData, _arg_objectId, _local_innerCorners[_local_index], _local_outerCorners[_local_index]);
+                                    _local_index++;
                                 };
                             };
                         };
 
-                        _arg_2.addAsset(_local_4, new BitmapData(1, 1), false);
+                        _arg_assetCollection.addAsset(_local_masksDoneName, new BitmapData(1, 1), false);
                         return (true);
                     };
 
@@ -269,11 +269,11 @@
                 _local_6 = ((("mask_" + _arg_3) + "_0_") + getBorderType(_arg_4, _arg_5));
                 _arg_1.addAsset(_local_6, _arg_2, false);
                 _local_6 = ((("mask_" + _arg_3) + "_3_") + getBorderType(_arg_5, _arg_4));
-                _arg_1.addAsset(_local_6, _SafeStr_217.getFlipVBitmapData(_arg_2), false);
+                _arg_1.addAsset(_local_6, BitmapDataUtil.getFlipVBitmapData(_arg_2), false);
                 _local_6 = ((("mask_" + _arg_3) + "_4_") + getBorderType(_arg_4, _arg_5));
-                _arg_1.addAsset(_local_6, _SafeStr_217.getFlipHVBitmapData(_arg_2), false);
+                _arg_1.addAsset(_local_6, BitmapDataUtil.getFlipHVBitmapData(_arg_2), false);
                 _local_6 = ((("mask_" + _arg_3) + "_7_") + getBorderType(_arg_5, _arg_4));
-                _arg_1.addAsset(_local_6, _SafeStr_217.getFlipHBitmapData(_arg_2), false);
+                _arg_1.addAsset(_local_6, BitmapDataUtil.getFlipHBitmapData(_arg_2), false);
             };
         }
 
@@ -287,11 +287,11 @@
                 _local_6 = ((("mask_" + _arg_3) + "_1_") + getBorderType(_arg_4, _arg_5));
                 _arg_1.addAsset(_local_6, _arg_2, false);
                 _local_6 = ((("mask_" + _arg_3) + "_2_") + getBorderType(_arg_5, _arg_4));
-                _arg_1.addAsset(_local_6, _SafeStr_217.getFlipVBitmapData(_arg_2), false);
+                _arg_1.addAsset(_local_6, BitmapDataUtil.getFlipVBitmapData(_arg_2), false);
                 _local_6 = ((("mask_" + _arg_3) + "_5_") + getBorderType(_arg_4, _arg_5));
-                _arg_1.addAsset(_local_6, _SafeStr_217.getFlipHVBitmapData(_arg_2), false);
+                _arg_1.addAsset(_local_6, BitmapDataUtil.getFlipHVBitmapData(_arg_2), false);
                 _local_6 = ((("mask_" + _arg_3) + "_6_") + getBorderType(_arg_5, _arg_4));
-                _arg_1.addAsset(_local_6, _SafeStr_217.getFlipHBitmapData(_arg_2), false);
+                _arg_1.addAsset(_local_6, BitmapDataUtil.getFlipHBitmapData(_arg_2), false);
             };
         }
 
@@ -345,4 +345,4 @@
 
     }
 }
-
+

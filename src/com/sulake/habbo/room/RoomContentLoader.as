@@ -89,9 +89,9 @@
         private var _configuration:ICoreConfiguration;
         private var _SafeStr_3640:Array;
 
-        public function RoomContentLoader(_arg_1:String)
+        public function RoomContentLoader(name:String)
         {
-            _SafeStr_3305 = _arg_1;
+            _SafeStr_3305 = name;
             _SafeStr_1361 = new Map();
             _SafeStr_913 = new Map();
             _SafeStr_3621 = new Map();
@@ -112,9 +112,9 @@
             return (Core.instance.fileProxy);
         }
 
-        public function set sessionDataManager(_arg_1:ISessionDataManager):void
+        public function set sessionDataManager(value:ISessionDataManager):void
         {
-            _sessionDataManager = _arg_1;
+            _sessionDataManager = value;
 
             if (_SafeStr_3637)
             {
@@ -128,35 +128,35 @@
             return (_disposed);
         }
 
-        public function set visualizationFactory(_arg_1:IRoomObjectVisualizationFactory):void
+        public function set visualizationFactory(value:IRoomObjectVisualizationFactory):void
         {
-            _visualizationFactory = _arg_1;
+            _visualizationFactory = value;
         }
 
-        public function initialize(_arg_1:IEventDispatcher, _arg_2:ICoreConfiguration):void
+        public function initialize(stateEvents:IEventDispatcher, configuration:ICoreConfiguration):void
         {
-            _stateEvents = _arg_1;
-            _SafeStr_3632 = _arg_2.getProperty("flash.dynamic.download.url");
-            _SafeStr_3633 = _arg_2.getProperty("flash.dynamic.download.name.template");
-            _SafeStr_3634 = _arg_2.getProperty("flash.dynamic.icon.download.name.template");
-            _SafeStr_3635 = _arg_2.getProperty("pet.dynamic.download.url");
-            _SafeStr_3636 = _arg_2.getProperty("pet.dynamic.download.name.template");
-            _configuration = _arg_2;
+            _stateEvents = stateEvents;
+            _SafeStr_3632 = configuration.getProperty("flash.dynamic.download.url");
+            _SafeStr_3633 = configuration.getProperty("flash.dynamic.download.name.template");
+            _SafeStr_3634 = configuration.getProperty("flash.dynamic.icon.download.name.template");
+            _SafeStr_3635 = configuration.getProperty("pet.dynamic.download.url");
+            _SafeStr_3636 = configuration.getProperty("pet.dynamic.download.name.template");
+            _configuration = configuration;
             _SafeStr_448 = 1;
             initFurnitureData();
-            initPetData(_arg_2);
+            initPetData(configuration);
         }
 
-        private function initPetData(_arg_1:ICoreConfiguration):void
+        private function initPetData(configuration:ICoreConfiguration):void
         {
-            var _local_2:Array = _arg_1.getProperty("pet.configuration").split(",");
-            var _local_3:int;
+            var petTypeNames:Array = configuration.getProperty("pet.configuration").split(",");
+            var petTypeId:int;
 
-            for each (var _local_4:String in _local_2)
+            for each (var petTypeName:String in petTypeNames)
             {
-                _SafeStr_3627[_local_4] = _local_3;
-                _SafeStr_3626.add(_local_3, _local_4);
-                _local_3++;
+                _SafeStr_3627[petTypeName] = petTypeId;
+                _SafeStr_3626.add(petTypeId, petTypeName);
+                petTypeId++;
             };
 
             _petColors = new Map();
@@ -171,15 +171,15 @@
                 return;
             };
 
-            var _local_1:Vector.<IFurnitureData> = _sessionDataManager.getFurniData(this);
+            var furniData:Vector.<IFurnitureData> = _sessionDataManager.getFurniData(this);
 
-            if (_local_1 == null)
+            if (furniData == null)
             {
                 return;
             };
 
             _sessionDataManager.removeFurniDataListener(this);
-            populateFurniData(_local_1);
+            populateFurniData(furniData);
             _SafeStr_3620 = true;
             parseIgnoredFurniTypes();
             continueInitilization();

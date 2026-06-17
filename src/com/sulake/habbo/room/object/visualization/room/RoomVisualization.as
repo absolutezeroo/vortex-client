@@ -67,6 +67,7 @@
         private var _geometryDirZ:Number = 0;
         private var _geometryScale:Number = 0;
         private var _planeTypeVisibilities:Array = [];
+        private var _SafeStr_3270:int = -1;
 
         public function RoomVisualization()
         {

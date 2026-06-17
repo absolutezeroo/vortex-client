@@ -1,4 +1,4 @@
-﻿package com.sulake.bootstrap
+package com.sulake.bootstrap
 {
     import com.sulake.habbo.navigator.HabboNewNavigator;
     import com.sulake.core.runtime.IContext;
@@ -7,9 +7,9 @@
     public class HabboNewNavigatorBootstrap extends HabboNewNavigator 
     {
 
-        public function HabboNewNavigatorBootstrap(_arg_1:IContext, _arg_2:uint=0, _arg_3:IAssetLibrary=null)
+        public function HabboNewNavigatorBootstrap(context:IContext, flags:uint=0, assetLibrary:IAssetLibrary=null)
         {
-            super(_arg_1, _arg_2, _arg_3);
+            super(context, flags, assetLibrary);
         }
 
     }

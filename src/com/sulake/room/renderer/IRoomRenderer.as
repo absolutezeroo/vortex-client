@@ -2,10 +2,10 @@
 
     public /*dynamic*/interface IRoomRenderer extends IRoomRendererBase {
 
-        function set roomObjectVariableAccurateZ(_arg_1:String):void;
-        function createCanvas(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int):IRoomRenderingCanvas;
-        function getCanvas(_arg_1:int):IRoomRenderingCanvas;
-        function disposeCanvas(_arg_1:int):Boolean;
+        function set roomObjectVariableAccurateZ(variableName:String):void;
+        function createCanvas(canvasId:int, width:int, height:int, displayMode:int):IRoomRenderingCanvas;
+        function getCanvas(canvasId:int):IRoomRenderingCanvas;
+        function disposeCanvas(canvasId:int):Boolean;
 
     }
 }

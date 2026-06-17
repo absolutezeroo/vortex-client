@@ -17,19 +17,19 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE_MANNEQUIN"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var eventTypes:Array = ["ROWRE_MANNEQUIN"];
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_arg_updateMessage:RoomObjectUpdateMessage):void
         {
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(_arg_updateMessage);
 
-            var _local_2:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (_arg_updateMessage as RoomObjectDataUpdateMessage);
 
-            if (((!(_local_2 == null)) && (!(_local_2.data == null))))
+            if (((!(dataUpdateMessage == null)) && (!(dataUpdateMessage.data == null))))
             {
-                _local_2.data.writeRoomObjectModel(object.getModelController());
+                dataUpdateMessage.data.writeRoomObjectModel(object.getModelController());
                 setObjectVariables();
             };
         }
@@ -41,16 +41,16 @@
                 return;
             };
 
-            var _local_1:MapStuffData = new MapStuffData();
-            _local_1.initializeFromRoomObjectModel(object.getModel());
-            object.getModelController().setString("furniture_mannequin_gender", _local_1.getValue("GENDER"));
-            object.getModelController().setString("furniture_mannequin_figure", _local_1.getValue("FIGURE"));
-            object.getModelController().setString("furniture_mannequin_name", _local_1.getValue("OUTFIT_NAME"));
+            var mapStuffData:MapStuffData = new MapStuffData();
+            mapStuffData.initializeFromRoomObjectModel(object.getModel());
+            object.getModelController().setString("furniture_mannequin_gender", mapStuffData.getValue("GENDER"));
+            object.getModelController().setString("furniture_mannequin_figure", mapStuffData.getValue("FIGURE"));
+            object.getModelController().setString("furniture_mannequin_name", mapStuffData.getValue("OUTFIT_NAME"));
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_arg_mouseEvent:RoomSpriteMouseEvent, _arg_geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_arg_mouseEvent == null) || (_arg_geometry == null)))
             {
                 return;
             };
@@ -60,25 +60,25 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_arg_mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_arg_mouseEvent, _arg_geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_MANNEQUIN", object);
-                eventDispatcher.dispatchEvent(_local_1);
+                widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_MANNEQUIN", object);
+                eventDispatcher.dispatchEvent(widgetRequestEvent);
             };
         }
 

@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.logic
+package com.sulake.room.object.logic
 {
     import flash.events.IEventDispatcher;
     import com.sulake.room.object.IRoomObjectController;
@@ -17,9 +17,9 @@
             return (_eventDispatcher);
         }
 
-        public function set eventDispatcher(_arg_1:IEventDispatcher):void
+        public function set eventDispatcher(_dispatcher:IEventDispatcher):void
         {
-            _eventDispatcher = _arg_1;
+            _eventDispatcher = _dispatcher;
         }
 
         public function getEventTypes():Array
@@ -27,11 +27,11 @@
             return ([]);
         }
 
-        protected function getAllEventTypes(_arg_1:Array, _arg_2:Array):Array
+        protected function getAllEventTypes(_target:Array, _extra:Array):Array
         {
-            var _local_3:Array = _arg_1.concat();
+            var _local_3:Array = _target.concat();
 
-            for each (var _local_4:String in _arg_2)
+            for each (var _local_4:String in _extra)
             {
                 if (_local_3.indexOf(_local_4) < 0)
                 {
@@ -47,9 +47,9 @@
             _object = null;
         }
 
-        public function set object(_arg_1:IRoomObjectController):void
+        public function set object(_newObject:IRoomObjectController):void
         {
-            if (_object == _arg_1)
+            if (_object == _newObject)
             {
                 return;
             };
@@ -59,7 +59,7 @@
                 _object.setEventHandler(null);
             };
 
-            if (_arg_1 == null)
+            if (_newObject == null)
             {
                 dispose();
                 _object = null;
@@ -67,7 +67,7 @@
 
             else
             {
-                _object = _arg_1;
+                _object = _newObject;
                 _object.setEventHandler(this);
             };
         }
@@ -77,26 +77,26 @@
             return (_object);
         }
 
-        public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        public function mouseEvent(_event:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void
         {
         }
 
-        public function initialize(_arg_1:XML):void
+        public function initialize(_data:XML):void
         {
         }
 
-        public function update(_arg_1:int):void
+        public function update(_time:int):void
         {
         }
 
-        public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        public function processUpdateMessage(_message:RoomObjectUpdateMessage):void
         {
-            if (_arg_1 != null)
+            if (_message != null)
             {
                 if (_object != null)
                 {
-                    _object.setLocation(_arg_1.loc);
-                    _object.setDirection(_arg_1.dir);
+                    _object.setLocation(_message.loc);
+                    _object.setDirection(_message.dir);
                 };
             };
         }
@@ -121,3 +121,5 @@
 
     }
 }
+
+

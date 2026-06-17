@@ -19,19 +19,19 @@
         private var _maskLocation:Vector3d = null;
         private var _maskCategory:String = "window";
 
-        public function RoomObjectRoomMaskUpdateMessage(_arg_1:String, _arg_2:String, _arg_3:String=null, _arg_4:IVector3d=null, _arg_5:String="window")
+        public function RoomObjectRoomMaskUpdateMessage(type:String, maskId:String, maskType:String=null, maskLocation:IVector3d=null, maskCategory:String="window")
         {
             super(null, null);
-            _type = _arg_1;
-            _maskId = _arg_2;
-            _maskType = _arg_3;
+            _type = type;
+            _maskId = maskId;
+            _maskType = maskType;
 
-            if (_arg_4 != null)
+            if (maskLocation != null)
             {
-                _maskLocation = new Vector3d(_arg_4.x, _arg_4.y, _arg_4.z);
+                _maskLocation = new Vector3d(maskLocation.x, maskLocation.y, maskLocation.z);
             };
 
-            _maskCategory = _arg_5;
+            _maskCategory = maskCategory;
         }
 
         public function get type():String

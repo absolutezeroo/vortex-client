@@ -1,14 +1,14 @@
-﻿package com.sulake.room.object.visualization.utils
+package com.sulake.room.object.visualization.utils
 {
     import __AS3__.vec.Vector;
     import com.sulake.core.assets.BitmapDataAsset;
     import com.sulake.core.assets.IAsset;
     import flash.display.BitmapData;
 
-    public class GraphicAsset implements IGraphicAsset 
+    public class GraphicAsset implements IGraphicAsset
     {
 
-        private static const _SafeStr_3006:Vector.<GraphicAsset> = new Vector.<GraphicAsset>();
+        private static const _assetPool:Vector.<GraphicAsset> = new Vector.<GraphicAsset>();
 
         private var _assetName:String;
         private var _libraryAssetName:String;
@@ -22,52 +22,52 @@
         private var _height:int;
         private var _initialized:Boolean;
 
-        public static function allocate(_arg_1:String, _arg_2:String, _arg_3:IAsset, _arg_4:Boolean, _arg_5:Boolean, _arg_6:int, _arg_7:int, _arg_8:Boolean=false):GraphicAsset
+        public static function allocate(assetName:String, libraryAssetName:String, sourceAsset:IAsset, flipHorizontal:Boolean, flipVertical:Boolean, xOffset:int, yOffset:int, usesPalette:Boolean=false):GraphicAsset
         {
-            var _local_9:GraphicAsset = ((_SafeStr_3006.length > 0) ? _SafeStr_3006.pop() : new GraphicAsset());
-            _local_9._assetName = _arg_1;
-            _local_9._libraryAssetName = _arg_2;
+            var cachedAsset:GraphicAsset = ((_assetPool.length > 0) ? _assetPool.pop() : new GraphicAsset());
+            cachedAsset._assetName = assetName;
+            cachedAsset._libraryAssetName = libraryAssetName;
 
-            var _local_10:BitmapDataAsset = (_arg_3 as BitmapDataAsset);
+            var bitmapAsset:BitmapDataAsset = (sourceAsset as BitmapDataAsset);
 
-            if (_local_10 != null)
+            if (bitmapAsset != null)
             {
-                _local_9._asset = _local_10;
-                _local_9._initialized = false;
+                cachedAsset._asset = bitmapAsset;
+                cachedAsset._initialized = false;
             }
 
             else
             {
-                _local_9._asset = null;
-                _local_9._initialized = true;
+                cachedAsset._asset = null;
+                cachedAsset._initialized = true;
             };
 
-            _local_9._flipH = _arg_4;
-            _local_9._flipV = _arg_5;
-            _local_9._originalOffsetX = _arg_6;
-            _local_9._originalOffsetY = _arg_7;
-            _local_9._usesPalette = _arg_8;
-            return (_local_9);
+            cachedAsset._flipH = flipHorizontal;
+            cachedAsset._flipV = flipVertical;
+            cachedAsset._originalOffsetX = xOffset;
+            cachedAsset._originalOffsetY = yOffset;
+            cachedAsset._usesPalette = usesPalette;
+            return (cachedAsset);
         }
 
         public function recycle():void
         {
             _asset = null;
-            _SafeStr_3006.push(this);
+            _assetPool.push(this);
         }
 
         private function initialize():void
         {
-            var _local_1:BitmapData;
+            var bitmap:BitmapData;
 
             if (((!(_initialized)) && (!(_asset == null))))
             {
-                _local_1 = (_asset.content as BitmapData);
+                bitmap = (_asset.content as BitmapData);
 
-                if (_local_1 != null)
+                if (bitmap != null)
                 {
-                    _width = _local_1.width;
-                    _height = _local_1.height;
+                    _width = bitmap.width;
+                    _height = bitmap.height;
                 };
 
                 _initialized = true;
@@ -148,4 +148,3 @@
 
     }
 }
-

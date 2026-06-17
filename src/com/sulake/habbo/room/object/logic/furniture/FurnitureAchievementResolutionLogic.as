@@ -18,35 +18,35 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE_ACHIEVEMENT_RESOLUTION_OPEN", "ROWRE_ACHIEVEMENT_RESOLUTION_ENGRAVING", "ROWRE_ACHIEVEMENT_RESOLUTION_FAILED", "ROGBE_LOAD_BADGE"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var _eventTypes:Array = ["ROWRE_ACHIEVEMENT_RESOLUTION_OPEN", "ROWRE_ACHIEVEMENT_RESOLUTION_ENGRAVING", "ROWRE_ACHIEVEMENT_RESOLUTION_FAILED", "ROGBE_LOAD_BADGE"];
+            return (getAllEventTypes(super.getEventTypes(), _eventTypes));
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_message:RoomObjectUpdateMessage):void
         {
-            var _local_4:RoomObjectEvent;
-            super.processUpdateMessage(_arg_1);
+            var _closeMenuEvent:RoomObjectEvent;
+            super.processUpdateMessage(_message);
 
-            var _local_3:RoomObjectGroupBadgeUpdateMessage = (_arg_1 as RoomObjectGroupBadgeUpdateMessage);
+            var _badgeUpdateMessage:RoomObjectGroupBadgeUpdateMessage = (_message as RoomObjectGroupBadgeUpdateMessage);
 
-            if (_local_3 != null)
+            if (_badgeUpdateMessage != null)
             {
-                if (_local_3.assetName != "loading_icon")
+                if (_badgeUpdateMessage.assetName != "loading_icon")
                 {
                     object.getModelController().setNumber("furniture_badge_visible_in_state", 2);
                 };
             };
 
-            var _local_2:RoomObjectSelectedMessage = (_arg_1 as RoomObjectSelectedMessage);
+            var _selectedMessage:RoomObjectSelectedMessage = (_message as RoomObjectSelectedMessage);
 
-            if (_local_2)
+            if (_selectedMessage)
             {
                 if (((!(eventDispatcher == null)) && (!(object == null))))
                 {
-                    if (!_local_2.selected)
+                    if (!_selectedMessage.selected)
                     {
-                        _local_4 = new RoomObjectWidgetRequestEvent("ROWRE_CLOSE_FURNI_CONTEXT_MENU", object);
-                        eventDispatcher.dispatchEvent(_local_4);
+                        _closeMenuEvent = new RoomObjectWidgetRequestEvent("ROWRE_CLOSE_FURNI_CONTEXT_MENU", object);
+                        eventDispatcher.dispatchEvent(_closeMenuEvent);
                     };
                 };
             };
@@ -54,37 +54,37 @@
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var _widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = null;
+                _widgetRequestEvent = null;
                 switch (object.getState(0))
                 {
                     case 0:
                     case 1:
-                        _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_ACHIEVEMENT_RESOLUTION_OPEN", object);
+                        _widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_ACHIEVEMENT_RESOLUTION_OPEN", object);
                         break;
                     case 2:
-                        _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_ACHIEVEMENT_RESOLUTION_ENGRAVING", object);
+                        _widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_ACHIEVEMENT_RESOLUTION_ENGRAVING", object);
                         break;
                     case 3:
-                        _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_ACHIEVEMENT_RESOLUTION_FAILED", object);
+                        _widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_ACHIEVEMENT_RESOLUTION_FAILED", object);
                     default:
                 };
 
-                if (_local_1)
+                if (_widgetRequestEvent)
                 {
-                    eventDispatcher.dispatchEvent(_local_1);
+                    eventDispatcher.dispatchEvent(_widgetRequestEvent);
                 };
             };
         }
 
-        override protected function updateBadge(_arg_1:String):void
+        override protected function updateBadge(_badgeCode:String):void
         {
-            if (_arg_1 != "ACH_0")
+            if (_badgeCode != "ACH_0")
             {
-                super.updateBadge(_arg_1);
+                super.updateBadge(_badgeCode);
             };
         }
 

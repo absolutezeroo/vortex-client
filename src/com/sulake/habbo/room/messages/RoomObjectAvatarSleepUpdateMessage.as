@@ -5,9 +5,9 @@
 
         private var _isSleeping:Boolean;
 
-        public function RoomObjectAvatarSleepUpdateMessage(_arg_1:Boolean=false)
+        public function RoomObjectAvatarSleepUpdateMessage(isSleeping:Boolean=false)
         {
-            _isSleeping = _arg_1;
+            _isSleeping = isSleeping;
         }
 
         public function get isSleeping():Boolean

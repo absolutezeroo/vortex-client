@@ -27,9 +27,9 @@ package onBoardingHc.steps
         private var _passwordField:InputField;
         private var _initialized:Boolean;
 
-        public function OnBoardingHcStepLogin(_arg_1:IOnBoardingHcContext)
+        public function OnBoardingHcStepLogin(context:IOnBoardingHcContext)
         {
-            _context = _arg_1;
+            _context = context;
             addEventListener("addedToStage", onAddedToStage);
             init();
         }
@@ -41,14 +41,14 @@ package onBoardingHc.steps
             _registerButton.dispose();
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
-            var _local_2:Timer = new Timer(20, 1);
-            _local_2.addEventListener("timerComplete", onAlignElements);
-            _local_2.start();
+            var alignTimer:Timer = new Timer(20, 1);
+            alignTimer.addEventListener("timerComplete", onAlignElements);
+            alignTimer.start();
         }
 
-        private function onAlignElements(_arg_1:TimerEvent):void
+        private function onAlignElements(alignEvent:TimerEvent):void
         {
             LoaderUI.lineUpVertically(_emailField, -20, _passwordField);
             LoaderUI.alignAnchors(_emailField, 0, "l", _passwordField);
@@ -107,17 +107,17 @@ package onBoardingHc.steps
             addChild(_registerButton);
         }
 
-        private function onLogin(_arg_1:Button):void
+        private function onLogin(loginButton:Button):void
         {
             _context.initLogin(_emailField.text, _passwordField.text);
         }
 
-        private function onCancel(_arg_1:Button):void
+        private function onCancel(cancelButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_ENVIRONMENT);
         }
 
-        private function onRegister(_arg_1:Button):void
+        private function onRegister(registerButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_REGISTER);
         }

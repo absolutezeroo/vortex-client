@@ -13,64 +13,64 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE_CLOTHING_CHANGE"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var _eventTypes:Array = ["ROWRE_CLOTHING_CHANGE"];
+            return (getAllEventTypes(super.getEventTypes(), _eventTypes));
         }
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_model:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_model);
 
             if (((object == null) || (object.getModel() == null)))
             {
                 return;
             };
 
-            var _local_2:String = object.getModel().getString("furniture_data");
-            updateClothingData(_local_2);
+            var _clothingData:String = object.getModel().getString("furniture_data");
+            updateClothingData(_clothingData);
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_message:RoomObjectUpdateMessage):void
         {
-            var _local_2:IStuffData;
-            super.processUpdateMessage(_arg_1);
+            var _stuffData:IStuffData;
+            super.processUpdateMessage(_message);
 
-            var _local_3:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var _dataUpdateMessage:RoomObjectDataUpdateMessage = (_message as RoomObjectDataUpdateMessage);
 
-            if (_local_3 != null)
+            if (_dataUpdateMessage != null)
             {
-                _local_2 = _local_3.data;
+                _stuffData = _dataUpdateMessage.data;
 
-                if (_local_2 != null)
+                if (_stuffData != null)
                 {
-                    updateClothingData(_local_2.getLegacyString());
+                    updateClothingData(_stuffData.getLegacyString());
                 };
             };
         }
 
-        private function updateClothingData(_arg_1:String):void
+        private function updateClothingData(_clothingData:String):void
         {
-            var _local_2:Array;
+            var _clothingParts:Array;
 
-            if (((!(_arg_1 == null)) && (_arg_1.length > 0)))
+            if (((!(_clothingData == null)) && (_clothingData.length > 0)))
             {
-                _local_2 = _arg_1.split(",");
+                _clothingParts = _clothingData.split(",");
 
-                if (_local_2.length > 0)
+                if (_clothingParts.length > 0)
                 {
-                    object.getModelController().setString("furniture_clothing_boy", _local_2[0]);
+                    object.getModelController().setString("furniture_clothing_boy", _clothingParts[0]);
                 };
 
-                if (_local_2.length > 1)
+                if (_clothingParts.length > 1)
                 {
-                    object.getModelController().setString("furniture_clothing_girl", _local_2[1]);
+                    object.getModelController().setString("furniture_clothing_girl", _clothingParts[1]);
                 };
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_mouseEvent:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_mouseEvent == null) || (_geometry == null)))
             {
                 return;
             };
@@ -80,25 +80,25 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_mouseEvent, _geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var _widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_CLOTHING_CHANGE", object);
-                eventDispatcher.dispatchEvent(_local_1);
+                _widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_CLOTHING_CHANGE", object);
+                eventDispatcher.dispatchEvent(_widgetRequestEvent);
             };
         }
 

@@ -7,19 +7,19 @@
         private var _reservedNumbers:Array = [];
         private var _freeNumbers:Array = [];
 
-        public function NumberBank(_arg_1:int)
+        public function NumberBank(size:int)
         {
             var _local_2:int;
             super();
 
-            if (_arg_1 < 0)
+            if (size < 0)
             {
-                _arg_1 = 0;
+                size = 0;
             };
 
             _local_2 = 0;
 
-            while (_local_2 < _arg_1)
+            while (_local_2 < size)
             {
                 _freeNumbers.push(_local_2);
                 _local_2++;
@@ -47,17 +47,17 @@
             return (-1);
         }
 
-        public function freeNumber(_arg_1:int):void
+        public function freeNumber(number:int):void
         {
-            var _local_2:int = _reservedNumbers.indexOf(_arg_1);
+            var _local_2:int = _reservedNumbers.indexOf(number);
 
             if (_local_2 >= 0)
             {
                 _reservedNumbers.splice(_local_2, 1);
-                _freeNumbers.push(_arg_1);
+                _freeNumbers.push(number);
             };
         }
 
     }
 }
-
+

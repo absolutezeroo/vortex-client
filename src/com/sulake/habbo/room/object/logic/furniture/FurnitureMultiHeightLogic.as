@@ -3,9 +3,9 @@
     public class FurnitureMultiHeightLogic extends FurnitureMultiStateLogic 
     {
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_arg_xml:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_arg_xml);
             object.getModelController().setNumber("furniture_is_variable_height", 1, true);
         }
 

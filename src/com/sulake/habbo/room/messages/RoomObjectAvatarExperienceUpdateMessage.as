@@ -5,9 +5,9 @@
 
         private var _gainedExperience:int;
 
-        public function RoomObjectAvatarExperienceUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarExperienceUpdateMessage(gainedExperience:int)
         {
-            _gainedExperience = _arg_1;
+            _gainedExperience = gainedExperience;
         }
 
         public function get gainedExperience():int

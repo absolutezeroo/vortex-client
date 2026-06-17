@@ -9,12 +9,12 @@
         private var _canStandUp:Boolean;
         private var _baseY:Number;
 
-        public function RoomObjectAvatarUpdateMessage(_arg_1:IVector3d, _arg_2:IVector3d, _arg_3:IVector3d, _arg_4:int, _arg_5:Boolean, _arg_6:Number)
+        public function RoomObjectAvatarUpdateMessage(location:IVector3d, previousLocation:IVector3d, headLocation:IVector3d, dirHead:int, canStandUp:Boolean, baseY:Number)
         {
-            super(_arg_1, _arg_2, _arg_3);
-            _dirHead = _arg_4;
-            _canStandUp = _arg_5;
-            _baseY = _arg_6;
+            super(location, previousLocation, headLocation);
+            _dirHead = dirHead;
+            _canStandUp = canStandUp;
+            _baseY = baseY;
         }
 
         public function get dirHead():int

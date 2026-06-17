@@ -1,4 +1,4 @@
-﻿package com.sulake.bootstrap
+package com.sulake.bootstrap
 {
     import com.sulake.habbo.freeflowchat.HabboFreeFlowChat;
     import com.sulake.core.runtime.IContext;
@@ -7,9 +7,9 @@
     public class HabboFreeFlowChatBootstrap extends HabboFreeFlowChat 
     {
 
-        public function HabboFreeFlowChatBootstrap(_arg_1:IContext, _arg_2:uint, _arg_3:IAssetLibrary)
+        public function HabboFreeFlowChatBootstrap(context:IContext, flags:uint, assetLibrary:IAssetLibrary)
         {
-            super(_arg_1, _arg_2, _arg_3);
+            super(context, flags, assetLibrary);
         }
 
     }

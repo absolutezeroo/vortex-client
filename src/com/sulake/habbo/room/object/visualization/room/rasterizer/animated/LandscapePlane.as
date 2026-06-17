@@ -17,65 +17,65 @@
         private var _width:int = 0;
         private var _height:int = 0;
 
-        override public function isStatic(_arg_1:int):Boolean
+        override public function isStatic(scale:int):Boolean
         {
-            var _local_2:PlaneVisualization = getPlaneVisualization(_arg_1);
+            var planeVisualization:PlaneVisualization = getPlaneVisualization(scale);
 
-            if (_local_2 != null)
+            if (planeVisualization != null)
             {
-                return (!(_local_2.hasAnimationLayers));
+                return (!(planeVisualization.hasAnimationLayers));
             };
 
-            return (super.isStatic(_arg_1));
+            return (super.isStatic(scale));
         }
 
-        public function initializeDimensions(_arg_1:int, _arg_2:int):void
+        public function initializeDimensions(width:int, height:int):void
         {
-            if (_arg_1 < 0)
+            if (width < 0)
             {
-                _arg_1 = 0;
+                width = 0;
             };
 
-            if (_arg_2 < 0)
+            if (height < 0)
             {
-                _arg_2 = 0;
+                height = 0;
             };
 
-            if (((!(_arg_1 == _width)) || (!(_arg_2 == _height))))
+            if (((!(width == _width)) || (!(height == _height))))
             {
-                _width = _arg_1;
-                _height = _arg_2;
+                _width = width;
+                _height = height;
             };
         }
 
-        public function render(_arg_1:BitmapData, _arg_2:Number, _arg_3:Number, _arg_4:Number, _arg_5:IVector3d, _arg_6:Boolean, _arg_7:Number, _arg_8:Number, _arg_9:Number, _arg_10:Number, _arg_11:int):BitmapData
+        public function render(canvas:BitmapData, width:Number, height:Number, scale:Number, normal:IVector3d, useTexture:Boolean, offsetX:Number, offsetY:Number, maxX:Number, maxY:Number, timeSinceStartMs:int):BitmapData
         {
-            var _local_12:int;
-            var _local_20:int;
-            var _local_19:int;
-            var _local_18:int;
-            var _local_17:BitmapData;
-            var _local_13:PlaneVisualization = getPlaneVisualization(_arg_4);
+            var offsetPixelX:int;
+            var maxPixelY:int;
+            var maxPixelX:int;
+            var offsetPixelY:int;
+            var resultBitmapData:BitmapData;
+            var planeVisualization:PlaneVisualization = getPlaneVisualization(scale);
 
-            if (((_local_13 == null) || (_local_13.geometry == null)))
+            if (((planeVisualization == null) || (planeVisualization.geometry == null)))
             {
                 return (null);
             };
 
-            var _local_14:Point = _local_13.geometry.getScreenPoint(new Vector3d(0, 0, 0));
-            var _local_15:Point = _local_13.geometry.getScreenPoint(new Vector3d(0, 0, 1));
-            var _local_16:Point = _local_13.geometry.getScreenPoint(new Vector3d(0, 1, 0));
+            var originPoint:Point = planeVisualization.geometry.getScreenPoint(new Vector3d(0, 0, 0));
+            var depthPoint:Point = planeVisualization.geometry.getScreenPoint(new Vector3d(0, 0, 1));
+            var widthPoint:Point = planeVisualization.geometry.getScreenPoint(new Vector3d(0, 1, 0));
 
-            if ((((!(_local_14 == null)) && (!(_local_15 == null))) && (!(_local_16 == null))))
+            if ((((!(originPoint == null)) && (!(depthPoint == null))) && (!(widthPoint == null))))
             {
-                _arg_2 = Math.round(Math.abs((((_local_14.x - _local_16.x) * _arg_2) / _local_13.geometry.scale)));
-                _arg_3 = Math.round(Math.abs((((_local_14.y - _local_15.y) * _arg_3) / _local_13.geometry.scale)));
-                _local_12 = (_arg_7 * Math.abs((_local_14.x - _local_16.x)));
-                _local_20 = (_arg_8 * Math.abs((_local_14.y - _local_15.y)));
-                _local_19 = (_arg_9 * Math.abs((_local_14.x - _local_16.x)));
-                _local_18 = (_arg_10 * Math.abs((_local_14.y - _local_15.y)));
-                _local_17 = _local_13.render(_arg_1, _arg_2, _arg_3, _arg_5, _arg_6, _local_12, _local_20, _local_19, _local_18, _arg_9, _arg_10, _arg_11);
-                return (_local_17);
+                width = Math.round(Math.abs((((originPoint.x - widthPoint.x) * width) / planeVisualization.geometry.scale)));
+                height = Math.round(Math.abs((((originPoint.y - depthPoint.y) * height) / planeVisualization.geometry.scale)));
+                offsetPixelX = (offsetX * Math.abs((originPoint.x - widthPoint.x)));
+                offsetPixelY = (offsetY * Math.abs((originPoint.y - depthPoint.y)));
+                maxPixelX = (maxX * Math.abs((originPoint.x - widthPoint.x)));
+                maxPixelY = (maxY * Math.abs((originPoint.y - depthPoint.y)));
+                resultBitmapData = planeVisualization.render(canvas, width, height, normal, useTexture, offsetPixelX, offsetPixelY, maxPixelX, maxPixelY, maxX, maxY, timeSinceStartMs);
+                return (resultBitmapData);
             };
 
             return (null);

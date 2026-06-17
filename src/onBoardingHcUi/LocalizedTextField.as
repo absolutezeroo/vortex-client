@@ -12,9 +12,9 @@
         protected var _localized:Boolean = false;
         private var _key:String;
 
-        public static function set localizationManager(_arg_1:ICoreLocalizationManager):void
+        public static function set localizationManager(manager:ICoreLocalizationManager):void
         {
-            _localizationManager = _arg_1;
+            _localizationManager = manager;
         }
 
         public static function get localizationManager():ICoreLocalizationManager
@@ -27,38 +27,38 @@
             removeOldLocalization(_key);
         }
 
-        override public function set htmlText(_arg_1:String):void
+        override public function set htmlText(value:String):void
         {
-            super.htmlText = _arg_1;
-            checkLocalization(_arg_1);
+            super.htmlText = value;
+            checkLocalization(value);
 
             if (_localized)
             {
             };
         }
 
-        public function set localization(_arg_1:String):void
+        public function set localization(localizationKey:String):void
         {
-            super.htmlText = _arg_1;
+            super.htmlText = localizationKey;
         }
 
-        protected function removeOldLocalization(_arg_1:String):void
+        protected function removeOldLocalization(localizationKey:String):void
         {
             if (_localized)
             {
-                localizationManager.removeListener(_arg_1.slice(2, _arg_1.indexOf("}")), this);
+                localizationManager.removeListener(localizationKey.slice(2, localizationKey.indexOf("}")), this);
                 _localized = false;
             };
         }
 
-        protected function checkLocalization(_arg_1:String):void
+        protected function checkLocalization(localizationValue:String):void
         {
-            if (((((localizationManager) && (_arg_1)) && (_arg_1.charAt(0) == "$")) && (_arg_1.charAt(1) == "{")))
+            if (((((localizationManager) && (localizationValue)) && (localizationValue.charAt(0) == "$")) && (localizationValue.charAt(1) == "{")))
             {
                 removeOldLocalization(_key);
-                _key = _arg_1;
+                _key = localizationValue;
                 _localized = true;
-                localizationManager.registerListener(_arg_1.slice(2, _arg_1.indexOf("}")), this);
+                localizationManager.registerListener(localizationValue.slice(2, localizationValue.indexOf("}")), this);
             };
         }
 

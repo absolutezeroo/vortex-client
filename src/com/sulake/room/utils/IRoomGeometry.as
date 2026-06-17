@@ -8,18 +8,18 @@
         function get scale():Number;
         function get directionAxis():IVector3d;
         function get direction():IVector3d;
-        function getCoordinatePosition(_arg_1:IVector3d):IVector3d;
-        function getScreenPoint(_arg_1:IVector3d):Point;
-        function getScreenPosition(_arg_1:IVector3d):IVector3d;
-        function getPlanePosition(_arg_1:Point, _arg_2:IVector3d, _arg_3:IVector3d, _arg_4:IVector3d):Point;
-        function setDisplacement(_arg_1:IVector3d, _arg_2:IVector3d):void;
-        function adjustLocation(_arg_1:IVector3d, _arg_2:Number):void;
+        function getCoordinatePosition(worldPosition:IVector3d):IVector3d;
+        function getScreenPoint(worldPosition:IVector3d):Point;
+        function getScreenPosition(worldPosition:IVector3d):IVector3d;
+        function getPlanePosition(screenPoint:Point, leftSide:IVector3d, rightSide:IVector3d, normal:IVector3d):Point;
+        function setDisplacement(from:IVector3d, to:IVector3d):void;
+        function adjustLocation(location:IVector3d, offset:Number):void;
         function performZoom():void;
         function performZoomOut():void;
         function performZoomIn():void;
         function isZoomedIn():Boolean;
         function get updateId():int;
-        function set z_scale(_arg_1:Number):void;
+        function set z_scale(zScale:Number):void;
 
     }
 }

@@ -5,7 +5,7 @@
     import __AS3__.vec.Vector;
     import com.sulake.room.utils.Vector3d;
     import com.sulake.room.utils.IVector3d;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
 
     public class RoomPlaneParser 
     {
@@ -13,8 +13,8 @@
         private static const FLOOR_THICKNESS:Number = 0.25;
         private static const WALL_THICKNESS:Number = 0.25;
         private static const MAX_WALL_ADDITIONAL_HEIGHT:Number = 20;
-        public static const _SafeStr_3585:int = -110;
-        public static const _SafeStr_3586:int = -100;
+        public static const HEIGHTMAP_PADDING_VALUE:int = -110;
+        public static const FLOOR_HOLE_BORDER_VALUE:int = -100;
 
         private var _tileMatrix:Array = [];
         private var _tileMatrixOriginal:Array = [];
@@ -41,290 +41,290 @@
             _floorHoles = new Map();
         }
 
-        private static function getFloorHeight(_arg_1:Array):Number
+        private static function getFloorHeight(heightMap:Array):Number
         {
-            var _local_6:int;
-            var _local_4:int;
-            var _local_5:int;
-            var _local_2:Array;
-            var _local_8:int = _arg_1.length;
-            var _local_3:int;
+            var local1:int;
+            var local2:int;
+            var local3:int;
+            var local4:Array;
+            var local5:int = heightMap.length;
+            var local6:int;
 
-            if (_local_8 == 0)
+            if (local5 == 0)
             {
                 return (0);
             };
 
-            var _local_7:int = 0;
-            _local_5 = 0;
+            var local7:int = 0;
+            local3 = 0;
 
-            while (_local_5 < _local_8)
+            while (local3 < local5)
             {
-                _local_2 = (_arg_1[_local_5] as Array);
-                _local_4 = 0;
+                local4 = (heightMap[local3] as Array);
+                local2 = 0;
 
-                while (_local_4 < _local_2.length)
+                while (local2 < local4.length)
                 {
-                    _local_6 = _local_2[_local_4];
+                    local1 = local4[local2];
 
-                    if (_local_6 > _local_7)
+                    if (local1 > local7)
                     {
-                        _local_7 = _local_6;
+                        local7 = local1;
                     };
 
-                    _local_4++;
+                    local2++;
                 };
 
-                _local_5++;
+                local3++;
             };
 
-            return (_local_7);
+            return (local7);
         }
 
-        private static function findEntranceTile(_arg_1:Array):Point
+        private static function findEntranceTile(heightMap:Array):Point
         {
-            if (_arg_1 == null)
+            if (heightMap == null)
             {
                 return (null);
             };
 
-            var _local_3:int;
-            var _local_4:int;
-            var _local_2:Array;
-            var _local_6:int = _arg_1.length;
+            var local1:int;
+            var local2:int;
+            var local3:Array;
+            var local4:int = heightMap.length;
 
-            if (_local_6 == 0)
+            if (local4 == 0)
             {
                 return (null);
             };
 
-            var _local_5:Array = [];
-            _local_4 = 0;
+            var local5:Array = [];
+            local2 = 0;
 
-            while (_local_4 < _local_6)
+            while (local2 < local4)
             {
-                _local_2 = (_arg_1[_local_4] as Array);
+                local3 = (heightMap[local2] as Array);
 
-                if (((_local_2 == null) || (_local_2.length == 0)))
+                if (((local3 == null) || (local3.length == 0)))
                 {
                     return (null);
                 };
 
-                _local_3 = 0;
+                local1 = 0;
 
-                while (_local_3 < _local_2.length)
+                while (local1 < local3.length)
                 {
-                    if (_local_2[_local_3] >= 0)
+                    if (local3[local1] >= 0)
                     {
-                        _local_5.push(_local_3);
+                        local5.push(local1);
                         break;
                     };
 
-                    _local_3++;
+                    local1++;
                 };
 
-                if (_local_5.length < (_local_4 + 1))
+                if (local5.length < (local2 + 1))
                 {
-                    _local_5.push((_local_2.length + 1));
+                    local5.push((local3.length + 1));
                 };
 
-                _local_4++;
+                local2++;
             };
 
-            _local_4 = 1;
+            local2 = 1;
 
-            while (_local_4 < (_local_5.length - 1))
+            while (local2 < (local5.length - 1))
             {
-                if (((_local_5[_local_4] <= (_local_5[(_local_4 - 1)] - 1)) && (_local_5[_local_4] <= (_local_5[(_local_4 + 1)] - 1))))
+                if (((local5[local2] <= (local5[(local2 - 1)] - 1)) && (local5[local2] <= (local5[(local2 + 1)] - 1))))
                 {
-                    return (new Point(_local_5[_local_4], _local_4));
+                    return (new Point(local5[local2], local2));
                 };
 
-                _local_4++;
+                local2++;
             };
 
             return (null);
         }
 
-        private static function expandFloorTiles(_arg_1:Vector.<Vector.<int>>):Vector.<Vector.<int>>
+        private static function expandFloorTiles(tileMap:Vector.<Vector.<int>>):Vector.<Vector.<int>>
         {
-            var _local_12:int;
-            var _local_13:int;
-            var _local_3:int;
-            var _local_4:int;
-            var _local_6:int;
-            var _local_11:int;
-            var _local_17:int;
-            var _local_14:int;
-            var _local_9:int;
-            var _local_15:int;
-            var _local_10:int;
-            var _local_2:int;
-            var _local_5:uint = _arg_1.length;
-            var _local_16:uint = _arg_1[0].length;
-            var _local_7:Vector.<Vector.<int>> = new Vector.<Vector.<int>>((_local_5 * 4));
-            _local_13 = 0;
+            var local1:int;
+            var local2:int;
+            var local3:int;
+            var local4:int;
+            var local5:int;
+            var local6:int;
+            var local7:int;
+            var local8:int;
+            var local9:int;
+            var local10:int;
+            var local11:int;
+            var local12:int;
+            var local13:uint = tileMap.length;
+            var local14:uint = tileMap[0].length;
+            var local15:Vector.<Vector.<int>> = new Vector.<Vector.<int>>((local13 * 4));
+            local2 = 0;
 
-            while (_local_13 < (_local_5 * 4))
+            while (local2 < (local13 * 4))
             {
-                _local_7[_local_13] = new Vector.<int>((_local_16 * 4));
-                _local_13++;
+                local15[local2] = new Vector.<int>((local14 * 4));
+                local2++;
             };
 
-            var _local_8:int;
-            _local_13 = 0;
+            var local16:int;
+            local2 = 0;
 
-            while (_local_13 < _local_5)
+            while (local2 < local13)
             {
-                _local_6 = 0;
-                _local_12 = 0;
+                local5 = 0;
+                local1 = 0;
 
-                while (_local_12 < _local_16)
+                while (local1 < local14)
                 {
-                    _local_11 = _arg_1[_local_13][_local_12];
+                    local6 = tileMap[local2][local1];
 
-                    if (((_local_11 < 0) || (_local_11 <= 0xFF)))
+                    if (((local6 < 0) || (local6 <= 0xFF)))
                     {
-                        _local_4 = 0;
+                        local4 = 0;
 
-                        while (_local_4 < 4)
+                        while (local4 < 4)
                         {
-                            _local_3 = 0;
+                            local3 = 0;
 
-                            while (_local_3 < 4)
+                            while (local3 < 4)
                             {
-                                _local_7[(_local_8 + _local_4)][(_local_6 + _local_3)] = ((_local_11 < 0) ? _local_11 : (_local_11 * 4));
-                                _local_3++;
+                                local15[(local16 + local4)][(local5 + local3)] = ((local6 < 0) ? local6 : (local6 * 4));
+                                local3++;
                             };
 
-                            _local_4++;
+                            local4++;
                         };
                     }
 
                     else
                     {
-                        _local_17 = ((_local_11 & 0xFF) * 4);
-                        _local_14 = (_local_17 + (((_local_11 >> 11) & 0x01) * 3));
-                        _local_9 = (_local_17 + (((_local_11 >> 10) & 0x01) * 3));
-                        _local_15 = (_local_17 + (((_local_11 >> 9) & 0x01) * 3));
-                        _local_10 = (_local_17 + (((_local_11 >> 8) & 0x01) * 3));
-                        _local_3 = 0;
+                        local7 = ((local6 & 0xFF) * 4);
+                        local8 = (local7 + (((local6 >> 11) & 0x01) * 3));
+                        local9 = (local7 + (((local6 >> 10) & 0x01) * 3));
+                        local10 = (local7 + (((local6 >> 9) & 0x01) * 3));
+                        local11 = (local7 + (((local6 >> 8) & 0x01) * 3));
+                        local3 = 0;
 
-                        while (_local_3 < 3)
+                        while (local3 < 3)
                         {
-                            _local_2 = (_local_3 + 1);
-                            _local_7[_local_8][(_local_6 + _local_3)] = (((_local_14 * (3 - _local_3)) + (_local_9 * _local_3)) / 3);
-                            _local_7[(_local_8 + 3)][(_local_6 + _local_2)] = (((_local_15 * (3 - _local_2)) + (_local_10 * _local_2)) / 3);
-                            _local_7[(_local_8 + _local_2)][_local_6] = (((_local_14 * (3 - _local_2)) + (_local_15 * _local_2)) / 3);
-                            _local_7[(_local_8 + _local_3)][(_local_6 + 3)] = (((_local_9 * (3 - _local_3)) + (_local_10 * _local_3)) / 3);
-                            _local_3++;
+                            local12 = (local3 + 1);
+                            local15[local16][(local5 + local3)] = (((local8 * (3 - local3)) + (local9 * local3)) / 3);
+                            local15[(local16 + 3)][(local5 + local12)] = (((local10 * (3 - local12)) + (local11 * local12)) / 3);
+                            local15[(local16 + local12)][local5] = (((local8 * (3 - local12)) + (local10 * local12)) / 3);
+                            local15[(local16 + local3)][(local5 + 3)] = (((local9 * (3 - local3)) + (local11 * local3)) / 3);
+                            local3++;
                         };
 
-                        _local_7[(_local_8 + 1)][(_local_6 + 1)] = ((_local_14 > _local_17) ? (_local_17 + 2) : (_local_17 + 1));
-                        _local_7[(_local_8 + 1)][(_local_6 + 2)] = ((_local_9 > _local_17) ? (_local_17 + 2) : (_local_17 + 1));
-                        _local_7[(_local_8 + 2)][(_local_6 + 1)] = ((_local_15 > _local_17) ? (_local_17 + 2) : (_local_17 + 1));
-                        _local_7[(_local_8 + 2)][(_local_6 + 2)] = ((_local_10 > _local_17) ? (_local_17 + 2) : (_local_17 + 1));
+                        local15[(local16 + 1)][(local5 + 1)] = ((local8 > local7) ? (local7 + 2) : (local7 + 1));
+                        local15[(local16 + 1)][(local5 + 2)] = ((local9 > local7) ? (local7 + 2) : (local7 + 1));
+                        local15[(local16 + 2)][(local5 + 1)] = ((local10 > local7) ? (local7 + 2) : (local7 + 1));
+                        local15[(local16 + 2)][(local5 + 2)] = ((local11 > local7) ? (local7 + 2) : (local7 + 1));
                     };
 
-                    _local_6 = (_local_6 + 4);
-                    _local_12++;
+                    local5 = (local5 + 4);
+                    local1++;
                 };
 
-                _local_8 = (_local_8 + 4);
-                _local_13++;
+                local16 = (local16 + 4);
+                local2++;
             };
 
-            return (_local_7);
+            return (local15);
         }
 
-        private static function addTileTypes(_arg_1:Vector.<Vector.<int>>):void
+        private static function addTileTypes(tileMap:Vector.<Vector.<int>>):void
         {
-            var _local_14:int;
-            var _local_15:int;
-            var _local_17:int;
-            var _local_4:int;
-            var _local_5:int;
-            var _local_6:int;
-            var _local_7:int;
-            var _local_8:int;
-            var _local_9:int;
-            var _local_11:int;
-            var _local_12:int;
-            var _local_3:int;
-            var _local_2:int;
-            var _local_13:int;
-            var _local_10:uint = (_arg_1.length - 1);
-            var _local_16:uint = (_arg_1[0].length - 1);
-            _local_15 = 1;
+            var local1:int;
+            var local2:int;
+            var local3:int;
+            var local4:int;
+            var local5:int;
+            var local6:int;
+            var local7:int;
+            var local8:int;
+            var local9:int;
+            var local10:int;
+            var local11:int;
+            var local12:int;
+            var local13:int;
+            var local14:int;
+            var local15:uint = (tileMap.length - 1);
+            var local16:uint = (tileMap[0].length - 1);
+            local2 = 1;
 
-            while (_local_15 < _local_10)
+            while (local2 < local15)
             {
-                _local_14 = 1;
+                local1 = 1;
 
-                while (_local_14 < _local_16)
+                while (local1 < local16)
                 {
-                    _local_17 = _arg_1[_local_15][_local_14];
+                    local3 = tileMap[local2][local1];
 
-                    if (_local_17 >= 0)
+                    if (local3 >= 0)
                     {
-                        _local_4 = (_arg_1[(_local_15 - 1)][(_local_14 - 1)] & 0xFF);
-                        _local_5 = (_arg_1[(_local_15 - 1)][_local_14] & 0xFF);
-                        _local_6 = (_arg_1[(_local_15 - 1)][(_local_14 + 1)] & 0xFF);
-                        _local_7 = (_arg_1[_local_15][(_local_14 - 1)] & 0xFF);
-                        _local_8 = (_arg_1[_local_15][(_local_14 + 1)] & 0xFF);
-                        _local_9 = (_arg_1[(_local_15 + 1)][(_local_14 - 1)] & 0xFF);
-                        _local_11 = (_arg_1[(_local_15 + 1)][_local_14] & 0xFF);
-                        _local_12 = (_arg_1[(_local_15 + 1)][(_local_14 + 1)] & 0xFF);
-                        _local_3 = (_local_17 + 1);
-                        _local_2 = (_local_17 - 1);
-                        _local_13 = (((((((_local_4 == _local_3) || (_local_5 == _local_3)) || (_local_7 == _local_3)) ? 8 : 0) | ((((_local_6 == _local_3) || (_local_5 == _local_3)) || (_local_8 == _local_3)) ? 4 : 0)) | ((((_local_9 == _local_3) || (_local_11 == _local_3)) || (_local_7 == _local_3)) ? 2 : 0)) | ((((_local_12 == _local_3) || (_local_11 == _local_3)) || (_local_8 == _local_3)) ? 1 : 0));
+                        local4 = (tileMap[(local2 - 1)][(local1 - 1)] & 0xFF);
+                        local5 = (tileMap[(local2 - 1)][local1] & 0xFF);
+                        local6 = (tileMap[(local2 - 1)][(local1 + 1)] & 0xFF);
+                        local7 = (tileMap[local2][(local1 - 1)] & 0xFF);
+                        local8 = (tileMap[local2][(local1 + 1)] & 0xFF);
+                        local9 = (tileMap[(local2 + 1)][(local1 - 1)] & 0xFF);
+                        local10 = (tileMap[(local2 + 1)][local1] & 0xFF);
+                        local11 = (tileMap[(local2 + 1)][(local1 + 1)] & 0xFF);
+                        local12 = (local3 + 1);
+                        local13 = (local3 - 1);
+                        local14 = (((((((local4 == local12) || (local5 == local12)) || (local7 == local12)) ? 8 : 0) | ((((local6 == local12) || (local5 == local12)) || (local8 == local12)) ? 4 : 0)) | ((((local9 == local12) || (local10 == local12)) || (local7 == local12)) ? 2 : 0)) | ((((local11 == local12) || (local10 == local12)) || (local8 == local12)) ? 1 : 0));
 
-                        if (_local_13 == 15)
+                        if (local14 == 15)
                         {
-                            _local_13 = 0;
+                            local14 = 0;
                         };
 
-                        _arg_1[_local_15][_local_14] = (_local_17 | (_local_13 << 8));
+                        tileMap[local2][local1] = (local3 | (local14 << 8));
                     };
 
-                    _local_14++;
+                    local1++;
                 };
 
-                _local_15++;
+                local2++;
             };
         }
 
-        private static function unpadHeightMap(_arg_1:Vector.<Vector.<int>>):void
+        private static function unpadHeightMap(tileMap:Vector.<Vector.<int>>):void
         {
-            _arg_1.shift();
-            _arg_1.pop();
+            tileMap.shift();
+            tileMap.pop();
 
-            for each (var _local_2:Vector.<int> in _arg_1)
+            for each (var local1:Vector.<int> in tileMap)
             {
-                _local_2.shift();
-                _local_2.pop();
+                local1.shift();
+                local1.pop();
             };
         }
 
-        private static function padHeightMap(_arg_1:Vector.<Vector.<int>>):void
+        private static function padHeightMap(tileMap:Vector.<Vector.<int>>):void
         {
-            var _local_2:Vector.<int> = new Vector.<int>(0);
-            var _local_3:Vector.<int> = new Vector.<int>(0);
+            var local1:Vector.<int> = new Vector.<int>(0);
+            var local2:Vector.<int> = new Vector.<int>(0);
 
-            for each (var _local_5:Vector.<int> in _arg_1)
+            for each (var local3:Vector.<int> in tileMap)
             {
-                _local_5.push(-110);
-                _local_5.unshift(-110);
+                local3.push(-110);
+                local3.unshift(-110);
             };
 
-            for each (var _local_4:int in _arg_1[0])
+            for each (var local4:int in tileMap[0])
             {
-                _local_2.push(-110);
-                _local_3.push(-110);
+                local1.push(-110);
+                local2.push(-110);
             };
 
-            _arg_1.push(_local_3);
-            _arg_1.unshift(_local_2);
+            tileMap.push(local2);
+            tileMap.unshift(local1);
         }
 
         public function get minX():int
@@ -382,14 +382,14 @@
             return (_wallHeight);
         }
 
-        public function set wallHeight(_arg_1:Number):void
+        public function set wallHeight(tileMap:Number):void
         {
-            if (_arg_1 < 0)
+            if (tileMap < 0)
             {
-                _arg_1 = 0;
+                tileMap = 0;
             };
 
-            _wallHeight = _arg_1;
+            _wallHeight = tileMap;
         }
 
         public function get wallThicknessMultiplier():Number
@@ -397,14 +397,14 @@
             return (_wallThicknessMultiplier);
         }
 
-        public function set wallThicknessMultiplier(_arg_1:Number):void
+        public function set wallThicknessMultiplier(tileMap:Number):void
         {
-            if (_arg_1 < 0)
+            if (tileMap < 0)
             {
-                _arg_1 = 0;
+                tileMap = 0;
             };
 
-            _wallThicknessMultiplier = _arg_1;
+            _wallThicknessMultiplier = tileMap;
         }
 
         public function get floorThicknessMultiplier():Number
@@ -412,14 +412,14 @@
             return (_floorThicknessMultiplier);
         }
 
-        public function set floorThicknessMultiplier(_arg_1:Number):void
+        public function set floorThicknessMultiplier(tileMap:Number):void
         {
-            if (_arg_1 < 0)
+            if (tileMap < 0)
             {
-                _arg_1 = 0;
+                tileMap = 0;
             };
 
-            _floorThicknessMultiplier = _arg_1;
+            _floorThicknessMultiplier = tileMap;
         }
 
         public function dispose():void
@@ -453,52 +453,52 @@
             _floorHoleMatrix = [];
         }
 
-        public function initializeTileMap(_arg_1:int, _arg_2:int):Boolean
+        public function initializeTileMap(width:int, height:int):Boolean
         {
-            var _local_4:int;
-            var _local_7:Array;
-            var _local_3:Array;
-            var _local_5:Array;
-            var _local_6:int;
+            var local1:int;
+            var local2:Array;
+            var local3:Array;
+            var local4:Array;
+            var local5:int;
 
-            if (_arg_1 < 0)
+            if (width < 0)
             {
-                _arg_1 = 0;
+                width = 0;
             };
 
-            if (_arg_2 < 0)
+            if (height < 0)
             {
-                _arg_2 = 0;
+                height = 0;
             };
 
             _tileMatrix = [];
             _tileMatrixOriginal = [];
             _floorHoleMatrix = [];
-            _local_4 = 0;
+            local1 = 0;
 
-            while (_local_4 < _arg_2)
+            while (local1 < height)
             {
-                _local_7 = [];
-                _local_3 = [];
-                _local_5 = [];
-                _local_6 = 0;
+                local2 = [];
+                local3 = [];
+                local4 = [];
+                local5 = 0;
 
-                while (_local_6 < _arg_1)
+                while (local5 < width)
                 {
-                    _local_7[_local_6] = -110;
-                    _local_3[_local_6] = -110;
-                    _local_5[_local_6] = false;
-                    _local_6++;
+                    local2[local5] = -110;
+                    local3[local5] = -110;
+                    local4[local5] = false;
+                    local5++;
                 };
 
-                _tileMatrix.push(_local_7);
-                _tileMatrixOriginal.push(_local_3);
-                _floorHoleMatrix.push(_local_5);
-                _local_4++;
+                _tileMatrix.push(local2);
+                _tileMatrixOriginal.push(local3);
+                _floorHoleMatrix.push(local4);
+                local1++;
             };
 
-            _tileMapWidth = _arg_1;
-            _tileMapHeight = _arg_2;
+            _tileMapWidth = width;
+            _tileMapHeight = height;
             _minX = _tileMapWidth;
             _maxX = -1;
             _minY = _tileMapHeight;
@@ -506,98 +506,98 @@
             return (true);
         }
 
-        public function setTileHeight(_arg_1:int, _arg_2:int, _arg_3:Number):Boolean
+        public function setTileHeight(x:int, y:int, height:Number):Boolean
         {
-            var _local_8:Array;
-            var _local_5:Boolean;
-            var _local_7:int;
-            var _local_4:Boolean;
-            var _local_6:int;
+            var local1:Array;
+            var local2:Boolean;
+            var local3:int;
+            var local4:Boolean;
+            var local5:int;
 
-            if (((((_arg_1 >= 0) && (_arg_1 < _tileMapWidth)) && (_arg_2 >= 0)) && (_arg_2 < _tileMapHeight)))
+            if (((((x >= 0) && (x < _tileMapWidth)) && (y >= 0)) && (y < _tileMapHeight)))
             {
-                _local_8 = (_tileMatrix[_arg_2] as Array);
-                _local_8[_arg_1] = _arg_3;
+                local1 = (_tileMatrix[y] as Array);
+                local1[x] = height;
 
-                if (_arg_3 >= 0)
+                if (height >= 0)
                 {
-                    if (_arg_1 < _minX)
+                    if (x < _minX)
                     {
-                        _minX = _arg_1;
+                        _minX = x;
                     };
 
-                    if (_arg_1 > _maxX)
+                    if (x > _maxX)
                     {
-                        _maxX = _arg_1;
+                        _maxX = x;
                     };
 
-                    if (_arg_2 < _minY)
+                    if (y < _minY)
                     {
-                        _minY = _arg_2;
+                        _minY = y;
                     };
 
-                    if (_arg_2 > _maxY)
+                    if (y > _maxY)
                     {
-                        _maxY = _arg_2;
+                        _maxY = y;
                     };
                 }
 
                 else
                 {
-                    if (((_arg_1 == _minX) || (_arg_1 == _maxX)))
+                    if (((x == _minX) || (x == _maxX)))
                     {
-                        _local_5 = false;
-                        _local_7 = _minY;
+                        local2 = false;
+                        local3 = _minY;
 
-                        while (_local_7 < _maxY)
+                        while (local3 < _maxY)
                         {
-                            if (getTileHeightInternal(_arg_1, _local_7) >= 0)
+                            if (getTileHeightInternal(x, local3) >= 0)
                             {
-                                _local_5 = true;
+                                local2 = true;
                                 break;
                             };
 
-                            _local_7++;
+                            local3++;
                         };
 
-                        if (!_local_5)
+                        if (!local2)
                         {
-                            if (_arg_1 == _minX)
+                            if (x == _minX)
                             {
                                 _minX++;
                             };
 
-                            if (_arg_1 == _maxX)
+                            if (x == _maxX)
                             {
                                 _maxX--;
                             };
                         };
                     };
 
-                    if (((_arg_2 == _minY) || (_arg_2 == _maxY)))
+                    if (((y == _minY) || (y == _maxY)))
                     {
-                        _local_4 = false;
-                        _local_6 = _minX;
+                        local4 = false;
+                        local5 = _minX;
 
-                        while (_local_6 < _maxX)
+                        while (local5 < _maxX)
                         {
-                            if (getTileHeight(_local_6, _arg_2) >= 0)
+                            if (getTileHeight(local5, y) >= 0)
                             {
-                                _local_4 = true;
+                                local4 = true;
                                 break;
                             };
 
-                            _local_6++;
+                            local5++;
                         };
 
-                        if (!_local_4)
+                        if (!local4)
                         {
-                            if (_arg_2 == _minY)
+                            if (y == _minY)
                             {
                                 _minY++;
                             };
 
-                            if (_arg_2 == _maxY)
+                            if (y == _maxY)
                             {
                                 _maxY--;
                             };
@@ -611,818 +611,818 @@
             return (false);
         }
 
-        public function getTileHeight(_arg_1:int, _arg_2:int):Number
+        public function getTileHeight(x:int, y:int):Number
         {
-            if (((((_arg_1 < 0) || (_arg_1 >= _tileMapWidth)) || (_arg_2 < 0)) || (_arg_2 >= _tileMapHeight)))
+            if (((((x < 0) || (x >= _tileMapWidth)) || (y < 0)) || (y >= _tileMapHeight)))
             {
                 return (-110);
             };
 
-            var _local_3:Array = (_tileMatrix[_arg_2] as Array);
-            return (Math.abs((_local_3[_arg_1] as Number)));
+            var local1:Array = (_tileMatrix[y] as Array);
+            return (Math.abs((local1[x] as Number)));
         }
 
-        private function getTileHeightOriginal(_arg_1:int, _arg_2:int):Number
+        private function getTileHeightOriginal(x:int, y:int):Number
         {
-            if (((((_arg_1 < 0) || (_arg_1 >= _tileMapWidth)) || (_arg_2 < 0)) || (_arg_2 >= _tileMapHeight)))
+            if (((((x < 0) || (x >= _tileMapWidth)) || (y < 0)) || (y >= _tileMapHeight)))
             {
                 return (-110);
             };
 
-            if (_floorHoleMatrix[_arg_2][_arg_1])
+            if (_floorHoleMatrix[y][x])
             {
                 return (-100);
             };
 
-            var _local_3:Array = (_tileMatrixOriginal[_arg_2] as Array);
-            return (_local_3[_arg_1] as Number);
+            var local1:Array = (_tileMatrixOriginal[y] as Array);
+            return (local1[x] as Number);
         }
 
-        private function getTileHeightInternal(_arg_1:int, _arg_2:int):Number
+        private function getTileHeightInternal(x:int, y:int):Number
         {
-            if (((((_arg_1 < 0) || (_arg_1 >= _tileMapWidth)) || (_arg_2 < 0)) || (_arg_2 >= _tileMapHeight)))
+            if (((((x < 0) || (x >= _tileMapWidth)) || (y < 0)) || (y >= _tileMapHeight)))
             {
                 return (-110);
             };
 
-            var _local_3:Array = (_tileMatrix[_arg_2] as Array);
-            return (_local_3[_arg_1] as Number);
+            var local1:Array = (_tileMatrix[y] as Array);
+            return (local1[x] as Number);
         }
 
-        public function initializeFromTileData(_arg_1:int=-1):Boolean
+        public function initializeFromTileData(fixedWallHeight:int=-1):Boolean
         {
-            var _local_2:int;
-            var _local_3:int;
-            _fixedWallHeight = _arg_1;
-            _local_3 = 0;
+            var local1:int;
+            var local2:int;
+            _fixedWallHeight = fixedWallHeight;
+            local2 = 0;
 
-            while (_local_3 < _tileMapHeight)
+            while (local2 < _tileMapHeight)
             {
-                _local_2 = 0;
+                local1 = 0;
 
-                while (_local_2 < _tileMapWidth)
+                while (local1 < _tileMapWidth)
                 {
-                    _tileMatrixOriginal[_local_3][_local_2] = _tileMatrix[_local_3][_local_2];
-                    _local_2++;
+                    _tileMatrixOriginal[local2][local1] = _tileMatrix[local2][local1];
+                    local1++;
                 };
 
-                _local_3++;
+                local2++;
             };
 
-            var _local_4:Point = findEntranceTile(_tileMatrix);
-            _local_3 = 0;
+            var local3:Point = findEntranceTile(_tileMatrix);
+            local2 = 0;
 
-            while (_local_3 < _tileMapHeight)
+            while (local2 < _tileMapHeight)
             {
-                _local_2 = 0;
+                local1 = 0;
 
-                while (_local_2 < _tileMapWidth)
+                while (local1 < _tileMapWidth)
                 {
-                    if (_floorHoleMatrix[_local_3][_local_2])
+                    if (_floorHoleMatrix[local2][local1])
                     {
-                        setTileHeight(_local_2, _local_3, -100);
+                        setTileHeight(local1, local2, -100);
                     };
 
-                    _local_2++;
+                    local1++;
                 };
 
-                _local_3++;
+                local2++;
             };
 
-            return (initialize(_local_4));
+            return (initialize(local3));
         }
 
-        private function initialize(_arg_1:Point):Boolean
+        private function initialize(wallEntrance:Point):Boolean
         {
-            var _local_5:int;
+            var local1:int;
 
-            if (_arg_1 != null)
+            if (wallEntrance != null)
             {
-                _local_5 = getTileHeight(_arg_1.x, _arg_1.y);
-                setTileHeight(_arg_1.x, _arg_1.y, -110);
+                local1 = getTileHeight(wallEntrance.x, wallEntrance.y);
+                setTileHeight(wallEntrance.x, wallEntrance.y, -110);
             };
 
             _floorHeight = getFloorHeight(_tileMatrix);
             createWallPlanes();
 
-            var _local_3:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(0);
+            var local2:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(0);
 
-            for each (var _local_4:Array in _tileMatrix)
+            for each (var local3:Array in _tileMatrix)
             {
-                _local_3.push(Vector.<int>(_local_4));
+                local2.push(Vector.<int>(local3));
             };
 
-            padHeightMap(_local_3);
-            addTileTypes(_local_3);
-            unpadHeightMap(_local_3);
+            padHeightMap(local2);
+            addTileTypes(local2);
+            unpadHeightMap(local2);
 
-            var _local_2:Vector.<Vector.<int>> = expandFloorTiles(_local_3);
-            extractPlanes(_local_2);
+            var local4:Vector.<Vector.<int>> = expandFloorTiles(local2);
+            extractPlanes(local4);
 
-            if (_arg_1 != null)
+            if (wallEntrance != null)
             {
-                setTileHeight(_arg_1.x, _arg_1.y, _local_5);
-                addFloor(new Vector3d((_arg_1.x + 0.5), (_arg_1.y + 0.5), _local_5), new Vector3d(-1, 0, 0), new Vector3d(0, -1, 0), false, false, false, false);
+                setTileHeight(wallEntrance.x, wallEntrance.y, local1);
+                addFloor(new Vector3d((wallEntrance.x + 0.5), (wallEntrance.y + 0.5), local1), new Vector3d(-1, 0, 0), new Vector3d(0, -1, 0), false, false, false, false);
             };
 
             return (true);
         }
 
-        private function generateWallData(_arg_1:Point, _arg_2:Boolean):RoomWallData
+        private function generateWallData(entrance:Point, includeOuterWalls:Boolean):RoomWallData
         {
-            var _local_3:Boolean;
-            var _local_9:Boolean;
-            var _local_12:int;
-            var _local_11:Point;
-            var _local_8:int;
-            var _local_4:RoomWallData = new RoomWallData();
-            var _local_5:Array = [extractTopWall, extractRightWall, extractBottomWall, extractLeftWall];
-            var _local_6:int;
-            var _local_10:Point = new Point(_arg_1.x, _arg_1.y);
-            var _local_7:int;
+            var local1:Boolean;
+            var local2:Boolean;
+            var local3:int;
+            var local4:Point;
+            var local5:int;
+            var local6:RoomWallData = new RoomWallData();
+            var local7:Array = [extractTopWall, extractRightWall, extractBottomWall, extractLeftWall];
+            var local8:int;
+            var local9:Point = new Point(entrance.x, entrance.y);
+            var local10:int;
 
-            while (_local_7++ < 1000)
+            while (local10++ < 1000)
             {
-                _local_3 = false;
-                _local_9 = false;
-                _local_12 = _local_6;
+                local1 = false;
+                local2 = false;
+                local3 = local8;
 
-                if (((((_local_10.x < minX) || (_local_10.x > maxX)) || (_local_10.y < minY)) || (_local_10.y > maxY)))
+                if (((((local9.x < minX) || (local9.x > maxX)) || (local9.y < minY)) || (local9.y > maxY)))
                 {
-                    _local_3 = true;
+                    local1 = true;
                 };
 
-                _local_11 = _local_5[_local_6](_local_10, _arg_2);
+                local4 = local7[local8](local9, includeOuterWalls);
 
-                if (_local_11 == null)
+                if (local4 == null)
                 {
                     return (null);
                 };
 
-                _local_8 = (Math.abs((_local_11.x - _local_10.x)) + Math.abs((_local_11.y - _local_10.y)));
+                local5 = (Math.abs((local4.x - local9.x)) + Math.abs((local4.y - local9.y)));
 
-                if (((_local_10.x == _local_11.x) || (_local_10.y == _local_11.y)))
+                if (((local9.x == local4.x) || (local9.y == local4.y)))
                 {
-                    _local_6 = (((_local_6 - 1) + _local_5.length) % _local_5.length);
-                    _local_8 = (_local_8 + 1);
-                    _local_9 = true;
+                    local8 = (((local8 - 1) + local7.length) % local7.length);
+                    local5 = (local5 + 1);
+                    local2 = true;
                 }
 
                 else
                 {
-                    _local_6 = ((_local_6 + 1) % _local_5.length);
-                    _local_8 = (_local_8 - 1);
+                    local8 = ((local8 + 1) % local7.length);
+                    local5 = (local5 - 1);
                 };
 
-                _local_4.addWall(_local_10, _local_12, _local_8, _local_3, _local_9);
+                local6.addWall(local9, local3, local5, local1, local2);
 
-                if ((((_local_11.x == _arg_1.x) && (_local_11.y == _arg_1.y)) && ((!(_local_11.x == _local_10.x)) || (!(_local_11.y == _local_10.y))))) break;
-                _local_10 = _local_11;
+                if ((((local4.x == entrance.x) && (local4.y == entrance.y)) && ((!(local4.x == local9.x)) || (!(local4.y == local9.y))))) break;
+                local9 = local4;
             };
 
-            if (_local_4.count == 0)
+            if (local6.count == 0)
             {
                 return (null);
             };
 
-            return (_local_4);
+            return (local6);
         }
 
-        private function hidePeninsulaWallChains(_arg_1:RoomWallData):void
+        private function hidePeninsulaWallChains(wallData:RoomWallData):void
         {
-            var _local_2:int;
-            var _local_3:int;
-            var _local_8:int;
-            var _local_6:Boolean;
-            var _local_7:int;
-            var _local_5:int;
-            var _local_4:int = _arg_1.count;
+            var local1:int;
+            var local2:int;
+            var local3:int;
+            var local4:Boolean;
+            var local5:int;
+            var local6:int;
+            var local7:int = wallData.count;
 
-            while (_local_5 < _local_4)
+            while (local6 < local7)
             {
-                _local_2 = _local_5;
-                _local_3 = _local_5;
-                _local_8 = 0;
-                _local_6 = false;
+                local1 = local6;
+                local2 = local6;
+                local3 = 0;
+                local4 = false;
 
-                while (((!(_arg_1.getBorder(_local_5))) && (_local_5 < _local_4)))
+                while (((!(wallData.getBorder(local6))) && (local6 < local7)))
                 {
-                    if (_arg_1.getLeftTurn(_local_5))
+                    if (wallData.getLeftTurn(local6))
                     {
-                        _local_8++;
+                        local3++;
                     }
 
                     else
                     {
-                        if (_local_8 > 0)
+                        if (local3 > 0)
                         {
-                            _local_8--;
+                            local3--;
                         };
                     };
 
-                    if (_local_8 > 1)
+                    if (local3 > 1)
                     {
-                        _local_6 = true;
+                        local4 = true;
                     };
 
-                    _local_3 = _local_5;
-                    _local_5++;
+                    local2 = local6;
+                    local6++;
                 };
 
-                if (_local_6)
+                if (local4)
                 {
-                    _local_7 = _local_2;
+                    local5 = local1;
 
-                    while (_local_7 <= _local_3)
+                    while (local5 <= local2)
                     {
-                        _arg_1.setHideWall(_local_7, true);
-                        _local_7++;
+                        wallData.setHideWall(local5, true);
+                        local5++;
                     };
                 };
 
-                _local_5++;
+                local6++;
             };
         }
 
-        private function updateWallsNextToHoles(_arg_1:RoomWallData):void
+        private function updateWallsNextToHoles(wallData:RoomWallData):void
         {
-            var _local_8:int;
-            var _local_4:Point;
-            var _local_10:int;
-            var _local_7:int;
-            var _local_5:IVector3d;
-            var _local_3:IVector3d;
-            var _local_2:int;
-            var _local_9:int;
-            var _local_6:int = _arg_1.count;
-            _local_8 = 0;
+            var local1:int;
+            var local2:Point;
+            var local3:int;
+            var local4:int;
+            var local5:IVector3d;
+            var local6:IVector3d;
+            var local7:int;
+            var local8:int;
+            var local9:int = wallData.count;
+            local1 = 0;
 
-            while (_local_8 < _local_6)
+            while (local1 < local9)
             {
-                if (!_arg_1.getHideWall(_local_8))
+                if (!wallData.getHideWall(local1))
                 {
-                    _local_4 = _arg_1.getCorner(_local_8);
-                    _local_10 = _arg_1.getDirection(_local_8);
-                    _local_7 = _arg_1.getLength(_local_8);
-                    _local_5 = RoomWallData.WALL_DIRECTION_VECTORS[_local_10];
-                    _local_3 = RoomWallData.WALL_NORMAL_VECTORS[_local_10];
-                    _local_2 = 0;
-                    _local_9 = 0;
+                    local2 = wallData.getCorner(local1);
+                    local3 = wallData.getDirection(local1);
+                    local4 = wallData.getLength(local1);
+                    local5 = RoomWallData.WALL_DIRECTION_VECTORS[local3];
+                    local6 = RoomWallData.WALL_NORMAL_VECTORS[local3];
+                    local7 = 0;
+                    local8 = 0;
 
-                    while (_local_9 < _local_7)
+                    while (local8 < local4)
                     {
-                        if (getTileHeightInternal(((_local_4.x + (_local_9 * _local_5.x)) - _local_3.x), ((_local_4.y + (_local_9 * _local_5.y)) - _local_3.y)) == -100)
+                        if (getTileHeightInternal(((local2.x + (local8 * local5.x)) - local6.x), ((local2.y + (local8 * local5.y)) - local6.y)) == -100)
                         {
-                            if (((_local_9 > 0) && (_local_2 == 0)))
+                            if (((local8 > 0) && (local7 == 0)))
                             {
-                                _arg_1.setLength(_local_8, _local_9);
+                                wallData.setLength(local1, local8);
                                 break;
                             };
 
-                            _local_2++;
+                            local7++;
                         }
 
                         else
                         {
-                            if (_local_2 > 0)
+                            if (local7 > 0)
                             {
-                                _arg_1.moveCorner(_local_8, _local_2);
+                                wallData.moveCorner(local1, local7);
                                 break;
                             };
                         };
 
-                        _local_9++;
+                        local8++;
                     };
 
-                    if (_local_2 == _local_7)
+                    if (local7 == local4)
                     {
-                        _arg_1.setHideWall(_local_8, true);
+                        wallData.setHideWall(local1, true);
                     };
                 };
 
-                _local_8++;
+                local1++;
             };
         }
 
-        private function resolveOriginalWallIndex(_arg_1:Point, _arg_2:Point, _arg_3:RoomWallData):int
+        private function resolveOriginalWallIndex(entrance:Point, position:Point, wallData:RoomWallData):int
         {
-            var _local_7:int;
-            var _local_14:Point;
-            var _local_10:Point;
-            var _local_11:int;
-            var _local_8:int;
-            var _local_15:int;
-            var _local_9:int;
-            var _local_12:int = Math.min(_arg_1.y, _arg_2.y);
-            var _local_4:int = Math.max(_arg_1.y, _arg_2.y);
-            var _local_13:int = Math.min(_arg_1.x, _arg_2.x);
-            var _local_5:int = Math.max(_arg_1.x, _arg_2.x);
-            var _local_6:int = _arg_3.count;
-            _local_7 = 0;
+            var local1:int;
+            var local2:Point;
+            var local3:Point;
+            var local4:int;
+            var local5:int;
+            var local6:int;
+            var local7:int;
+            var local8:int = Math.min(entrance.y, position.y);
+            var local9:int = Math.max(entrance.y, position.y);
+            var local10:int = Math.min(entrance.x, position.x);
+            var local11:int = Math.max(entrance.x, position.x);
+            var local12:int = wallData.count;
+            local1 = 0;
 
-            while (_local_7 < _local_6)
+            while (local1 < local12)
             {
-                _local_14 = _arg_3.getCorner(_local_7);
-                _local_10 = _arg_3.getEndPoint(_local_7);
+                local2 = wallData.getCorner(local1);
+                local3 = wallData.getEndPoint(local1);
 
-                if (_arg_1.x == _arg_2.x)
+                if (entrance.x == position.x)
                 {
-                    if (((_local_14.x == _arg_1.x) && (_local_10.x == _arg_1.x)))
+                    if (((local2.x == entrance.x) && (local3.x == entrance.x)))
                     {
-                        _local_11 = Math.min(_local_14.y, _local_10.y);
-                        _local_8 = Math.max(_local_14.y, _local_10.y);
+                        local4 = Math.min(local2.y, local3.y);
+                        local5 = Math.max(local2.y, local3.y);
 
-                        if (((_local_11 <= _local_12) && (_local_4 <= _local_8)))
+                        if (((local4 <= local8) && (local9 <= local5)))
                         {
-                            return (_local_7);
+                            return (local1);
                         };
                     };
                 }
 
                 else
                 {
-                    if (_arg_1.y == _arg_2.y)
+                    if (entrance.y == position.y)
                     {
-                        if (((_local_14.y == _arg_1.y) && (_local_10.y == _arg_1.y)))
+                        if (((local2.y == entrance.y) && (local3.y == entrance.y)))
                         {
-                            _local_15 = Math.min(_local_14.x, _local_10.x);
-                            _local_9 = Math.max(_local_14.x, _local_10.x);
+                            local6 = Math.min(local2.x, local3.x);
+                            local7 = Math.max(local2.x, local3.x);
 
-                            if (((_local_15 <= _local_13) && (_local_5 <= _local_9)))
+                            if (((local6 <= local10) && (local11 <= local7)))
                             {
-                                return (_local_7);
+                                return (local1);
                             };
                         };
                     };
                 };
 
-                _local_7++;
+                local1++;
             };
 
             return (-1);
         }
 
-        private function hideOriginallyHiddenWalls(_arg_1:RoomWallData, _arg_2:RoomWallData):void
+        private function hideOriginallyHiddenWalls(sourceWallData:RoomWallData, previousWallData:RoomWallData):void
         {
-            var _local_8:int;
-            var _local_6:Point;
-            var _local_3:Point;
-            var _local_4:IVector3d;
-            var _local_7:int;
-            var _local_9:int;
-            var _local_5:int = _arg_1.count;
-            _local_8 = 0;
+            var local1:int;
+            var local2:Point;
+            var local3:Point;
+            var local4:IVector3d;
+            var local5:int;
+            var local6:int;
+            var local7:int = sourceWallData.count;
+            local1 = 0;
 
-            while (_local_8 < _local_5)
+            while (local1 < local7)
             {
-                if (!_arg_1.getHideWall(_local_8))
+                if (!sourceWallData.getHideWall(local1))
                 {
-                    _local_6 = _arg_1.getCorner(_local_8);
-                    _local_3 = new Point(_local_6.x, _local_6.y);
-                    _local_4 = RoomWallData.WALL_DIRECTION_VECTORS[_arg_1.getDirection(_local_8)];
-                    _local_7 = _arg_1.getLength(_local_8);
-                    _local_3.x = (_local_3.x + (_local_4.x * _local_7));
-                    _local_3.y = (_local_3.y + (_local_4.y * _local_7));
-                    _local_9 = resolveOriginalWallIndex(_local_6, _local_3, _arg_2);
+                    local2 = sourceWallData.getCorner(local1);
+                    local3 = new Point(local2.x, local2.y);
+                    local4 = RoomWallData.WALL_DIRECTION_VECTORS[sourceWallData.getDirection(local1)];
+                    local5 = sourceWallData.getLength(local1);
+                    local3.x = (local3.x + (local4.x * local5));
+                    local3.y = (local3.y + (local4.y * local5));
+                    local6 = resolveOriginalWallIndex(local2, local3, previousWallData);
 
-                    if (_local_9 >= 0)
+                    if (local6 >= 0)
                     {
-                        if (_arg_2.getHideWall(_local_9))
+                        if (previousWallData.getHideWall(local6))
                         {
-                            _arg_1.setHideWall(_local_8, true);
+                            sourceWallData.setHideWall(local1, true);
                         };
                     }
 
                     else
                     {
-                        _arg_1.setHideWall(_local_8, true);
+                        sourceWallData.setHideWall(local1, true);
                     };
                 };
 
-                _local_8++;
+                local1++;
             };
         }
 
-        private function checkWallHiding(_arg_1:RoomWallData, _arg_2:RoomWallData):void
+        private function checkWallHiding(currentWallData:RoomWallData, previousWallData:RoomWallData):void
         {
-            hidePeninsulaWallChains(_arg_2);
-            updateWallsNextToHoles(_arg_1);
-            hideOriginallyHiddenWalls(_arg_1, _arg_2);
+            hidePeninsulaWallChains(previousWallData);
+            updateWallsNextToHoles(currentWallData);
+            hideOriginallyHiddenWalls(currentWallData, previousWallData);
         }
 
-        private function addWalls(_arg_1:RoomWallData, _arg_2:RoomWallData):void
+        private function addWalls(currentWallData:RoomWallData, previousWallData:RoomWallData):void
         {
-            var _local_25:int;
-            var _local_14:int;
-            var _local_17:int;
-            var _local_10:Point;
-            var _local_13:int;
-            var _local_16:int;
-            var _local_11:IVector3d;
-            var _local_6:IVector3d;
-            var _local_20:Number;
-            var _local_18:int;
-            var _local_27:Number;
-            var _local_24:Number;
-            var _local_3:Vector3d;
-            var _local_4:Number;
-            var _local_9:Vector3d;
-            var _local_19:Vector3d;
-            var _local_12:int;
-            var _local_8:Vector3d;
-            var _local_21:Boolean;
-            var _local_7:Boolean;
-            var _local_26:Boolean;
-            var _local_5:Boolean;
-            var _local_22:Boolean;
-            var _local_15:int = _arg_1.count;
-            var _local_23:int = _arg_2.count;
-            _local_17 = 0;
+            var local1:int;
+            var local2:int;
+            var local3:int;
+            var local4:Point;
+            var local5:int;
+            var local6:int;
+            var local7:IVector3d;
+            var local8:IVector3d;
+            var local9:Number;
+            var local10:int;
+            var local11:Number;
+            var local12:Number;
+            var local13:Vector3d;
+            var local14:Number;
+            var local15:Vector3d;
+            var local16:Vector3d;
+            var local17:int;
+            var local18:Vector3d;
+            var local19:Boolean;
+            var local20:Boolean;
+            var local21:Boolean;
+            var local22:Boolean;
+            var local23:Boolean;
+            var local24:int = currentWallData.count;
+            var local25:int = previousWallData.count;
+            local3 = 0;
 
-            while (_local_17 < _local_15)
+            while (local3 < local24)
             {
-                if (!_arg_1.getHideWall(_local_17))
+                if (!currentWallData.getHideWall(local3))
                 {
-                    _local_10 = _arg_1.getCorner(_local_17);
-                    _local_13 = _arg_1.getDirection(_local_17);
-                    _local_16 = _arg_1.getLength(_local_17);
-                    _local_11 = RoomWallData.WALL_DIRECTION_VECTORS[_local_13];
-                    _local_6 = RoomWallData.WALL_NORMAL_VECTORS[_local_13];
-                    _local_20 = -1;
-                    _local_18 = 0;
+                    local4 = currentWallData.getCorner(local3);
+                    local5 = currentWallData.getDirection(local3);
+                    local6 = currentWallData.getLength(local3);
+                    local7 = RoomWallData.WALL_DIRECTION_VECTORS[local5];
+                    local8 = RoomWallData.WALL_NORMAL_VECTORS[local5];
+                    local9 = -1;
+                    local10 = 0;
 
-                    while (_local_18 < _local_16)
+                    while (local10 < local6)
                     {
-                        _local_27 = getTileHeightInternal(((_local_10.x + (_local_18 * _local_11.x)) + _local_6.x), ((_local_10.y + (_local_18 * _local_11.y)) + _local_6.y));
+                        local11 = getTileHeightInternal(((local4.x + (local10 * local7.x)) + local8.x), ((local4.y + (local10 * local7.y)) + local8.y));
 
-                        if (((_local_27 >= 0) && ((_local_27 < _local_20) || (_local_20 < 0))))
+                        if (((local11 >= 0) && ((local11 < local9) || (local9 < 0))))
                         {
-                            _local_20 = _local_27;
+                            local9 = local11;
                         };
 
-                        _local_18++;
+                        local10++;
                     };
 
-                    _local_24 = _local_20;
-                    _local_3 = new Vector3d(_local_10.x, _local_10.y, _local_24);
-                    _local_3 = Vector3d.sum(_local_3, Vector3d.product(_local_6, 0.5));
-                    _local_3 = Vector3d.sum(_local_3, Vector3d.product(_local_11, -0.5));
-                    _local_4 = ((wallHeight + Math.min(20, floorHeight)) - _local_20);
-                    _local_9 = Vector3d.product(_local_11, -(_local_16));
-                    _local_19 = new Vector3d(0, 0, _local_4);
-                    _local_3 = Vector3d.dif(_local_3, _local_9);
-                    _local_12 = resolveOriginalWallIndex(_local_10, _arg_1.getEndPoint(_local_17), _arg_2);
+                    local12 = local9;
+                    local13 = new Vector3d(local4.x, local4.y, local12);
+                    local13 = Vector3d.sum(local13, Vector3d.product(local8, 0.5));
+                    local13 = Vector3d.sum(local13, Vector3d.product(local7, -0.5));
+                    local14 = ((wallHeight + Math.min(20, floorHeight)) - local9);
+                    local15 = Vector3d.product(local7, -(local6));
+                    local16 = new Vector3d(0, 0, local14);
+                    local13 = Vector3d.dif(local13, local15);
+                    local17 = resolveOriginalWallIndex(local4, currentWallData.getEndPoint(local3), previousWallData);
 
-                    if (_local_12 >= 0)
+                    if (local17 >= 0)
                     {
-                        _local_25 = _arg_2.getDirection(((_local_12 + 1) % _local_23));
-                        _local_14 = _arg_2.getDirection((((_local_12 - 1) + _local_23) % _local_23));
+                        local1 = previousWallData.getDirection(((local17 + 1) % local25));
+                        local2 = previousWallData.getDirection((((local17 - 1) + local25) % local25));
                     }
 
                     else
                     {
-                        _local_25 = _arg_1.getDirection(((_local_17 + 1) % _local_15));
-                        _local_14 = _arg_1.getDirection((((_local_17 - 1) + _local_15) % _local_15));
+                        local1 = currentWallData.getDirection(((local3 + 1) % local24));
+                        local2 = currentWallData.getDirection((((local3 - 1) + local24) % local24));
                     };
 
-                    _local_8 = null;
+                    local18 = null;
 
-                    if ((((_local_25 - _local_13) + 4) % 4) == 3)
+                    if ((((local1 - local5) + 4) % 4) == 3)
                     {
-                        _local_8 = RoomWallData.WALL_NORMAL_VECTORS[_local_25];
+                        local18 = RoomWallData.WALL_NORMAL_VECTORS[local1];
                     }
 
                     else
                     {
-                        if ((((_local_13 - _local_14) + 4) % 4) == 3)
+                        if ((((local5 - local2) + 4) % 4) == 3)
                         {
-                            _local_8 = RoomWallData.WALL_NORMAL_VECTORS[_local_14];
+                            local18 = RoomWallData.WALL_NORMAL_VECTORS[local2];
                         };
                     };
 
-                    _local_21 = _arg_1.getLeftTurn(_local_17);
-                    _local_7 = _arg_1.getLeftTurn((((_local_17 - 1) + _local_15) % _local_15));
-                    _local_26 = _arg_1.getHideWall(((_local_17 + 1) % _local_15));
-                    _local_5 = _arg_1.getManuallyLeftCut(_local_17);
-                    _local_22 = _arg_1.getManuallyRightCut(_local_17);
-                    addWall(_local_3, _local_9, _local_19, _local_8, ((!(_local_7)) || (_local_5)), ((!(_local_21)) || (_local_22)), (!(_local_26)));
+                    local19 = currentWallData.getLeftTurn(local3);
+                    local20 = currentWallData.getLeftTurn((((local3 - 1) + local24) % local24));
+                    local21 = currentWallData.getHideWall(((local3 + 1) % local24));
+                    local22 = currentWallData.getManuallyLeftCut(local3);
+                    local23 = currentWallData.getManuallyRightCut(local3);
+                    addWall(local13, local15, local16, local18, ((!(local20)) || (local22)), ((!(local19)) || (local23)), (!(local21)));
                 };
 
-                _local_17++;
+                local3++;
             };
         }
 
         private function createWallPlanes():Boolean
         {
-            var _local_3:int;
-            var _local_11:int;
-            var _local_6:Array = _tileMatrix;
+            var local1:int;
+            var local2:int;
+            var local3:Array = _tileMatrix;
 
-            if (_local_6 == null)
+            if (local3 == null)
             {
                 return (false);
             };
 
-            var _local_4:int;
-            var _local_5:int;
-            var _local_1:Array;
-            var _local_14:int = _local_6.length;
-            var _local_8:int;
+            var local4:int;
+            var local5:int;
+            var local6:Array;
+            var local7:int = local3.length;
+            var local8:int;
 
-            if (_local_14 == 0)
+            if (local7 == 0)
             {
                 return (false);
             };
 
-            _local_4 = 0;
+            local4 = 0;
 
-            while (_local_4 < _local_14)
+            while (local4 < local7)
             {
-                _local_1 = (_local_6[_local_4] as Array);
+                local6 = (local3[local4] as Array);
 
-                if (((_local_1 == null) || (_local_1.length == 0)))
+                if (((local6 == null) || (local6.length == 0)))
                 {
                     return (false);
                 };
 
-                if (_local_8 > 0)
+                if (local8 > 0)
                 {
-                    _local_8 = Math.min(_local_8, _local_1.length);
+                    local8 = Math.min(local8, local6.length);
                 }
 
                 else
                 {
-                    _local_8 = _local_1.length;
+                    local8 = local6.length;
                 };
 
-                _local_4++;
+                local4++;
             };
 
-            var _local_13:Number = Math.min(20, ((_fixedWallHeight != -1) ? _fixedWallHeight : getFloorHeight(_local_6)));
-            var _local_9:int = minX;
-            var _local_10:int = minY;
-            _local_10 = minY;
+            var local9:Number = Math.min(20, ((_fixedWallHeight != -1) ? _fixedWallHeight : getFloorHeight(local3)));
+            var local10:int = minX;
+            var local11:int = minY;
+            local11 = minY;
 
-            while (_local_10 <= maxY)
+            while (local11 <= maxY)
             {
-                if (getTileHeightInternal(_local_9, _local_10) > -100)
+                if (getTileHeightInternal(local10, local11) > -100)
                 {
-                    _local_10--;
+                    local11--;
                     break;
                 };
 
-                _local_10++;
+                local11++;
             };
 
-            if (_local_10 > maxY)
+            if (local11 > maxY)
             {
                 return (false);
             };
 
-            var _local_2:Point = new Point(_local_9, _local_10);
-            var _local_7:RoomWallData = generateWallData(_local_2, true);
-            var _local_12:RoomWallData = generateWallData(_local_2, false);
+            var local12:Point = new Point(local10, local11);
+            var local13:RoomWallData = generateWallData(local12, true);
+            var local14:RoomWallData = generateWallData(local12, false);
 
-            if (_local_7 != null)
+            if (local13 != null)
             {
-                _local_3 = _local_7.count;
-                _local_11 = _local_12.count;
-                checkWallHiding(_local_7, _local_12);
-                addWalls(_local_7, _local_12);
+                local1 = local13.count;
+                local2 = local14.count;
+                checkWallHiding(local13, local14);
+                addWalls(local13, local14);
             };
 
-            _local_5 = 0;
+            local5 = 0;
 
-            while (_local_5 < tileMapHeight)
+            while (local5 < tileMapHeight)
             {
-                _local_4 = 0;
+                local4 = 0;
 
-                while (_local_4 < tileMapWidth)
+                while (local4 < tileMapWidth)
                 {
-                    if (getTileHeightInternal(_local_4, _local_5) < 0)
+                    if (getTileHeightInternal(local4, local5) < 0)
                     {
-                        setTileHeight(_local_4, _local_5, -(_local_13 + wallHeight));
+                        setTileHeight(local4, local5, -(local9 + wallHeight));
                     };
 
-                    _local_4++;
+                    local4++;
                 };
 
-                _local_5++;
+                local5++;
             };
 
             return (true);
         }
 
-        private function extractTopWall(_arg_1:Point, _arg_2:Boolean):Point
+        private function extractTopWall(startPoint:Point, skip:Boolean):Point
         {
-            if (_arg_1 == null)
+            if (startPoint == null)
             {
                 return (null);
             };
 
-            var _local_3:int = 1;
-            var _local_4:int = -100;
+            var local1:int = 1;
+            var local2:int = -100;
 
-            if (!_arg_2)
+            if (!skip)
             {
-                _local_4 = -110;
+                local2 = -110;
             };
 
-            while (_local_3 < 1000)
+            while (local1 < 1000)
             {
-                if (getTileHeightInternal((_arg_1.x + _local_3), _arg_1.y) > _local_4)
+                if (getTileHeightInternal((startPoint.x + local1), startPoint.y) > local2)
                 {
-                    return (new Point(((_arg_1.x + _local_3) - 1), _arg_1.y));
+                    return (new Point(((startPoint.x + local1) - 1), startPoint.y));
                 };
 
-                if (getTileHeightInternal((_arg_1.x + _local_3), (_arg_1.y + 1)) <= _local_4)
+                if (getTileHeightInternal((startPoint.x + local1), (startPoint.y + 1)) <= local2)
                 {
-                    return (new Point((_arg_1.x + _local_3), (_arg_1.y + 1)));
+                    return (new Point((startPoint.x + local1), (startPoint.y + 1)));
                 };
 
-                _local_3++;
+                local1++;
             };
 
             return (null);
         }
 
-        private function extractRightWall(_arg_1:Point, _arg_2:Boolean):Point
+        private function extractRightWall(startPoint:Point, skip:Boolean):Point
         {
-            if (_arg_1 == null)
+            if (startPoint == null)
             {
                 return (null);
             };
 
-            var _local_3:int = 1;
-            var _local_4:int = -100;
+            var local1:int = 1;
+            var local2:int = -100;
 
-            if (!_arg_2)
+            if (!skip)
             {
-                _local_4 = -110;
+                local2 = -110;
             };
 
-            while (_local_3 < 1000)
+            while (local1 < 1000)
             {
-                if (getTileHeightInternal(_arg_1.x, (_arg_1.y + _local_3)) > _local_4)
+                if (getTileHeightInternal(startPoint.x, (startPoint.y + local1)) > local2)
                 {
-                    return (new Point(_arg_1.x, (_arg_1.y + (_local_3 - 1))));
+                    return (new Point(startPoint.x, (startPoint.y + (local1 - 1))));
                 };
 
-                if (getTileHeightInternal((_arg_1.x - 1), (_arg_1.y + _local_3)) <= _local_4)
+                if (getTileHeightInternal((startPoint.x - 1), (startPoint.y + local1)) <= local2)
                 {
-                    return (new Point((_arg_1.x - 1), (_arg_1.y + _local_3)));
+                    return (new Point((startPoint.x - 1), (startPoint.y + local1)));
                 };
 
-                _local_3++;
+                local1++;
             };
 
             return (null);
         }
 
-        private function extractBottomWall(_arg_1:Point, _arg_2:Boolean):Point
+        private function extractBottomWall(startPoint:Point, skip:Boolean):Point
         {
-            if (_arg_1 == null)
+            if (startPoint == null)
             {
                 return (null);
             };
 
-            var _local_3:int = 1;
-            var _local_4:int = -100;
+            var local1:int = 1;
+            var local2:int = -100;
 
-            if (!_arg_2)
+            if (!skip)
             {
-                _local_4 = -110;
+                local2 = -110;
             };
 
-            while (_local_3 < 1000)
+            while (local1 < 1000)
             {
-                if (getTileHeightInternal((_arg_1.x - _local_3), _arg_1.y) > _local_4)
+                if (getTileHeightInternal((startPoint.x - local1), startPoint.y) > local2)
                 {
-                    return (new Point((_arg_1.x - (_local_3 - 1)), _arg_1.y));
+                    return (new Point((startPoint.x - (local1 - 1)), startPoint.y));
                 };
 
-                if (getTileHeightInternal((_arg_1.x - _local_3), (_arg_1.y - 1)) <= _local_4)
+                if (getTileHeightInternal((startPoint.x - local1), (startPoint.y - 1)) <= local2)
                 {
-                    return (new Point((_arg_1.x - _local_3), (_arg_1.y - 1)));
+                    return (new Point((startPoint.x - local1), (startPoint.y - 1)));
                 };
 
-                _local_3++;
+                local1++;
             };
 
             return (null);
         }
 
-        private function extractLeftWall(_arg_1:Point, _arg_2:Boolean):Point
+        private function extractLeftWall(startPoint:Point, skip:Boolean):Point
         {
-            if (_arg_1 == null)
+            if (startPoint == null)
             {
                 return (null);
             };
 
-            var _local_3:int = 1;
-            var _local_4:int = -100;
+            var local1:int = 1;
+            var local2:int = -100;
 
-            if (!_arg_2)
+            if (!skip)
             {
-                _local_4 = -110;
+                local2 = -110;
             };
 
-            while (_local_3 < 1000)
+            while (local1 < 1000)
             {
-                if (getTileHeightInternal(_arg_1.x, (_arg_1.y - _local_3)) > _local_4)
+                if (getTileHeightInternal(startPoint.x, (startPoint.y - local1)) > local2)
                 {
-                    return (new Point(_arg_1.x, (_arg_1.y - (_local_3 - 1))));
+                    return (new Point(startPoint.x, (startPoint.y - (local1 - 1))));
                 };
 
-                if (getTileHeightInternal((_arg_1.x + 1), (_arg_1.y - _local_3)) <= _local_4)
+                if (getTileHeightInternal((startPoint.x + 1), (startPoint.y - local1)) <= local2)
                 {
-                    return (new Point((_arg_1.x + 1), (_arg_1.y - _local_3)));
+                    return (new Point((startPoint.x + 1), (startPoint.y - local1)));
                 };
 
-                _local_3++;
+                local1++;
             };
 
             return (null);
         }
 
-        private function addWall(_arg_1:IVector3d, _arg_2:IVector3d, _arg_3:IVector3d, _arg_4:IVector3d, _arg_5:Boolean, _arg_6:Boolean, _arg_7:Boolean):void
+        private function addWall(origin:IVector3d, leftSide:IVector3d, rightSide:IVector3d, normalDirection:IVector3d, keepLeft:Boolean, keepRight:Boolean, keepBottom:Boolean):void
         {
-            var _local_12:Vector3d;
-            addPlane(2, _arg_1, _arg_2, _arg_3, [_arg_4]);
-            addPlane(3, _arg_1, _arg_2, _arg_3, [_arg_4]);
+            var local1:Vector3d;
+            addPlane(2, origin, leftSide, rightSide, [normalDirection]);
+            addPlane(3, origin, leftSide, rightSide, [normalDirection]);
 
-            var _local_10:Number = (0.25 * _wallThicknessMultiplier);
-            var _local_8:Number = (0.25 * _floorThicknessMultiplier);
-            var _local_11:Vector3d = Vector3d.crossProduct(_arg_2, _arg_3);
-            var _local_9:Vector3d = Vector3d.product(_local_11, ((1 / _local_11.length) * -(_local_10)));
-            addPlane(2, Vector3d.sum(_arg_1, _arg_3), _arg_2, _local_9, [_local_11, _arg_4]);
+            var local2:Number = (0.25 * _wallThicknessMultiplier);
+            var local3:Number = (0.25 * _floorThicknessMultiplier);
+            var local4:Vector3d = Vector3d.crossProduct(leftSide, rightSide);
+            var local5:Vector3d = Vector3d.product(local4, ((1 / local4.length) * -(local2)));
+            addPlane(2, Vector3d.sum(origin, rightSide), leftSide, local5, [local4, normalDirection]);
 
-            if (_arg_5)
+            if (keepLeft)
             {
-                addPlane(2, Vector3d.sum(Vector3d.sum(_arg_1, _arg_2), _arg_3), Vector3d.product(_arg_3, (-(_arg_3.length + _local_8) / _arg_3.length)), _local_9, [_local_11, _arg_4]);
+                addPlane(2, Vector3d.sum(Vector3d.sum(origin, leftSide), rightSide), Vector3d.product(rightSide, (-(rightSide.length + local3) / rightSide.length)), local5, [local4, normalDirection]);
             };
 
-            if (_arg_6)
+            if (keepRight)
             {
-                addPlane(2, Vector3d.sum(_arg_1, Vector3d.product(_arg_3, (-(_local_8) / _arg_3.length))), Vector3d.product(_arg_3, ((_arg_3.length + _local_8) / _arg_3.length)), _local_9, [_local_11, _arg_4]);
+                addPlane(2, Vector3d.sum(origin, Vector3d.product(rightSide, (-(local3) / rightSide.length))), Vector3d.product(rightSide, ((rightSide.length + local3) / rightSide.length)), local5, [local4, normalDirection]);
 
-                if (_arg_7)
+                if (keepBottom)
                 {
-                    _local_12 = Vector3d.product(_arg_2, (_local_10 / _arg_2.length));
-                    addPlane(2, Vector3d.sum(Vector3d.sum(_arg_1, _arg_3), Vector3d.product(_local_12, -1)), _local_12, _local_9, [_local_11, _arg_2, _arg_4]);
-                };
-            };
-        }
-
-        private function addFloor(_arg_1:IVector3d, _arg_2:IVector3d, _arg_3:IVector3d, _arg_4:Boolean, _arg_5:Boolean, _arg_6:Boolean, _arg_7:Boolean):void
-        {
-            var _local_10:Number;
-            var _local_9:Vector3d;
-            var _local_8:Vector3d;
-            var _local_11:RoomPlaneData = addPlane(1, _arg_1, _arg_2, _arg_3);
-
-            if (_local_11 != null)
-            {
-                _local_10 = (0.25 * _floorThicknessMultiplier);
-                _local_9 = new Vector3d(0, 0, _local_10);
-                _local_8 = Vector3d.dif(_arg_1, _local_9);
-
-                if (_arg_6)
-                {
-                    addPlane(1, _local_8, _arg_2, _local_9);
-                };
-
-                if (_arg_7)
-                {
-                    addPlane(1, Vector3d.sum(_local_8, Vector3d.sum(_arg_2, _arg_3)), Vector3d.product(_arg_2, -1), _local_9);
-                };
-
-                if (_arg_4)
-                {
-                    addPlane(1, Vector3d.sum(_local_8, _arg_3), Vector3d.product(_arg_3, -1), _local_9);
-                };
-
-                if (_arg_5)
-                {
-                    addPlane(1, Vector3d.sum(_local_8, _arg_2), _arg_3, _local_9);
+                    local1 = Vector3d.product(leftSide, (local2 / leftSide.length));
+                    addPlane(2, Vector3d.sum(Vector3d.sum(origin, rightSide), Vector3d.product(local1, -1)), local1, local5, [local4, leftSide, normalDirection]);
                 };
             };
         }
 
-        public function initializeFromXML(_arg_1:XML):Boolean
+        private function addFloor(origin:IVector3d, leftSide:IVector3d, rightSide:IVector3d, addTop:Boolean, addRight:Boolean, addBottom:Boolean, addLeft:Boolean):void
         {
-            var _local_4:int;
-            var _local_13:XML;
-            var _local_12:XMLList;
-            var _local_3:int;
-            var _local_10:XML;
-            var _local_16:Number;
-            var _local_6:XML;
-            var _local_8:XMLList;
-            var _local_5:int;
-            var _local_7:XML;
+            var local1:Number;
+            var local2:Vector3d;
+            var local3:Vector3d;
+            var local4:RoomPlaneData = addPlane(1, origin, leftSide, rightSide);
 
-            if (_arg_1 == null)
+            if (local4 != null)
+            {
+                local1 = (0.25 * _floorThicknessMultiplier);
+                local2 = new Vector3d(0, 0, local1);
+                local3 = Vector3d.dif(origin, local2);
+
+                if (addBottom)
+                {
+                    addPlane(1, local3, leftSide, local2);
+                };
+
+                if (addLeft)
+                {
+                    addPlane(1, Vector3d.sum(local3, Vector3d.sum(leftSide, rightSide)), Vector3d.product(leftSide, -1), local2);
+                };
+
+                if (addTop)
+                {
+                    addPlane(1, Vector3d.sum(local3, rightSide), Vector3d.product(rightSide, -1), local2);
+                };
+
+                if (addRight)
+                {
+                    addPlane(1, Vector3d.sum(local3, leftSide), rightSide, local2);
+                };
+            };
+        }
+
+        public function initializeFromXML(xml:XML):Boolean
+        {
+            var local1:int;
+            var local2:XML;
+            var local3:XMLList;
+            var local4:int;
+            var local5:XML;
+            var local6:Number;
+            var local7:XML;
+            var local8:XMLList;
+            var local9:int;
+            var local10:XML;
+
+            if (xml == null)
             {
                 return (false);
             };
@@ -1430,367 +1430,367 @@
             reset();
             resetFloorHoles();
 
-            if (!_SafeStr_93.checkRequiredAttributes(_arg_1.tileMap[0], ["width", "height", "wallHeight"]))
+            if (!XmlUtil.checkRequiredAttributes(xml.tileMap[0], ["width", "height", "wallHeight"]))
             {
                 return (false);
             };
 
-            var _local_9:int = parseInt(_arg_1.tileMap.@width);
-            var _local_15:int = parseInt(_arg_1.tileMap.@height);
-            var _local_14:Number = parseFloat(_arg_1.tileMap.@wallHeight);
-            var _local_2:int = parseInt(_arg_1.tileMap.@fixedWallsHeight);
-            initializeTileMap(_local_9, _local_15);
+            var local11:int = parseInt(xml.tileMap.@width);
+            var local12:int = parseInt(xml.tileMap.@height);
+            var local13:Number = parseFloat(xml.tileMap.@wallHeight);
+            var local14:int = parseInt(xml.tileMap.@fixedWallsHeight);
+            initializeTileMap(local11, local12);
 
-            var _local_11:XMLList = _arg_1.tileMap.tileRow;
-            _local_4 = 0;
+            var local15:XMLList = xml.tileMap.tileRow;
+            local1 = 0;
 
-            while (_local_4 < _local_11.length())
+            while (local1 < local15.length())
             {
-                _local_13 = _local_11[_local_4];
-                _local_12 = _local_13.tile;
-                _local_3 = 0;
+                local2 = local15[local1];
+                local3 = local2.tile;
+                local4 = 0;
 
-                while (_local_3 < _local_12.length())
+                while (local4 < local3.length())
                 {
-                    _local_10 = _local_12[_local_3];
-                    _local_16 = parseFloat(_local_10.@height);
-                    setTileHeight(_local_3, _local_4, _local_16);
-                    _local_3++;
+                    local5 = local3[local4];
+                    local6 = parseFloat(local5.@height);
+                    setTileHeight(local4, local1, local6);
+                    local4++;
                 };
 
-                _local_4++;
+                local1++;
             };
 
-            if (_arg_1.holeMap.length() > 0)
+            if (xml.holeMap.length() > 0)
             {
-                _local_6 = _arg_1.holeMap[0];
-                _local_8 = _local_6.hole;
-                _local_5 = 0;
+                local7 = xml.holeMap[0];
+                local8 = local7.hole;
+                local9 = 0;
 
-                while (_local_5 < _local_8.length())
+                while (local9 < local8.length())
                 {
-                    _local_7 = _local_8[_local_5];
+                    local10 = local8[local9];
 
-                    if (_SafeStr_93.checkRequiredAttributes(_local_7, ["id", "x", "y", "width", "height"]))
+                    if (XmlUtil.checkRequiredAttributes(local10, ["id", "x", "y", "width", "height"]))
                     {
-                        addFloorHole(_local_7.@id, _local_7.@x, _local_7.@y, _local_7.@width, _local_7.@height);
+                        addFloorHole(local10.@id, local10.@x, local10.@y, local10.@width, local10.@height);
                     };
 
-                    _local_5++;
+                    local9++;
                 };
 
                 initializeHoleMap();
             };
 
-            this.wallHeight = _local_14;
-            initializeFromTileData(_local_2);
+            this.wallHeight = local13;
+            initializeFromTileData(local14);
             return (true);
         }
 
-        private function addPlane(_arg_1:int, _arg_2:IVector3d, _arg_3:IVector3d, _arg_4:IVector3d, _arg_5:Array=null):RoomPlaneData
+        private function addPlane(type:int, origin:IVector3d, leftSide:IVector3d, rightSide:IVector3d, secondaryNormals:Array=null):RoomPlaneData
         {
-            if (((_arg_3.length == 0) || (_arg_4.length == 0)))
+            if (((leftSide.length == 0) || (rightSide.length == 0)))
             {
                 return (null);
             };
 
-            var _local_6:RoomPlaneData = new RoomPlaneData(_arg_1, _arg_2, _arg_3, _arg_4, _arg_5);
-            _planes.push(_local_6);
-            return (_local_6);
+            var local1:RoomPlaneData = new RoomPlaneData(type, origin, leftSide, rightSide, secondaryNormals);
+            _planes.push(local1);
+            return (local1);
         }
 
         public function getXML():XML
         {
-            var _local_5:int;
-            var _local_1:XML;
-            var _local_12:Array;
-            var _local_3:int;
-            var _local_14:Number;
-            var _local_4:XML;
-            var _local_7:int;
-            var _local_8:RoomFloorHole;
-            var _local_13:int;
-            var _local_2:XML;
-            var _local_9:XML = new XML((((((((("<tileMap width=" + (('"' + _tileMapWidth) + '"')) + " height=") + (('"' + _tileMapHeight) + '"')) + " wallHeight=") + (('"' + _wallHeight) + '"')) + " fixedWallsHeight=") + (('"' + _fixedWallHeight) + '"')) + "/>\r\n\t\t\t"));
-            _local_5 = 0;
+            var local1:int;
+            var local2:XML;
+            var local3:Array;
+            var local4:int;
+            var local5:Number;
+            var local6:XML;
+            var local7:int;
+            var local8:RoomFloorHole;
+            var local9:int;
+            var local10:XML;
+            var local11:XML = new XML((((((((("<tileMap width=" + (('"' + _tileMapWidth) + '"')) + " height=") + (('"' + _tileMapHeight) + '"')) + " wallHeight=") + (('"' + _wallHeight) + '"')) + " fixedWallsHeight=") + (('"' + _fixedWallHeight) + '"')) + "/>\r\n\t\t\t"));
+            local1 = 0;
 
-            while (_local_5 < _tileMapHeight)
+            while (local1 < _tileMapHeight)
             {
-                _local_1 = <tileRow/>
+                local2 = <tileRow/>
 				
                 ;
-                _local_12 = _tileMatrixOriginal[_local_5];
-                _local_3 = 0;
+                local3 = _tileMatrixOriginal[local1];
+                local4 = 0;
 
-                while (_local_3 < _tileMapWidth)
+                while (local4 < _tileMapWidth)
                 {
-                    _local_14 = _local_12[_local_3];
-                    _local_4 = new XML((("<tile height=" + (('"' + _local_14) + '"')) + "/>\r\n\t\t\t\t\t"));
-                    _local_1.appendChild(_local_4);
-                    _local_3++;
+                    local5 = local3[local4];
+                    local6 = new XML((("<tile height=" + (('"' + local5) + '"')) + "/>\r\n\t\t\t\t\t"));
+                    local2.appendChild(local6);
+                    local4++;
                 };
 
-                _local_9.appendChild(_local_1);
-                _local_5++;
+                local11.appendChild(local2);
+                local1++;
             };
 
-            var _local_11:XML = <holeMap/>
+            var local12:XML = <holeMap/>
 			
             ;
-            _local_7 = 0;
+            local7 = 0;
 
-            while (_local_7 < _floorHoles.length)
+            while (local7 < _floorHoles.length)
             {
-                _local_8 = _floorHoles.getWithIndex(_local_7);
+                local8 = _floorHoles.getWithIndex(local7);
 
-                if (_local_8 != null)
+                if (local8 != null)
                 {
-                    _local_13 = _floorHoles.getKey(_local_7);
-                    _local_2 = new XML((((((((((("<hole id=" + (('"' + _local_13) + '"')) + " x=") + (('"' + _local_8.x) + '"')) + " y=") + (('"' + _local_8.y) + '"')) + " width=") + (('"' + _local_8.width) + '"')) + " height=") + (('"' + _local_8.height) + '"')) + "/>\r\n\t\t\t\t\t"));
-                    _local_11.appendChild(_local_2);
+                    local9 = _floorHoles.getKey(local7);
+                    local10 = new XML((((((((((("<hole id=" + (('"' + local9) + '"')) + " x=") + (('"' + local8.x) + '"')) + " y=") + (('"' + local8.y) + '"')) + " width=") + (('"' + local8.width) + '"')) + " height=") + (('"' + local8.height) + '"')) + "/>\r\n\t\t\t\t\t"));
+                    local12.appendChild(local10);
                 };
 
-                _local_7++;
+                local7++;
             };
 
-            var _local_10:XML = <roomData/>
+            var local13:XML = <roomData/>
 			
             ;
-            _local_10.appendChild(_local_9);
-            _local_10.appendChild(_local_11);
+            local13.appendChild(local11);
+            local13.appendChild(local12);
 
-            var _local_6:XML = new XML((((((((("<dimensions minX=" + (('"' + minX) + '"')) + " maxX=") + (('"' + maxX) + '"')) + " minY=") + (('"' + minY) + '"')) + " maxY=") + (('"' + maxY) + '"')) + " />\r\n\t\t\t"));
-            _local_10.appendChild(_local_6);
-            return (_local_10);
+            var local14:XML = new XML((((((((("<dimensions minX=" + (('"' + minX) + '"')) + " maxX=") + (('"' + maxX) + '"')) + " minY=") + (('"' + minY) + '"')) + " maxY=") + (('"' + maxY) + '"')) + " />\r\n\t\t\t"));
+            local13.appendChild(local14);
+            return (local13);
         }
 
-        public function getPlaneLocation(_arg_1:int):IVector3d
+        public function getPlaneLocation(planeIndex:int):IVector3d
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.loc);
+                return (local1.loc);
             };
 
             return (null);
         }
 
-        public function getPlaneNormal(_arg_1:int):IVector3d
+        public function getPlaneNormal(planeIndex:int):IVector3d
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.normal);
+                return (local1.normal);
             };
 
             return (null);
         }
 
-        public function getPlaneLeftSide(_arg_1:int):IVector3d
+        public function getPlaneLeftSide(planeIndex:int):IVector3d
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.leftSide);
+                return (local1.leftSide);
             };
 
             return (null);
         }
 
-        public function getPlaneRightSide(_arg_1:int):IVector3d
+        public function getPlaneRightSide(planeIndex:int):IVector3d
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.rightSide);
+                return (local1.rightSide);
             };
 
             return (null);
         }
 
-        public function getPlaneNormalDirection(_arg_1:int):IVector3d
+        public function getPlaneNormalDirection(planeIndex:int):IVector3d
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.normalDirection);
+                return (local1.normalDirection);
             };
 
             return (null);
         }
 
-        public function getPlaneSecondaryNormals(_arg_1:int):Array
+        public function getPlaneSecondaryNormals(planeIndex:int):Array
         {
-            var _local_3:Array;
-            var _local_4:int;
+            var local1:Array;
+            var local2:int;
 
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local3:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local3 != null)
             {
-                _local_3 = [];
-                _local_4 = 0;
+                local1 = [];
+                local2 = 0;
 
-                while (_local_4 < _local_2.secondaryNormalCount)
+                while (local2 < local3.secondaryNormalCount)
                 {
-                    _local_3.push(_local_2.getSecondaryNormal(_local_4));
-                    _local_4++;
+                    local1.push(local3.getSecondaryNormal(local2));
+                    local2++;
                 };
 
-                return (_local_3);
+                return (local1);
             };
 
             return (null);
         }
 
-        public function getPlaneType(_arg_1:int):int
+        public function getPlaneType(planeIndex:int):int
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (0);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.type);
+                return (local1.type);
             };
 
             return (0);
         }
 
-        public function getPlaneMaskCount(_arg_1:int):int
+        public function getPlaneMaskCount(planeIndex:int):int
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (0);
             };
 
-            var _local_2:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_2 != null)
+            if (local1 != null)
             {
-                return (_local_2.maskCount);
+                return (local1.maskCount);
             };
 
             return (0);
         }
 
-        public function getPlaneMaskLeftSideLoc(_arg_1:int, _arg_2:int):Number
+        public function getPlaneMaskLeftSideLoc(planeIndex:int, maskIndex:int):Number
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (-1);
             };
 
-            var _local_3:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_3 != null)
+            if (local1 != null)
             {
-                return (_local_3.getMaskLeftSideLoc(_arg_2));
+                return (local1.getMaskLeftSideLoc(maskIndex));
             };
 
             return (-1);
         }
 
-        public function getPlaneMaskRightSideLoc(_arg_1:int, _arg_2:int):Number
+        public function getPlaneMaskRightSideLoc(planeIndex:int, maskIndex:int):Number
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (-1);
             };
 
-            var _local_3:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_3 != null)
+            if (local1 != null)
             {
-                return (_local_3.getMaskRightSideLoc(_arg_2));
+                return (local1.getMaskRightSideLoc(maskIndex));
             };
 
             return (-1);
         }
 
-        public function getPlaneMaskLeftSideLength(_arg_1:int, _arg_2:int):Number
+        public function getPlaneMaskLeftSideLength(planeIndex:int, maskIndex:int):Number
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (-1);
             };
 
-            var _local_3:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_3 != null)
+            if (local1 != null)
             {
-                return (_local_3.getMaskLeftSideLength(_arg_2));
+                return (local1.getMaskLeftSideLength(maskIndex));
             };
 
             return (-1);
         }
 
-        public function getPlaneMaskRightSideLength(_arg_1:int, _arg_2:int):Number
+        public function getPlaneMaskRightSideLength(planeIndex:int, maskIndex:int):Number
         {
-            if (((_arg_1 < 0) || (_arg_1 >= planeCount)))
+            if (((planeIndex < 0) || (planeIndex >= planeCount)))
             {
                 return (-1);
             };
 
-            var _local_3:RoomPlaneData = (_planes[_arg_1] as RoomPlaneData);
+            var local1:RoomPlaneData = (_planes[planeIndex] as RoomPlaneData);
 
-            if (_local_3 != null)
+            if (local1 != null)
             {
-                return (_local_3.getMaskRightSideLength(_arg_2));
+                return (local1.getMaskRightSideLength(maskIndex));
             };
 
             return (-1);
         }
 
-        public function addFloorHole(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:int):void
+        public function addFloorHole(holeId:int, x:int, y:int, width:int, height:int):void
         {
-            removeFloorHole(_arg_1);
+            removeFloorHole(holeId);
 
-            var _local_6:RoomFloorHole = new RoomFloorHole(_arg_2, _arg_3, _arg_4, _arg_5);
-            _floorHoles.add(_arg_1, _local_6);
+            var local1:RoomFloorHole = new RoomFloorHole(x, y, width, height);
+            _floorHoles.add(holeId, local1);
         }
 
-        public function removeFloorHole(_arg_1:int):void
+        public function removeFloorHole(holeId:int):void
         {
-            _floorHoles.remove(_arg_1);
+            _floorHoles.remove(holeId);
         }
 
         public function resetFloorHoles():void
@@ -1800,181 +1800,185 @@
 
         private function initializeHoleMap():void
         {
-            var _local_5:int;
-            var _local_6:int;
-            var _local_8:Array;
-            var _local_7:int;
-            var _local_1:RoomFloorHole;
-            var _local_3:int;
-            var _local_9:int;
-            var _local_2:int;
-            var _local_4:int;
-            _local_6 = 0;
+            var local1:int;
+            var local2:int;
+            var local3:Array;
+            var local4:int;
+            var local5:RoomFloorHole;
+            var local6:int;
+            var local7:int;
+            var local8:int;
+            var local9:int;
+            local2 = 0;
 
-            while (_local_6 < _tileMapHeight)
+            while (local2 < _tileMapHeight)
             {
-                _local_8 = _floorHoleMatrix[_local_6];
-                _local_5 = 0;
+                local3 = _floorHoleMatrix[local2];
+                local1 = 0;
 
-                while (_local_5 < _tileMapWidth)
+                while (local1 < _tileMapWidth)
                 {
-                    _local_8[_local_5] = false;
-                    _local_5++;
+                    local3[local1] = false;
+                    local1++;
                 };
 
-                _local_6++;
+                local2++;
             };
 
-            _local_7 = 0;
+            local4 = 0;
 
-            while (_local_7 < _floorHoles.length)
+            while (local4 < _floorHoles.length)
             {
-                _local_1 = _floorHoles.getWithIndex(_local_7);
+                local5 = _floorHoles.getWithIndex(local4);
 
-                if (_local_1 != null)
+                if (local5 != null)
                 {
-                    _local_3 = _local_1.x;
-                    _local_9 = ((_local_1.x + _local_1.width) - 1);
-                    _local_2 = _local_1.y;
-                    _local_4 = ((_local_1.y + _local_1.height) - 1);
-                    _local_3 = ((_local_3 < 0) ? 0 : _local_3);
-                    _local_9 = ((_local_9 >= _tileMapWidth) ? (_tileMapWidth - 1) : _local_9);
-                    _local_2 = ((_local_2 < 0) ? 0 : _local_2);
-                    _local_4 = ((_local_4 >= _tileMapHeight) ? (_tileMapHeight - 1) : _local_4);
-                    _local_6 = _local_2;
+                    local6 = local5.x;
+                    local7 = ((local5.x + local5.width) - 1);
+                    local8 = local5.y;
+                    local9 = ((local5.y + local5.height) - 1);
+                    local6 = ((local6 < 0) ? 0 : local6);
+                    local7 = ((local7 >= _tileMapWidth) ? (_tileMapWidth - 1) : local7);
+                    local8 = ((local8 < 0) ? 0 : local8);
+                    local9 = ((local9 >= _tileMapHeight) ? (_tileMapHeight - 1) : local9);
+                    local2 = local8;
 
-                    while (_local_6 <= _local_4)
+                    while (local2 <= local9)
                     {
-                        _local_8 = _floorHoleMatrix[_local_6];
-                        _local_5 = _local_3;
+                        local3 = _floorHoleMatrix[local2];
+                        local1 = local6;
 
-                        while (_local_5 <= _local_9)
+                        while (local1 <= local7)
                         {
-                            _local_8[_local_5] = true;
-                            _local_5++;
+                            local3[local1] = true;
+                            local1++;
                         };
 
-                        _local_6++;
+                        local2++;
                     };
                 };
 
-                _local_7++;
+                local4++;
             };
         }
 
-        private function extractPlanes(_arg_1:Vector.<Vector.<int>>):void
+        private function extractPlanes(tileMap:Vector.<Vector.<int>>):void
         {
-            var _local_3:int;
-            var _local_17:int;
-            var _local_18:int;
-            var _local_6:int;
-            var _local_12:int;
-            var _local_8:int;
-            var _local_9:Boolean;
-            var _local_4:Boolean;
-            var _local_14:Boolean;
-            var _local_20:Boolean;
-            var _local_15:int;
-            var _local_16:int;
-            var _local_13:Boolean;
-            var _local_7:Number;
-            var _local_10:Number;
-            var _local_11:Number;
-            var _local_21:Number;
-            var _local_5:uint = _arg_1.length;
-            var _local_19:uint = _arg_1[0].length;
-            var _local_2:Vector.<Vector.<Boolean>> = new Vector.<Vector.<Boolean>>(_local_5);
-            _local_3 = 0;
+            var local1:int;
+            var local2:int;
+            var local3:int;
+            var local4:int;
+            var local5:int;
+            var local6:int;
+            var local7:Boolean;
+            var local8:Boolean;
+            var local9:Boolean;
+            var local10:Boolean;
+            var local11:int;
+            var local12:int;
+            var local13:Boolean;
+            var local14:Number;
+            var local15:Number;
+            var local16:Number;
+            var local17:Number;
+            var local18:uint = tileMap.length;
+            var local19:uint = tileMap[0].length;
+            var local20:Vector.<Vector.<Boolean>> = new Vector.<Vector.<Boolean>>(local18);
+            local1 = 0;
 
-            while (_local_3 < _local_5)
+            while (local1 < local18)
             {
-                _local_2[_local_3] = new Vector.<Boolean>(_local_19);
-                _local_3++;
+                local20[local1] = new Vector.<Boolean>(local19);
+                local1++;
             };
 
-            _local_17 = 0;
+            local2 = 0;
 
-            while (_local_17 < _local_5)
+            while (local2 < local18)
             {
-                _local_18 = 0;
+                local3 = 0;
 
-                while (_local_18 < _local_19)
+                while (local3 < local19)
                 {
-                    _local_6 = _arg_1[_local_17][_local_18];
+                    local4 = tileMap[local2][local3];
 
-                    if (!((_local_6 < 0) || (_local_2[_local_17][_local_18])))
+                    if (!((local4 < 0) || (local20[local2][local3])))
                     {
-                        _local_9 = ((_local_18 == 0) || (!(_arg_1[_local_17][(_local_18 - 1)] == _local_6)));
-                        _local_4 = ((_local_17 == 0) || (!(_arg_1[(_local_17 - 1)][_local_18] == _local_6)));
-                        _local_12 = (_local_18 + 1);
+                        local7 = ((local3 == 0) || (!(tileMap[local2][(local3 - 1)] == local4)));
+                        local8 = ((local2 == 0) || (!(tileMap[(local2 - 1)][local3] == local4)));
+                        local5 = (local3 + 1);
 
-                        while (_local_12 < _local_19)
+                        while (local5 < local19)
                         {
-                            if ((((!(_arg_1[_local_17][_local_12] == _local_6)) || (_local_2[_local_17][_local_12])) || ((_local_17 > 0) && ((_arg_1[(_local_17 - 1)][_local_12] == _local_6) == _local_4)))) break;
-                            _local_12++;
+                            if ((((!(tileMap[local2][local5] == local4)) || (local20[local2][local5])) || ((local2 > 0) && ((tileMap[(local2 - 1)][local5] == local4) == local8)))) break;
+                            local5++;
                         };
 
-                        _local_14 = ((_local_12 == _local_19) || (!(_arg_1[_local_17][_local_12] == _local_6)));
-                        _local_13 = false;
-                        _local_8 = (_local_17 + 1);
+                        local9 = ((local5 == local19) || (!(tileMap[local2][local5] == local4)));
+                        local13 = false;
+                        local6 = (local2 + 1);
 
-                        while (((_local_8 < _local_5) && (!(_local_13))))
+                        while (((local6 < local18) && (!(local13))))
                         {
-                            _local_20 = (!(_arg_1[_local_8][_local_18] == _local_6));
-                            _local_13 = (((_local_20) || ((_local_18 > 0) && ((_arg_1[_local_8][(_local_18 - 1)] == _local_6) == _local_9))) || ((_local_12 < _local_19) && ((_arg_1[_local_8][_local_12] == _local_6) == _local_14)));
-                            _local_15 = _local_18;
+                            local10 = (!(tileMap[local6][local3] == local4));
+                            local13 = (((local10) || ((local3 > 0) && ((tileMap[local6][(local3 - 1)] == local4) == local7))) || ((local5 < local19) && ((tileMap[local6][local5] == local4) == local9)));
+                            local11 = local3;
 
-                            while (_local_15 < _local_12)
+                            while (local11 < local5)
                             {
-                                if ((_arg_1[_local_8][_local_15] == _local_6) == _local_20)
+                                if ((tileMap[local6][local11] == local4) == local10)
                                 {
-                                    _local_13 = true;
-                                    _local_12 = _local_15;
+                                    local13 = true;
+                                    local5 = local11;
                                     break;
                                 };
 
-                                _local_15++;
+                                local11++;
                             };
 
-                            if (_local_13) break;
-                            _local_8++;
+                            if (local13) break;
+                            local6++;
                         };
 
-                        if (!_local_20)
+                        if (!local10)
                         {
-                            _local_20 = (_local_8 == _local_5);
+                            local10 = (local6 == local18);
                         };
 
-                        _local_14 = ((_local_12 == _local_19) || (!(_arg_1[_local_17][_local_12] == _local_6)));
-                        _local_16 = _local_17;
+                        local9 = ((local5 == local19) || (!(tileMap[local2][local5] == local4)));
+                        local12 = local2;
 
-                        while (_local_16 < _local_8)
+                        while (local12 < local6)
                         {
-                            _local_15 = _local_18;
+                            local11 = local3;
 
-                            while (_local_15 < _local_12)
+                            while (local11 < local5)
                             {
-                                _local_2[_local_16][_local_15] = true;
-                                _local_15++;
+                                local20[local12][local11] = true;
+                                local11++;
                             };
 
-                            _local_16++;
+                            local12++;
                         };
 
-                        _local_7 = ((_local_18 / 4) - 0.5);
-                        _local_10 = ((_local_17 / 4) - 0.5);
-                        _local_11 = ((_local_12 - _local_18) / 4);
-                        _local_21 = ((_local_8 - _local_17) / 4);
-                        addFloor(new Vector3d((_local_7 + _local_11), (_local_10 + _local_21), (_local_6 / 4)), new Vector3d(-(_local_11), 0, 0), new Vector3d(0, -(_local_21), 0), _local_14, _local_9, _local_20, _local_4);
+                        local14 = ((local3 / 4) - 0.5);
+                        local15 = ((local2 / 4) - 0.5);
+                        local16 = ((local5 - local3) / 4);
+                        local17 = ((local6 - local2) / 4);
+                        addFloor(new Vector3d((local14 + local16), (local15 + local17), (local4 / 4)), new Vector3d(-(local16), 0, 0), new Vector3d(0, -(local17), 0), local9, local7, local10, local8);
                     };
 
-                    _local_18++;
+                    local3++;
                 };
 
-                _local_17++;
+                local2++;
             };
         }
 
     }
 }
-
+
+
+
+
+

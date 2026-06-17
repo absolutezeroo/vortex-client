@@ -6,10 +6,10 @@
         private var _postureType:String;
         private var _parameter:String;
 
-        public function RoomObjectAvatarPostureUpdateMessage(_arg_1:String, _arg_2:String="")
+        public function RoomObjectAvatarPostureUpdateMessage(postureType:String, parameter:String="")
         {
-            _postureType = _arg_1;
-            _parameter = _arg_2;
+            _postureType = postureType;
+            _parameter = parameter;
         }
 
         public function get postureType():String

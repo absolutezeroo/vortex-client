@@ -5,14 +5,14 @@
 
         private static const PREVIEW_ROOM_ID_BASE:int = 0x7FFF0000;
 
-        public static function makeRoomPreviewerId(_arg_1:int):int
+        public static function makeRoomPreviewerId(roomId:int):int
         {
-            return ((_arg_1 & 0xFFFF) + 0x7FFF0000);
+            return ((roomId & 0xFFFF) + 0x7FFF0000);
         }
 
-        public static function isRoomPreviewerId(_arg_1:int):Boolean
+        public static function isRoomPreviewerId(roomId:int):Boolean
         {
-            return (_arg_1 >= 0x7FFF0000);
+            return (roomId >= 0x7FFF0000);
         }
 
     }

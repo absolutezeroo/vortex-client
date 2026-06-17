@@ -63,7 +63,7 @@ package
             _arg_1.readBytes(_local_4, 0, _local_3);
 
             var _local_5:RC4 = new RC4(_arg_2);
-            _local_5._SafeStr_248(_local_4);
+            _local_5.decrypt(_local_4);
             _local_4.position = 0;
             _SafeStr_258.push(_local_4.readUTFBytes(_local_4.length));
         }

@@ -19,37 +19,37 @@
         private var _isLastFrame:Boolean = false;
         private var _isRecycled:Boolean = false;
 
-        public static function allocate(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:int, _arg_6:Boolean, _arg_7:int=-1, _arg_8:int=0):AnimationFrame
+        public static function allocate(id:int, x:int, y:int, repeats:int, frameRepeats:int, isLastFrame:Boolean, activeSequence:int=-1, activeSequenceOffset:int=0):AnimationFrame
         {
-            var _local_9:AnimationFrame = ((_SafeStr_1036.length > 0) ? _SafeStr_1036.pop() : new AnimationFrame());
-            _local_9._isRecycled = false;
-            _local_9._id = _arg_1;
-            _local_9._x = _arg_2;
-            _local_9._y = _arg_3;
-            _local_9._isLastFrame = _arg_6;
+            var frame:AnimationFrame = ((_SafeStr_1036.length > 0) ? _SafeStr_1036.pop() : new AnimationFrame());
+            frame._isRecycled = false;
+            frame._id = id;
+            frame._x = x;
+            frame._y = y;
+            frame._isLastFrame = isLastFrame;
 
-            if (_arg_4 < 1)
+            if (repeats < 1)
             {
-                _arg_4 = 1;
+                repeats = 1;
             };
 
-            _local_9._repeats = _arg_4;
+            frame._repeats = repeats;
 
-            if (_arg_5 < 0)
+            if (frameRepeats < 0)
             {
-                _arg_5 = -1;
+                frameRepeats = -1;
             };
 
-            _local_9._frameRepeats = _arg_5;
-            _local_9._remainingFrameRepeats = _arg_5;
+            frame._frameRepeats = frameRepeats;
+            frame._remainingFrameRepeats = frameRepeats;
 
-            if (_arg_7 >= 0)
+            if (activeSequence >= 0)
             {
-                _local_9._activeSequence = _arg_7;
-                _local_9._activeSequenceOffset = _arg_8;
+                frame._activeSequence = activeSequence;
+                frame._activeSequenceOffset = activeSequenceOffset;
             };
 
-            return (_local_9);
+            return (frame);
         }
 
         public function get id():int
@@ -97,19 +97,19 @@
             return (_remainingFrameRepeats);
         }
 
-        public function set remainingFrameRepeats(_arg_1:int):void
+        public function set remainingFrameRepeats(value:int):void
         {
-            if (_arg_1 < 0)
+            if (value < 0)
             {
-                _arg_1 = 0;
+                value = 0;
             };
 
-            if (((_frameRepeats > 0) && (_arg_1 > _frameRepeats)))
+            if (((_frameRepeats > 0) && (value > _frameRepeats)))
             {
-                _arg_1 = _frameRepeats;
+                value = _frameRepeats;
             };
 
-            _remainingFrameRepeats = _arg_1;
+            _remainingFrameRepeats = value;
         }
 
         public function get activeSequence():int

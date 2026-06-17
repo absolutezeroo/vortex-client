@@ -1,8 +1,8 @@
-﻿package com.sulake.habbo.room.object.visualization.pet
+package com.sulake.habbo.room.object.visualization.pet
 {
     import com.sulake.habbo.room.object.visualization.data.AnimationSizeData;
     import com.sulake.core.utils.Map;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.habbo.room.object.visualization.data.*;
 
     public class PetAnimationSizeData extends AnimationSizeData 
@@ -14,26 +14,26 @@
         private var _gesturesToAnimations:Map = new Map();
         private var _defaultPosture:String;
 
-        public function PetAnimationSizeData(_arg_1:int, _arg_2:int)
+        public function PetAnimationSizeData(size:int, scale:int)
         {
-            super(_arg_1, _arg_2);
+            super(size, scale);
         }
 
-        public function definePostures(_arg_1:XML):Boolean
+        public function definePostures(data:XML):Boolean
         {
-            var _local_5:int;
-            var _local_2:XML;
-            var _local_6:String;
-            var _local_7:int;
+            var i:int;
+            var postureNode:XML;
+            var id:String;
+            var animationId:int;
 
-            if (_arg_1 == null)
+            if (data == null)
             {
                 return (false);
             };
 
-            if (_SafeStr_93.checkRequiredAttributes(_arg_1, ["defaultPosture"]))
+            if (XmlUtil.checkRequiredAttributes(data, ["defaultPosture"]))
             {
-                _defaultPosture = _arg_1.@defaultPosture;
+                _defaultPosture = data.@defaultPosture;
             }
 
             else
@@ -41,29 +41,29 @@
                 _defaultPosture = null;
             };
 
-            var _local_3:Array = ["id", "animationId"];
-            var _local_4:XMLList = _arg_1.posture;
-            _local_5 = 0;
+            var requiredAttributes:Array = ["id", "animationId"];
+            var postureList:XMLList = data.posture;
+            i = 0;
 
-            while (_local_5 < _local_4.length())
+            while (i < postureList.length())
             {
-                _local_2 = _local_4[_local_5];
+                postureNode = postureList[i];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_2, _local_3))
+                if (!XmlUtil.checkRequiredAttributes(postureNode, requiredAttributes))
                 {
                     return (false);
                 };
 
-                _local_6 = String(_local_2.@id);
-                _local_7 = int(_local_2.@animationId);
-                _posturesToAnimations.add(_local_6, _local_7);
+                id = String(postureNode.@id);
+                animationId = int(postureNode.@animationId);
+                _posturesToAnimations.add(id, animationId);
 
                 if (_defaultPosture == null)
                 {
-                    _defaultPosture = _local_6;
+                    _defaultPosture = id;
                 };
 
-                _local_5++;
+                i++;
             };
 
             if (_posturesToAnimations.getValue(_defaultPosture) == null)
@@ -74,53 +74,53 @@
             return (true);
         }
 
-        public function defineGestures(_arg_1:XML):Boolean
+        public function defineGestures(data:XML):Boolean
         {
-            var _local_2:int;
-            var _local_7:XML;
-            var _local_3:String;
-            var _local_5:int;
+            var i:int;
+            var gestureNode:XML;
+            var id:String;
+            var animationId:int;
 
-            if (_arg_1 == null)
+            if (data == null)
             {
                 return (true);
             };
 
-            var _local_4:Array = ["id", "animationId"];
-            var _local_6:XMLList = _arg_1.gesture;
-            _local_2 = 0;
+            var requiredAttributes:Array = ["id", "animationId"];
+            var gestureList:XMLList = data.gesture;
+            i = 0;
 
-            while (_local_2 < _local_6.length())
+            while (i < gestureList.length())
             {
-                _local_7 = _local_6[_local_2];
+                gestureNode = gestureList[i];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_7, _local_4))
+                if (!XmlUtil.checkRequiredAttributes(gestureNode, requiredAttributes))
                 {
                     return (false);
                 };
 
-                _local_3 = String(_local_7.@id);
-                _local_5 = int(_local_7.@animationId);
-                _gesturesToAnimations.add(_local_3, _local_5);
-                _local_2++;
+                id = String(gestureNode.@id);
+                animationId = int(gestureNode.@animationId);
+                _gesturesToAnimations.add(id, animationId);
+                i++;
             };
 
             return (true);
         }
 
-        public function getAnimationForPosture(_arg_1:String):int
+        public function getAnimationForPosture(posture:String):int
         {
-            if (_posturesToAnimations.getValue(_arg_1) == null)
+            if (_posturesToAnimations.getValue(posture) == null)
             {
-                _arg_1 = _defaultPosture;
+                posture = _defaultPosture;
             };
 
-            return (_posturesToAnimations.getValue(_arg_1));
+            return (_posturesToAnimations.getValue(posture));
         }
 
-        public function getGestureDisabled(_arg_1:String):Boolean
+        public function getGestureDisabled(gesture:String):Boolean
         {
-            if (_arg_1 == "ded")
+            if (gesture == "ded")
             {
                 return (true);
             };
@@ -128,43 +128,43 @@
             return (false);
         }
 
-        public function getAnimationForGesture(_arg_1:String):int
+        public function getAnimationForGesture(gesture:String):int
         {
-            if (_gesturesToAnimations.getValue(_arg_1) == null)
+            if (_gesturesToAnimations.getValue(gesture) == null)
             {
                 return (-1);
             };
 
-            return (_gesturesToAnimations.getValue(_arg_1));
+            return (_gesturesToAnimations.getValue(gesture));
         }
 
-        public function getPostureForAnimation(_arg_1:int, _arg_2:Boolean):String
+        public function getPostureForAnimation(animationId:int, useDefault:Boolean):String
         {
-            if (((_arg_1 >= 0) && (_arg_1 < _posturesToAnimations.length)))
+            if (((animationId >= 0) && (animationId < _posturesToAnimations.length)))
             {
-                return (_posturesToAnimations.getKey(_arg_1));
+                return (_posturesToAnimations.getKey(animationId));
             };
 
-            return ((_arg_2) ? _defaultPosture : null);
+            return ((useDefault) ? _defaultPosture : null);
         }
 
-        public function getGestureForAnimation(_arg_1:int):String
+        public function getGestureForAnimation(animationId:int):String
         {
-            if (((_arg_1 >= 0) && (_arg_1 < _gesturesToAnimations.length)))
+            if (((animationId >= 0) && (animationId < _gesturesToAnimations.length)))
             {
-                return (_gesturesToAnimations.getKey(_arg_1));
+                return (_gesturesToAnimations.getKey(animationId));
             };
 
             return (null);
         }
 
-        public function getGestureForAnimationId(_arg_1:int):String
+        public function getGestureForAnimationId(animationId:int):String
         {
-            for each (var _local_2:String in _gesturesToAnimations.getKeys())
+            for each (var gestureKey:String in _gesturesToAnimations.getKeys())
             {
-                if (_gesturesToAnimations.getValue(_local_2) == _arg_1)
+                if (_gesturesToAnimations.getValue(gestureKey) == animationId)
                 {
-                    return (_local_2);
+                    return (gestureKey);
                 };
             };
 
@@ -183,4 +183,4 @@
 
     }
 }
-
+

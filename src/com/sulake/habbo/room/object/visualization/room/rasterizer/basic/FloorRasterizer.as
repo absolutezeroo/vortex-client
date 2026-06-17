@@ -1,6 +1,6 @@
-﻿package com.sulake.habbo.room.object.visualization.room.rasterizer.basic
+package com.sulake.habbo.room.object.visualization.room.rasterizer.basic
 {
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import flash.display.BitmapData;
     import com.sulake.habbo.room.object.visualization.room.utils.PlaneBitmapData;
     import com.sulake.room.utils.IVector3d;
@@ -15,61 +15,61 @@
                 return;
             };
 
-            var _local_1:XMLList = data.floors;
+            var floorsList:XMLList = data.floors;
 
-            if (_local_1.length() > 0)
+            if (floorsList.length() > 0)
             {
-                parseFloors(_local_1[0]);
+                parseFloors(floorsList[0]);
             };
         }
 
-        private function parseFloors(_arg_1:XML):void
+        private function parseFloors(floorsXml:XML):void
         {
-            var _local_4:int;
-            var _local_7:XML;
-            var _local_5:String;
-            var _local_3:XMLList;
-            var _local_6:FloorPlane;
+            var i:int;
+            var floorXml:XML;
+            var id:String;
+            var visualizationList:XMLList;
+            var floorPlane:FloorPlane;
 
-            if (_arg_1 == null)
+            if (floorsXml == null)
             {
                 return;
             };
 
-            var _local_2:XMLList = _arg_1.floor;
-            _local_4 = 0;
+            var floorList:XMLList = floorsXml.floor;
+            i = 0;
 
-            while (_local_4 < _local_2.length())
+            while (i < floorList.length())
             {
-                _local_7 = _local_2[_local_4];
+                floorXml = floorList[i];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_7, ["id"]))
+                if (XmlUtil.checkRequiredAttributes(floorXml, ["id"]))
                 {
-                    _local_5 = _local_7.@id;
-                    _local_3 = _local_7.visualization;
-                    _local_6 = new FloorPlane();
-                    parseVisualizations(_local_6, _local_3);
+                    id = floorXml.@id;
+                    visualizationList = floorXml.visualization;
+                    floorPlane = new FloorPlane();
+                    parseVisualizations(floorPlane, visualizationList);
 
-                    if (!addPlane(_local_5, _local_6))
+                    if (!addPlane(id, floorPlane))
                     {
-                        _local_6.dispose();
+                        floorPlane.dispose();
                     };
                 };
 
-                _local_4++;
+                i++;
             };
         }
 
         override public function render(canvas:BitmapData, id:String, width:Number, height:Number, scale:Number, normal:IVector3d, useTexture:Boolean, offsetX:Number=0, offsetY:Number=0, maxX:Number=0, maxY:Number=0, timeSinceStartMs:int=0):PlaneBitmapData
         {
-            var _local_15:FloorPlane = (getPlane(id) as FloorPlane);
+            var floorPlane:FloorPlane = (getPlane(id) as FloorPlane);
 
-            if (_local_15 == null)
+            if (floorPlane == null)
             {
-                _local_15 = (getPlane("default") as FloorPlane);
+                floorPlane = (getPlane("default") as FloorPlane);
             };
 
-            if (_local_15 == null)
+            if (floorPlane == null)
             {
                 return (null);
             };
@@ -79,30 +79,30 @@
                 canvas.fillRect(canvas.rect, 0xFFFFFF);
             };
 
-            var _local_14:BitmapData = _local_15.render(canvas, width, height, scale, normal, useTexture, offsetX, offsetY);
+            var bitmapData:BitmapData = floorPlane.render(canvas, width, height, scale, normal, useTexture, offsetX, offsetY);
 
-            if (((!(_local_14 == null)) && (!(_local_14 == canvas))))
+            if (((!(bitmapData == null)) && (!(bitmapData == canvas))))
             {
                 try
                 {
-                    _local_14 = _local_14.clone();
+                    bitmapData = bitmapData.clone();
                 }
 
                 catch(e:Error)
                 {
-                    if (_local_14)
+                    if (bitmapData)
                     {
-                        _local_14.dispose();
+                        bitmapData.dispose();
                     };
 
                     return (null);
                 };
             };
 
-            var _local_13:PlaneBitmapData = new PlaneBitmapData(_local_14, -1);
-            return (_local_13);
+            var planeBitmapData:PlaneBitmapData = new PlaneBitmapData(bitmapData, -1);
+            return (planeBitmapData);
         }
 
     }
 }
-
+

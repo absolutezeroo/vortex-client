@@ -1,4 +1,4 @@
-﻿package com.sulake.bootstrap
+package com.sulake.bootstrap
 {
     import com.sulake.core.communication.CoreCommunicationManager;
     import com.sulake.core.runtime.IContext;
@@ -6,9 +6,9 @@
     public class CoreCommunicationManagerBootstrap extends CoreCommunicationManager 
     {
 
-        public function CoreCommunicationManagerBootstrap(_arg_1:IContext, _arg_2:uint=0)
+        public function CoreCommunicationManagerBootstrap(context:IContext, flags:uint=0)
         {
-            super(_arg_1, _arg_2);
+            super(context, flags);
         }
 
     }

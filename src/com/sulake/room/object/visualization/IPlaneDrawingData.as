@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.visualization
+package com.sulake.room.object.visualization
 {
     import __AS3__.vec.Vector;
     import flash.geom.Point;
@@ -6,9 +6,9 @@
     public /*dynamic*/ interface IPlaneDrawingData 
     {
 
-        function set z(_arg_1:Number):void;
+        function set z(_z:Number):void;
         function get z():Number;
-        function set cornerPoints(_arg_1:Vector.<Point>):void;
+        function set cornerPoints(_cornerPoints:Vector.<Point>):void;
         function get cornerPoints():Vector.<Point>;
         function get color():uint;
         function get maskAssetNames():Array;

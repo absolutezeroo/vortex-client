@@ -11,11 +11,11 @@
         private var _type:String = "";
         private var _visible:Boolean = false;
 
-        public function RoomObjectRoomPlaneVisibilityUpdateMessage(_arg_1:String, _arg_2:Boolean)
+        public function RoomObjectRoomPlaneVisibilityUpdateMessage(type:String, visible:Boolean)
         {
             super(null, null);
-            _type = _arg_1;
-            _visible = _arg_2;
+            _type = type;
+            _visible = visible;
         }
 
         public function get type():String

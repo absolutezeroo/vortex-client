@@ -14,14 +14,14 @@
         private var _color:uint;
         private var _brightness:int;
 
-        public function RoomObjectDimmerStateUpdateEvent(_arg_1:IRoomObject, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:uint, _arg_6:int, _arg_7:Boolean=false, _arg_8:Boolean=false)
+        public function RoomObjectDimmerStateUpdateEvent(roomObject:IRoomObject, state:int, presetId:int, effectId:int, color:uint, brightness:int, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super("RODSUE_DIMMER_STATE", _arg_1, _arg_7, _arg_8);
-            _state = _arg_2;
-            _presetId = _arg_3;
-            _effectId = _arg_4;
-            _color = _arg_5;
-            _brightness = _arg_6;
+            super("RODSUE_DIMMER_STATE", roomObject, bubbles, cancelable);
+            _state = state;
+            _presetId = presetId;
+            _effectId = effectId;
+            _color = color;
+            _brightness = brightness;
         }
 
         public function get state():int

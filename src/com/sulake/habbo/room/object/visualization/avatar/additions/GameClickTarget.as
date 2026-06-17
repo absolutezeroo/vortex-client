@@ -15,9 +15,9 @@
         private var _bitmap:BitmapData;
         private var _disposed:Boolean;
 
-        public function GameClickTarget(_arg_1:int)
+        public function GameClickTarget(id:int)
         {
-            _id = _arg_1;
+            _id = id;
         }
 
         public function get id():int
@@ -39,14 +39,14 @@
             };
         }
 
-        public function animate(_arg_1:IRoomObjectSprite):Boolean
+        public function animate(sprite:IRoomObjectSprite):Boolean
         {
             return (false);
         }
 
-        public function update(_arg_1:IRoomObjectSprite, _arg_2:Number):void
+        public function update(sprite:IRoomObjectSprite, scale:Number):void
         {
-            if (!_arg_1)
+            if (!sprite)
             {
                 return;
             };
@@ -56,11 +56,11 @@
                 _bitmap = new BitmapData(46, 60, true, 0);
             };
 
-            _arg_1.visible = true;
-            _arg_1.asset = _bitmap;
-            _arg_1.offsetX = -23;
-            _arg_1.offsetY = -48;
-            _arg_1.alphaTolerance = -1;
+            sprite.visible = true;
+            sprite.asset = _bitmap;
+            sprite.offsetX = -23;
+            sprite.offsetY = -48;
+            sprite.alphaTolerance = -1;
         }
 
     }

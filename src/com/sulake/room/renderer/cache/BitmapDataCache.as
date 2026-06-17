@@ -13,12 +13,12 @@
         private var _maxMemory:int = 0;
         private var _increaseSize:int = 0;
 
-        public function BitmapDataCache(_arg_1:int, _arg_2:int, _arg_3:int=1)
+        public function BitmapDataCache(memLimitMb:int, maxMemoryMb:int, increaseSizeMb:int=1)
         {
             _dataMap = new Map();
-            _memLimit = ((_arg_1 * 0x0400) * 0x0400);
-            _maxMemory = ((_arg_2 * 0x0400) * 0x0400);
-            _increaseSize = ((_arg_3 * 0x0400) * 0x0400);
+            _memLimit = ((memLimitMb * 0x0400) * 0x0400);
+            _maxMemory = ((maxMemoryMb * 0x0400) * 0x0400);
+            _increaseSize = ((increaseSizeMb * 0x0400) * 0x0400);
 
             if (_increaseSize < 0)
             {
@@ -38,17 +38,17 @@
 
         public function dispose():void
         {
-            var _local_1:Array;
+            var _keys:Array;
 
             if (_dataMap != null)
             {
-                _local_1 = _dataMap.getKeys();
+                _keys = _dataMap.getKeys();
 
-                for each (var _local_2:String in _local_1)
+                for each (var _key:String in _keys)
                 {
-                    if (!removeItem(_local_2))
+                    if (!removeItem(_key))
                     {
-                        Logger.log((("Failed to remove item " + _local_2) + " from room canvas bitmap cache!"));
+                        Logger.log((("Failed to remove item " + _key) + " from room canvas bitmap cache!"));
                     };
                 };
 
@@ -59,24 +59,24 @@
 
         public function compress():void
         {
-            var _local_1:Array;
-            var _local_2:BitmapDataCacheItem;
-            var _local_3:int;
+            var _values:Array;
+            var _item:BitmapDataCacheItem;
+            var _index:int;
 
             if (memUsage > memLimit)
             {
-                _local_1 = _dataMap.getValues();
-                _local_1.sortOn("useCount", 16);
-                _local_1.reverse();
-                _local_3 = (_local_1.length - 1);
+                _values = _dataMap.getValues();
+                _values.sortOn("useCount", 16);
+                _values.reverse();
+                _index = (_values.length - 1);
 
-                while (_local_3 >= 0)
+                while (_index >= 0)
                 {
-                    _local_2 = (_local_1[_local_3] as BitmapDataCacheItem);
+                    _item = (_values[_index] as BitmapDataCacheItem);
 
-                    if (_local_2.useCount <= 1)
+                    if (_item.useCount <= 1)
                     {
-                        removeItem(_local_2.name);
+                        removeItem(_item.name);
                     }
 
                     else
@@ -84,7 +84,7 @@
                         break;
                     };
 
-                    _local_3--;
+                    _index--;
                 };
 
                 increaseMemoryLimit();
@@ -101,22 +101,22 @@
             };
         }
 
-        private function removeItem(_arg_1:String):Boolean
+        private function removeItem(name:String):Boolean
         {
-            if (_arg_1 == null)
+            if (name == null)
             {
                 return (false);
             };
 
-            var _local_2:BitmapDataCacheItem = (_dataMap.getValue(_arg_1) as BitmapDataCacheItem);
+            var _item:BitmapDataCacheItem = (_dataMap.getValue(name) as BitmapDataCacheItem);
 
-            if (_local_2 != null)
+            if (_item != null)
             {
-                if (_local_2.useCount <= 1)
+                if (_item.useCount <= 1)
                 {
-                    _dataMap.remove(_local_2.name);
-                    _memUsage = (_memUsage - _local_2.memUsage);
-                    _local_2.dispose();
+                    _dataMap.remove(_item.name);
+                    _memUsage = (_memUsage - _item.memUsage);
+                    _item.dispose();
                     return (true);
                 };
 
@@ -126,48 +126,48 @@
             return (false);
         }
 
-        public function getBitmapData(_arg_1:String):ExtendedBitmapData
+        public function getBitmapData(name:String):ExtendedBitmapData
         {
-            var _local_2:BitmapDataCacheItem = (_dataMap.getValue(_arg_1) as BitmapDataCacheItem);
+            var _item:BitmapDataCacheItem = (_dataMap.getValue(name) as BitmapDataCacheItem);
 
-            if (_local_2 == null)
+            if (_item == null)
             {
                 return (null);
             };
 
-            return (_local_2.bitmapData);
+            return (_item.bitmapData);
         }
 
-        public function addBitmapData(_arg_1:String, _arg_2:ExtendedBitmapData):void
+        public function addBitmapData(name:String, bitmapData:ExtendedBitmapData):void
         {
-            var _local_4:BitmapData;
+            var _previousBitmapData:BitmapData;
 
-            if (_arg_2 == null)
+            if (bitmapData == null)
             {
                 return;
             };
 
-            var _local_3:BitmapDataCacheItem = (_dataMap.getValue(_arg_1) as BitmapDataCacheItem);
+            var _item:BitmapDataCacheItem = (_dataMap.getValue(name) as BitmapDataCacheItem);
 
-            if (_local_3 != null)
+            if (_item != null)
             {
-                _local_4 = _local_3.bitmapData;
+                _previousBitmapData = _item.bitmapData;
 
-                if (_local_4 != null)
+                if (_previousBitmapData != null)
                 {
-                    _memUsage = (_memUsage - ((_local_4.width * _local_4.height) * 4));
+                    _memUsage = (_memUsage - ((_previousBitmapData.width * _previousBitmapData.height) * 4));
                 };
 
-                _local_3.bitmapData = _arg_2;
+                _item.bitmapData = bitmapData;
             }
 
             else
             {
-                _local_3 = new BitmapDataCacheItem(_arg_2, _arg_1);
-                _dataMap.add(_arg_1, _local_3);
+                _item = new BitmapDataCacheItem(bitmapData, name);
+                _dataMap.add(name, _item);
             };
 
-            _memUsage = (_memUsage + ((_arg_2.width * _arg_2.height) * 4));
+            _memUsage = (_memUsage + ((bitmapData.width * bitmapData.height) * 4));
         }
 
     }

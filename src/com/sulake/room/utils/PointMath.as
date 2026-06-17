@@ -5,19 +5,19 @@
     public class PointMath 
     {
 
-        public static function sum(_arg_1:Point, _arg_2:Point):Point
+        public static function sum(pointA:Point, pointB:Point):Point
         {
-            return (new Point((_arg_1.x + _arg_2.x), (_arg_1.y + _arg_2.y)));
+            return (new Point((pointA.x + pointB.x), (pointA.y + pointB.y)));
         }
 
-        public static function sub(_arg_1:Point, _arg_2:Point):Point
+        public static function sub(pointA:Point, pointB:Point):Point
         {
-            return (new Point((_arg_1.x - _arg_2.x), (_arg_1.y - _arg_2.y)));
+            return (new Point((pointA.x - pointB.x), (pointA.y - pointB.y)));
         }
 
-        public static function mul(_arg_1:Point, _arg_2:Number):Point
+        public static function mul(point:Point, scale:Number):Point
         {
-            return (new Point((_arg_1.x * _arg_2), (_arg_1.y * _arg_2)));
+            return (new Point((point.x * scale), (point.y * scale)));
         }
 
     }

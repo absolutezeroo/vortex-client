@@ -12,35 +12,35 @@ package onBoardingHc
         private var _loader:Loader;
         private var _url:String;
 
-        public function ImageLoader(_arg_1:Loader, _arg_2:String)
+        public function ImageLoader(loader:Loader, imageUrl:String)
         {
-            _loader = _arg_1;
-            _url = _arg_2;
+            _loader = loader;
+            _url = imageUrl;
 
-            var _local_3:URLRequest = new URLRequest(_arg_2);
-            _arg_1.load(_local_3);
-            _arg_1.contentLoaderInfo.addEventListener("complete", onLoadComplete);
-            _arg_1.contentLoaderInfo.addEventListener("error", onLoadError);
-            _arg_1.contentLoaderInfo.addEventListener("ioError", onLoadError);
-            _arg_1.contentLoaderInfo.addEventListener("securityError", onLoadError);
+            var request:URLRequest = new URLRequest(imageUrl);
+            loader.load(request);
+            loader.contentLoaderInfo.addEventListener("complete", onLoadComplete);
+            loader.contentLoaderInfo.addEventListener("error", onLoadError);
+            loader.contentLoaderInfo.addEventListener("ioError", onLoadError);
+            loader.contentLoaderInfo.addEventListener("securityError", onLoadError);
         }
 
-        public static function CreateLoader(_arg_1:Loader, _arg_2:String, _arg_3:Function):ImageLoader
+        public static function CreateLoader(loader:Loader, imageUrl:String, completeHandler:Function):ImageLoader
         {
-            var _local_4:ImageLoader = new ImageLoader(_arg_1, _arg_2);
-            _local_4.addEventListener("complete", _arg_3);
-            return (_local_4);
+            var imageLoader:ImageLoader = new ImageLoader(loader, imageUrl);
+            imageLoader.addEventListener("complete", completeHandler);
+            return (imageLoader);
         }
 
-        private function onLoadComplete(_arg_1:Event):void
+        private function onLoadComplete(loadEvent:Event):void
         {
             Logger.log(("[ImageLoader] Loaded: " + _url));
             dispatchEvent(new ImageLoaderEvent("complete", _loader, _url));
         }
 
-        private function onLoadError(_arg_1:ErrorEvent):void
+        private function onLoadError(errorEvent:ErrorEvent):void
         {
-            Logger.log(("[ImageLoader] Failed: " + _arg_1.text));
+            Logger.log(("[ImageLoader] Failed: " + errorEvent.text));
         }
 
     }

@@ -8,10 +8,10 @@
 
         private var _object:IRoomObject;
 
-        public function RoomObjectEvent(_arg_1:String, _arg_2:IRoomObject, _arg_3:Boolean=false, _arg_4:Boolean=false)
+        public function RoomObjectEvent(type:String, roomObject:IRoomObject, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_3, _arg_4);
-            _object = _arg_2;
+            super(type, bubbles, cancelable);
+            _object = roomObject;
         }
 
         public function get object():IRoomObject

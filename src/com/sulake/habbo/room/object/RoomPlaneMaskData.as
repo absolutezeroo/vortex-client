@@ -8,12 +8,12 @@
         private var _leftSideLength:Number = 0;
         private var _rightSideLength:Number = 0;
 
-        public function RoomPlaneMaskData(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number)
+        public function RoomPlaneMaskData(leftSideLoc:Number, rightSideLoc:Number, leftSideLength:Number, rightSideLength:Number)
         {
-            _leftSideLoc = _arg_1;
-            _rightSideLoc = _arg_2;
-            _leftSideLength = _arg_3;
-            _rightSideLength = _arg_4;
+            _leftSideLoc = leftSideLoc;
+            _rightSideLoc = rightSideLoc;
+            _leftSideLength = leftSideLength;
+            _rightSideLength = rightSideLength;
         }
 
         public function get leftSideLoc():Number

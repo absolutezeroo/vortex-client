@@ -11,14 +11,14 @@
         private var _color:uint;
         private var _brightness:int;
 
-        public function RoomEngineDimmerStateEvent(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:uint, _arg_6:uint, _arg_7:Boolean=false, _arg_8:Boolean=false)
+        public function RoomEngineDimmerStateEvent(roomId:int, state:int, presetId:int, effectId:int, color:uint, brightness:uint, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super("REDSE_ROOM_COLOR", _arg_1, _arg_7, _arg_8);
-            _state = _arg_2;
-            _presetId = _arg_3;
-            _effectId = _arg_4;
-            _color = _arg_5;
-            _brightness = _arg_6;
+            super("REDSE_ROOM_COLOR", roomId, bubbles, cancelable);
+            _state = state;
+            _presetId = presetId;
+            _effectId = effectId;
+            _color = color;
+            _brightness = brightness;
         }
 
         public function get state():int

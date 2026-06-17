@@ -1,9 +1,9 @@
-﻿package com.sulake.habbo.room.object.visualization.room.rasterizer.animated
+package com.sulake.habbo.room.object.visualization.room.rasterizer.animated
 {
     import com.sulake.habbo.room.object.visualization.room.rasterizer.basic.PlaneRasterizer;
     import com.sulake.habbo.room.object.visualization.room.rasterizer.basic.PlaneVisualization;
     import com.sulake.habbo.room.object.visualization.room.rasterizer.basic.PlaneMaterial;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.habbo.room.object.visualization.room.utils.Randomizer;
     import flash.display.BitmapData;
     import com.sulake.habbo.room.object.visualization.room.utils.PlaneBitmapData;
@@ -17,20 +17,20 @@
         private var _landscapeWidth:int = 0;
         private var _landscapeHeight:int = 0;
 
-        override public function initializeDimensions(_arg_1:int, _arg_2:int):Boolean
+        override public function initializeDimensions(width:int, height:int):Boolean
         {
-            if (_arg_1 < 0)
+            if (width < 0)
             {
-                _arg_1 = 0;
+                width = 0;
             };
 
-            if (_arg_2 < 0)
+            if (height < 0)
             {
-                _arg_2 = 0;
+                height = 0;
             };
 
-            _landscapeWidth = _arg_1;
-            _landscapeHeight = _arg_2;
+            _landscapeWidth = width;
+            _landscapeHeight = height;
             return (true);
         }
 
@@ -41,15 +41,15 @@
                 return;
             };
 
-            var _local_1:XMLList = data.landscapes;
+            var landscapesList:XMLList = data.landscapes;
 
-            if (_local_1.length() > 0)
+            if (landscapesList.length() > 0)
             {
-                parseLandscapes(_local_1[0]);
+                parseLandscapes(landscapesList[0]);
             };
         }
 
-        private function parseLandscapes(_arg_1:XML):void
+        private function parseLandscapes(landscapesXml:XML):void
         {
             var _local_23:int;
             var _local_29:XML;
@@ -87,21 +87,21 @@
             var _local_21:Number;
             var _local_20:Number;
 
-            if (_arg_1 == null)
+            if (landscapesXml == null)
             {
                 return;
             };
 
             var _local_5:Array = ["id", "assetId"];
             var _local_2:int = int((Math.random() * 654321));
-            var _local_15:XMLList = _arg_1.landscape;
+            var _local_15:XMLList = landscapesXml.landscape;
             _local_23 = 0;
 
             while (_local_23 < _local_15.length())
             {
                 _local_29 = _local_15[_local_23];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_29, ["id"]))
+                if (XmlUtil.checkRequiredAttributes(_local_29, ["id"]))
                 {
                     _local_14 = _local_29.@id;
                     _local_11 = _local_29.animatedVisualization;
@@ -112,7 +112,7 @@
                     {
                         _local_26 = _local_11[_local_24];
 
-                        if (_SafeStr_93.checkRequiredAttributes(_local_26, ["size"]))
+                        if (XmlUtil.checkRequiredAttributes(_local_26, ["size"]))
                         {
                             _local_32 = parseInt(_local_26.@size);
                             _local_19 = _local_26.@horizontalAngle;
@@ -149,7 +149,7 @@
                                         _local_33 = null;
                                         _local_7 = 1;
 
-                                        if (_SafeStr_93.checkRequiredAttributes(_local_8, ["materialId"]))
+                                        if (XmlUtil.checkRequiredAttributes(_local_8, ["materialId"]))
                                         {
                                             _local_27 = _local_8.@materialId;
                                             _local_33 = getMaterial(_local_27);
@@ -204,7 +204,7 @@
 
                                                 if (_local_16 != null)
                                                 {
-                                                    if (_SafeStr_93.checkRequiredAttributes(_local_16, _local_5))
+                                                    if (XmlUtil.checkRequiredAttributes(_local_16, _local_5))
                                                     {
                                                         _local_30 = parseInt(_local_16.@id);
                                                         _local_10 = _local_16.@assetId;
@@ -344,4 +344,4 @@
 
     }
 }
-
+

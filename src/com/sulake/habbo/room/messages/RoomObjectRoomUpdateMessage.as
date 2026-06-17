@@ -12,11 +12,11 @@
         private var _type:String = "";
         private var _value:String = "";
 
-        public function RoomObjectRoomUpdateMessage(_arg_1:String, _arg_2:String)
+        public function RoomObjectRoomUpdateMessage(type:String, value:String)
         {
             super(null, null);
-            _type = _arg_1;
-            _value = _arg_2;
+            _type = type;
+            _value = value;
         }
 
         public function get type():String

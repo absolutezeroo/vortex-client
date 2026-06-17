@@ -1,6 +1,6 @@
-﻿package com.sulake.habbo.room.object.logic.furniture
+package com.sulake.habbo.room.object.logic.furniture
 {
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.room.events.RoomSpriteMouseEvent;
     import com.sulake.room.utils.IRoomGeometry;
 
@@ -35,7 +35,7 @@
             {
                 _local_4 = _local_3[0];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_4, ["type"]))
+                if (XmlUtil.checkRequiredAttributes(_local_4, ["type"]))
                 {
                     _local_2 = _local_4.@type;
                     object.getModelController().setNumber("furniture_uses_plane_mask", 1, true);

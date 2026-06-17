@@ -9,14 +9,14 @@
         private var _name:String = "";
         private var _memUsage:int = 0;
 
-        public function BitmapDataCacheItem(_arg_1:ExtendedBitmapData, _arg_2:String)
+        public function BitmapDataCacheItem(bitmapData:ExtendedBitmapData, name:String)
         {
-            _bitmapData = _arg_1;
-            _name = _arg_2;
+            _bitmapData = bitmapData;
+            _name = name;
 
-            if (_arg_1 != null)
+            if (bitmapData != null)
             {
-                _arg_1.addReference();
+                bitmapData.addReference();
                 _memUsage = ((_bitmapData.width * _bitmapData.height) * 4);
             };
         }
@@ -46,14 +46,14 @@
             return (_name);
         }
 
-        public function set bitmapData(_arg_1:ExtendedBitmapData):void
+        public function set bitmapData(bitmapData:ExtendedBitmapData):void
         {
             if (_bitmapData != null)
             {
                 _bitmapData.dispose();
             };
 
-            _bitmapData = _arg_1;
+            _bitmapData = bitmapData;
 
             if (_bitmapData != null)
             {

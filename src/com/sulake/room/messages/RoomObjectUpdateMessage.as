@@ -5,25 +5,25 @@
     public class RoomObjectUpdateMessage 
     {
 
-        protected var _SafeStr_3181:IVector3d;
-        protected var _SafeStr_1925:IVector3d;
+        protected var _location:IVector3d;
+        protected var _direction:IVector3d;
 
-        public function RoomObjectUpdateMessage(_arg_1:IVector3d, _arg_2:IVector3d)
+        public function RoomObjectUpdateMessage(location:IVector3d, direction:IVector3d)
         {
-            _SafeStr_3181 = _arg_1;
-            _SafeStr_1925 = _arg_2;
+            _location = location;
+            _direction = direction;
         }
 
         public function get loc():IVector3d
         {
-            return (_SafeStr_3181);
+            return (_location);
         }
 
         public function get dir():IVector3d
         {
-            return (_SafeStr_1925);
+            return (_direction);
         }
 
     }
 }
-
+

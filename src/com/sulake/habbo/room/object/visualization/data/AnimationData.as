@@ -1,7 +1,7 @@
-﻿package com.sulake.habbo.room.object.visualization.data
+package com.sulake.habbo.room.object.visualization.data
 {
     import com.sulake.core.utils.Map;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
 
     public class AnimationData
     {
@@ -118,7 +118,7 @@
             {
                 _local_11 = _local_7[_local_8];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_11, _local_10))
+                if (!XmlUtil.checkRequiredAttributes(_local_11, _local_10))
                 {
                     return (false);
                 };
@@ -201,7 +201,7 @@
                 {
                     _local_23 = _local_12[_local_10];
 
-                    if (!_SafeStr_93.checkRequiredAttributes(_local_23, _local_15))
+                    if (!XmlUtil.checkRequiredAttributes(_local_23, _local_15))
                     {
                         _local_18.dispose();
                         return (false);
@@ -258,7 +258,7 @@
                 {
                     _local_4 = _local_3[_local_9];
 
-                    if (_SafeStr_93.checkRequiredAttributes(_local_4, _local_7))
+                    if (XmlUtil.checkRequiredAttributes(_local_4, _local_7))
                     {
                         _local_11 = int(_local_4.@direction);
                         _local_8 = int(_local_4.@x);

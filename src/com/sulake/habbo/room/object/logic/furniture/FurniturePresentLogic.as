@@ -22,29 +22,29 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE_PRESENT"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var eventTypes:Array = ["ROWRE_PRESENT"];
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(updateMessage:RoomObjectUpdateMessage):void
         {
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(updateMessage);
 
-            var _local_2:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (updateMessage as RoomObjectDataUpdateMessage);
 
-            if (((!(_local_2 == null)) && (!(_local_2.data == null))))
+            if (((!(dataUpdateMessage == null)) && (!(dataUpdateMessage.data == null))))
             {
-                _local_2.data.writeRoomObjectModel(object.getModelController());
+                dataUpdateMessage.data.writeRoomObjectModel(object.getModelController());
                 setObjectVariables();
             };
 
-            var _local_3:RoomObjectModelDataUpdateMessage = (_arg_1 as RoomObjectModelDataUpdateMessage);
+            var modelDataUpdateMessage:RoomObjectModelDataUpdateMessage = (updateMessage as RoomObjectModelDataUpdateMessage);
 
-            if (_local_3 != null)
+            if (modelDataUpdateMessage != null)
             {
-                if (_local_3.numberKey == "furniture_disable_picking_animation")
+                if (modelDataUpdateMessage.numberKey == "furniture_disable_picking_animation")
                 {
-                    object.getModelController().setNumber("furniture_disable_picking_animation", _local_3.numberValue);
+                    object.getModelController().setNumber("furniture_disable_picking_animation", modelDataUpdateMessage.numberValue);
                 };
             };
         }
@@ -56,38 +56,38 @@
                 return;
             };
 
-            var _local_2:MapStuffData = new MapStuffData();
-            _local_2.initializeFromRoomObjectModel(object.getModel());
+            var stuffData:MapStuffData = new MapStuffData();
+            stuffData.initializeFromRoomObjectModel(object.getModel());
 
-            var _local_1:String = _local_2.getValue("MESSAGE");
-            var _local_3:String = object.getModel().getString("furniture_data");
+            var message:String = stuffData.getValue("MESSAGE");
+            var legacyFurnitureData:String = object.getModel().getString("furniture_data");
 
-            if (((_local_1 == null) && (!(_local_3 == null))))
+            if (((message == null) && (!(legacyFurnitureData == null))))
             {
-                object.getModelController().setString("furniture_data", _local_3.substr(1));
+                object.getModelController().setString("furniture_data", legacyFurnitureData.substr(1));
             }
 
             else
             {
-                object.getModelController().setString("furniture_data", _local_2.getValue("MESSAGE"));
+                object.getModelController().setString("furniture_data", stuffData.getValue("MESSAGE"));
             };
 
-            setObjectVariable("furniture_type_id", _local_2.getValue("PRODUCT_CODE"));
-            setObjectVariable("furniture_purchaser_name", _local_2.getValue("PURCHASER_NAME"));
-            setObjectVariable("furniture_purchaser_figure", _local_2.getValue("PURCHASER_FIGURE"));
+            setObjectVariable("furniture_type_id", stuffData.getValue("PRODUCT_CODE"));
+            setObjectVariable("furniture_purchaser_name", stuffData.getValue("PURCHASER_NAME"));
+            setObjectVariable("furniture_purchaser_figure", stuffData.getValue("PURCHASER_FIGURE"));
         }
 
-        private function setObjectVariable(_arg_1:String, _arg_2:String):void
+        private function setObjectVariable(key:String, value:String):void
         {
-            if (_arg_2 != null)
+            if (value != null)
             {
-                object.getModelController().setString(_arg_1, _arg_2);
+                object.getModelController().setString(key, value);
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(mouseEvent:RoomSpriteMouseEvent, geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((mouseEvent == null) || (geometry == null)))
             {
                 return;
             };
@@ -97,60 +97,60 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (mouseEvent.type)
             {
                 case "rollOver":
                     eventDispatcher.dispatchEvent(new RoomObjectFurnitureActionEvent("ROFCAE_MOUSE_BUTTON", object));
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(mouseEvent, geometry);
                     return;
                 case "rollOut":
                     eventDispatcher.dispatchEvent(new RoomObjectFurnitureActionEvent("ROFCAE_MOUSE_ARROW", object));
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(mouseEvent, geometry);
                     return;
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(mouseEvent, geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_PRESENT", object);
-                eventDispatcher.dispatchEvent(_local_1);
+                widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_PRESENT", object);
+                eventDispatcher.dispatchEvent(widgetRequestEvent);
             };
         }
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(data:XML):void
         {
-            var _local_3:IRoomObjectModelController;
-            super.initialize(_arg_1);
+            var modelController:IRoomObjectModelController;
+            super.initialize(data);
 
-            if (_arg_1 == null)
+            if (data == null)
             {
                 return;
             };
 
-            var _local_2:XMLList = _arg_1.particlesystems;
+            var particleSystemNodes:XMLList = data.particlesystems;
 
-            if (((_local_2 == null) || (_local_2.length() == 0)))
+            if (((particleSystemNodes == null) || (particleSystemNodes.length() == 0)))
             {
                 return;
             };
 
             if (object != null)
             {
-                _local_3 = object.getModelController();
+                modelController = object.getModelController();
 
-                if (_local_3 != null)
+                if (modelController != null)
                 {
-                    _local_3.setString("furniture_fireworks_data", _local_2);
+                    modelController.setString("furniture_fireworks_data", particleSystemNodes);
                 };
             };
         }

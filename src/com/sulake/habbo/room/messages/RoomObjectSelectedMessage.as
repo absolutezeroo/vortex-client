@@ -5,9 +5,9 @@
 
         private var _selected:Boolean;
 
-        public function RoomObjectSelectedMessage(_arg_1:Boolean)
+        public function RoomObjectSelectedMessage(selected:Boolean)
         {
-            _selected = _arg_1;
+            _selected = selected;
         }
 
         public function get selected():Boolean

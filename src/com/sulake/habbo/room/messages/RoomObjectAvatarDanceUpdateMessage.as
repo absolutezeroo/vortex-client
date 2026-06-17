@@ -5,9 +5,9 @@
 
         private var _danceStyle:int;
 
-        public function RoomObjectAvatarDanceUpdateMessage(_arg_1:int=0)
+        public function RoomObjectAvatarDanceUpdateMessage(danceStyle:int=0)
         {
-            _danceStyle = _arg_1;
+            _danceStyle = danceStyle;
         }
 
         public function get danceStyle():int

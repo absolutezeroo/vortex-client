@@ -38,16 +38,16 @@
         private var _alignRight:Boolean;
         private var _icon:Bitmap;
 
-        public function Button(_arg_1:String, _arg_2:Rectangle, _arg_3:Boolean, _arg_4:Function, _arg_5:uint = 0xFFFFFF)
+        public function Button(labelText:String, bounds:Rectangle, fitWidthToText:Boolean, onClick:Function, glowColour:uint = 0xFFFFFF)
         {
             removeOldLocalization(_label);
-            _label = _arg_1;
-            _localizedText = _arg_1;
+            _label = labelText;
+            _localizedText = labelText;
             checkLocalization(_label);
-            _rectangle = _arg_2;
-            _fitWidthToText = _arg_3;
-            _action = _arg_4;
-            _glowColour = _arg_5;
+            _rectangle = bounds;
+            _fitWidthToText = fitWidthToText;
+            _action = onClick;
+            _glowColour = glowColour;
             _icon = icon;
             active = true;
             mouseChildren = false;
@@ -55,7 +55,7 @@
             addEventListener("removedFromStage", onRemovedFromStage);
         }
 
-        private function onRemovedFromStage(_arg_1:Event):void
+        private function onRemovedFromStage(_:Event):void
         {
             stage.removeEventListener("mouseUp", onStageMouseUp);
             removeEventListener("mouseDown", onMouseDown);
@@ -64,7 +64,7 @@
             removeEventListener("mouseOut", onMouseOut);
         }
 
-        protected function onAddedToStage(_arg_1:Event = null):void
+        protected function onAddedToStage(_:Event = null):void
         {
             x = _rectangle.x;
             y = _rectangle.y;
@@ -155,13 +155,13 @@
             addEventListener("mouseOut", onMouseOut);
         }
 
-        private function onMouseOut(_arg_1:MouseEvent):void
+        private function onMouseOut(_:MouseEvent):void
         {
             _hover = false;
             refresh();
         }
 
-        private function onMouseOver(_arg_1:MouseEvent):void
+        private function onMouseOver(_:MouseEvent):void
         {
             if (!_active)
             {
@@ -172,7 +172,7 @@
             refresh();
         }
 
-        private function onMouseDown(_arg_1:MouseEvent):void
+        private function onMouseDown(_:MouseEvent):void
         {
             if (!_active)
             {
@@ -185,17 +185,20 @@
             refresh();
         }
 
-        private function onMouseUp(_arg_1:MouseEvent):void
+        private function onMouseUp(clickEvent:MouseEvent):void
         {
-            _arg_1.stopImmediatePropagation();
+            clickEvent.stopImmediatePropagation();
             stage.removeEventListener("mouseUp", onStageMouseUp);
             removeEventListener("mouseUp", onMouseUp);
             _pressed = false;
             refresh();
-            _action(this); // not popped
+            if (_action != null)
+            {
+                _action(this);
+            }
         }
 
-        private function onStageMouseUp(_arg_1:MouseEvent):void
+        private function onStageMouseUp(_:MouseEvent):void
         {
             stage.removeEventListener("mouseUp", onStageMouseUp);
             removeEventListener("mouseUp", onMouseUp);
@@ -205,38 +208,32 @@
 
         private function refresh():void
         {
-            var _local_3:int;
-            _local_3 = 1;
-
-            var _local_1:int;
-            _local_1 = 2;
-
-            var _local_2:int;
-            _local_2 = 3;
-
-            var _local_5:int;
-            _local_5 = 4;
+            var normalState:int = 1;
+            var pressedState:int = 2;
+            var inactiveState:int = 3;
+            var editingState:int = 4;
+            var resolvedState:int = normalState;
 
             if (_background == null)
             {
                 return;
             };
 
-            var _local_4:int = ((_active) ? ((((_pressed) && (_hover)) || (_selected)) ? 2 : 1) : 3);
+            resolvedState = ((_active) ? ((((_pressed) && (_hover)) || (_selected)) ? pressedState : normalState) : inactiveState);
 
             if (_currentlyEditing)
             {
-                _local_4 = 4;
+                resolvedState = editingState;
             };
 
-            _defaultBackground.visible = ((_local_4 == 1) && ((_rolloverBackground == null) || (!(_hover))));
-            _pressedBackground.visible = (_local_4 == 2);
-            _inactiveBackground.visible = (_local_4 == 3);
-            _editingBackground.visible = (_local_4 == 4);
+            _defaultBackground.visible = ((resolvedState == normalState) && ((_rolloverBackground == null) || (!(_hover))));
+            _pressedBackground.visible = (resolvedState == pressedState);
+            _inactiveBackground.visible = (resolvedState == inactiveState);
+            _editingBackground.visible = (resolvedState == editingState);
 
             if (_rolloverBackground != null)
             {
-                _rolloverBackground.visible = ((_local_4 == 1) && (_hover));
+                _rolloverBackground.visible = ((resolvedState == normalState) && (_hover));
                 filters = [];
             }
 
@@ -256,21 +253,21 @@
             return (_centred);
         }
 
-        public function set centred(_arg_1:Boolean):void
+        public function set centred(isCentred:Boolean):void
         {
-            _centred = _arg_1;
+            _centred = isCentred;
         }
 
-        override public function set x(_arg_1:Number):void
+        override public function set x(xPos:Number):void
         {
-            super.x = _arg_1;
-            _rectangle.x = _arg_1;
+            super.x = xPos;
+            _rectangle.x = xPos;
         }
 
-        override public function set y(_arg_1:Number):void
+        override public function set y(yPos:Number):void
         {
-            super.y = _arg_1;
-            _rectangle.y = _arg_1;
+            super.y = yPos;
+            _rectangle.y = yPos;
         }
 
         public function get active():Boolean
@@ -278,9 +275,9 @@
             return (_active);
         }
 
-        public function set active(_arg_1:Boolean):void
+        public function set active(isEnabled:Boolean):void
         {
-            _active = _arg_1;
+            _active = isEnabled;
             buttonMode = _active;
             refresh();
         }
@@ -304,9 +301,9 @@
             refresh();
         }
 
-        public function set alignRight(_arg_1:Boolean):void
+        public function set alignRight(shouldAlignRight:Boolean):void
         {
-            _alignRight = _arg_1;
+            _alignRight = shouldAlignRight;
         }
 
         protected function get defaultBackground():DisplayObject
@@ -374,13 +371,13 @@
             return (_localizedText);
         }
 
-        public function set localizedText(_arg_1:String):void
+        public function set localizedText(value:String):void
         {
-            _localizedText = _arg_1;
+            _localizedText = value;
 
             if (_captionElement)
             {
-                _captionElement.text = _arg_1;
+                _captionElement.text = value;
                 onAddedToStage();
             };
         }

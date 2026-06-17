@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.visualization
+package com.sulake.room.object.visualization
 {
     import com.sulake.room.object.visualization.utils.IGraphicAssetCollection;
 
@@ -6,8 +6,9 @@
     {
 
         function get assetCollection():IGraphicAssetCollection;
-        function set assetCollection(_arg_1:IGraphicAssetCollection):void;
-        function setExternalBaseUrls(_arg_1:String, _arg_2:String, _arg_3:Boolean):void;
+        function set assetCollection(_assetCollection:IGraphicAssetCollection):void;
+        function setExternalBaseUrls(_normal:String, _avatar:String, _override:Boolean):void;
 
     }
 }
+

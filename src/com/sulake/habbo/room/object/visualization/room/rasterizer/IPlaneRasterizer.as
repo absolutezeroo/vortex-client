@@ -7,10 +7,10 @@
     public /*dynamic*/ interface IPlaneRasterizer 
     {
 
-        function initializeDimensions(_arg_1:int, _arg_2:int):Boolean;
-        function render(_arg_1:BitmapData, _arg_2:String, _arg_3:Number, _arg_4:Number, _arg_5:Number, _arg_6:IVector3d, _arg_7:Boolean, _arg_8:Number=0, _arg_9:Number=0, _arg_10:Number=0, _arg_11:Number=0, _arg_12:int=0):PlaneBitmapData;
-        function getTextureIdentifier(_arg_1:Number, _arg_2:IVector3d):String;
-        function getLayers(_arg_1:String):Array;
+        function initializeDimensions(width:int, height:int):Boolean;
+        function render(canvas:BitmapData, id:String, width:Number, height:Number, scale:Number, normal:IVector3d, useTexture:Boolean, offsetX:Number=0, offsetY:Number=0, maxX:Number=0, maxY:Number=0, timeSinceStartMs:int=0):PlaneBitmapData;
+        function getTextureIdentifier(scale:Number, normal:IVector3d):String;
+        function getLayers(id:String):Array;
         function reinitialize():void;
 
     }

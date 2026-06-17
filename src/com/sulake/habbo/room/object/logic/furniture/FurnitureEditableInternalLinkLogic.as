@@ -11,29 +11,29 @@
         private var _showStateOneOnceRendered:Boolean = false;
         private var _updateCount:int = 0;
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_model:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_model);
 
-            if (_arg_1 == null)
+            if (_model == null)
             {
                 return;
             };
 
-            var _local_2:XMLList = _arg_1.action;
+            var _action:XMLList = _model.action;
 
-            if (_local_2.length() != 0)
+            if (_action.length() != 0)
             {
-                if (_local_2.@startState == "1")
+                if (_action.@startState == "1")
                 {
                     _showStateOneOnceRendered = true;
                 };
             };
         }
 
-        override public function update(_arg_1:int):void
+        override public function update(_currentTime:int):void
         {
-            super.update(_arg_1);
+            super.update(_currentTime);
 
             if (!_showStateOneOnceRendered)
             {
@@ -49,34 +49,34 @@
             };
         }
 
-        public function setAnimationState(_arg_1:int):void
+        public function setAnimationState(_stateIndex:int):void
         {
             if (object == null)
             {
                 return;
             };
 
-            var _local_2:IRoomObjectModelController = object.getModelController();
+            var _modelController:IRoomObjectModelController = object.getModelController();
 
-            if (_local_2 != null)
+            if (_modelController != null)
             {
-                _local_2.setNumber("furniture_automatic_state_index", _arg_1, false);
+                _modelController.setNumber("furniture_automatic_state_index", _stateIndex, false);
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_mouseEvent:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void
         {
-            if (_arg_1 == null)
+            if (_mouseEvent == null)
             {
                 return;
             };
 
-            if (_arg_1.type == "doubleClick")
+            if (_mouseEvent.type == "doubleClick")
             {
                 setAnimationState(0);
             };
 
-            super.mouseEvent(_arg_1, _arg_2);
+            super.mouseEvent(_mouseEvent, _geometry);
         }
 
         override public function getEventTypes():Array

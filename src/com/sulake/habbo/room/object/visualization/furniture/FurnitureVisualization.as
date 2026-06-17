@@ -31,6 +31,9 @@
         private var _furnitureLift:Number = 0;
         private var _cacheSize:int = -1;
         private var _cacheDirection:int = -1;
+        protected var _SafeStr_3271:int = -1;
+        protected var _SafeStr_3272:Number = NaN;
+        protected var _SafeStr_3270:int = 0;
         private var _spriteTags:Array = [];
         private var _spriteAlphas:Array = [];
         private var _spriteColors:Array = [];
@@ -64,9 +67,9 @@
             };
         }
 
-        protected function set direction(_arg_1:int):void
+        protected function set direction(value:int):void
         {
-            _direction = _arg_1;
+            _direction = value;
         }
 
         protected function get direction():int
@@ -113,57 +116,57 @@
             this.createSprites(0);
         }
 
-        override public function initialize(_arg_1:IRoomObjectVisualizationData):Boolean
+        override public function initialize(visualizationData:IRoomObjectVisualizationData):Boolean
         {
             reset();
 
-            if (((_arg_1 == null) || (!(_arg_1 is FurnitureVisualizationData))))
+            if (((visualizationData == null) || (!(visualizationData is FurnitureVisualizationData))))
             {
                 return (false);
             };
 
-            _data = (_arg_1 as FurnitureVisualizationData);
+            _data = (visualizationData as FurnitureVisualizationData);
             _type = _data.getType();
             return (true);
         }
 
-        override public function update(_arg_1:IRoomGeometry, _arg_2:int, _arg_3:Boolean, _arg_4:Boolean):void
+        override public function update(roomGeometry:IRoomGeometry, updateType:int, useFastUpdate:Boolean, skipUpdate:Boolean):void
         {
-            if (_arg_1 == null)
+            if (roomGeometry == null)
             {
                 return;
             };
 
-            var _local_5:Boolean;
-            var _local_6:Number = _arg_1.scale;
+            var hasUpdated:Boolean;
+            var scale:Number = roomGeometry.scale;
 
-            if (updateObject(_local_6, _arg_1.direction.x))
+            if (updateObject(scale, roomGeometry.direction.x))
             {
-                _local_5 = true;
+                hasUpdated = true;
             };
 
-            if (updateModel(_local_6))
+            if (updateModel(scale))
             {
-                _local_5 = true;
+                hasUpdated = true;
             };
 
-            var _local_7:int;
+            var updatedLayers:int;
 
-            if (_arg_4)
+            if (skipUpdate)
             {
-                _updatedLayers = (_updatedLayers | updateAnimation(_local_6));
+                _updatedLayers = (_updatedLayers | updateAnimation(scale));
             }
 
             else
             {
-                _local_7 = (updateAnimation(_local_6) | _updatedLayers);
+                updatedLayers = (updateAnimation(scale) | _updatedLayers);
                 _updatedLayers = 0;
             };
 
-            if (((_local_5) || (!(_local_7 == 0))))
+            if (((hasUpdated) || (!(updatedLayers == 0))))
             {
-                updateSprites(_local_6, _local_5, _local_7);
-                _SafeStr_3272 = _local_6;
+                updateSprites(scale, hasUpdated, updatedLayers);
+                _SafeStr_3272 = scale;
                 increaseUpdateId();
             };
         }

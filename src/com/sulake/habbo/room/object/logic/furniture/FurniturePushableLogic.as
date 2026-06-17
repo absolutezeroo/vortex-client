@@ -22,58 +22,58 @@
             _oldLocation = new Vector3d();
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(updateMessage:RoomObjectUpdateMessage):void
         {
-            var _local_2:IVector3d;
-            var _local_4:IVector3d;
-            var _local_5:IVector3d;
+            var currentLocation:IVector3d;
+            var locationDelta:IVector3d;
+            var targetLocation:IVector3d;
 
-            if (_arg_1 == null)
+            if (updateMessage == null)
             {
                 return;
             };
 
-            var _local_3:RoomObjectMoveUpdateMessage = (_arg_1 as RoomObjectMoveUpdateMessage);
+            var moveUpdateMessage:RoomObjectMoveUpdateMessage = (updateMessage as RoomObjectMoveUpdateMessage);
 
-            if (((!(object == null)) && (_local_3 == null)))
+            if (((!(object == null)) && (moveUpdateMessage == null)))
             {
-                if (_arg_1.loc != null)
+                if (updateMessage.loc != null)
                 {
-                    _local_2 = object.getLocation();
-                    _local_4 = Vector3d.dif(_arg_1.loc, _local_2);
+                    currentLocation = object.getLocation();
+                    locationDelta = Vector3d.dif(updateMessage.loc, currentLocation);
 
-                    if (_local_4 != null)
+                    if (locationDelta != null)
                     {
-                        if (((Math.abs(_local_4.x) < 2) && (Math.abs(_local_4.y) < 2)))
+                        if (((Math.abs(locationDelta.x) < 2) && (Math.abs(locationDelta.y) < 2)))
                         {
-                            _local_5 = _local_2;
+                            targetLocation = currentLocation;
 
-                            if (((Math.abs(_local_4.x) > 1) || (Math.abs(_local_4.y) > 1)))
+                            if (((Math.abs(locationDelta.x) > 1) || (Math.abs(locationDelta.y) > 1)))
                             {
-                                _local_5 = Vector3d.sum(_local_2, Vector3d.product(_local_4, 0.5));
+                                targetLocation = Vector3d.sum(currentLocation, Vector3d.product(locationDelta, 0.5));
                             };
 
-                            _local_3 = new RoomObjectMoveUpdateMessage(_local_5, _arg_1.loc, _arg_1.dir);
-                            super.processUpdateMessage(_local_3);
+                            moveUpdateMessage = new RoomObjectMoveUpdateMessage(targetLocation, updateMessage.loc, updateMessage.dir);
+                            super.processUpdateMessage(moveUpdateMessage);
                             return;
                         };
                     };
                 };
             };
 
-            if (((!(_arg_1.loc == null)) && (_local_3 == null)))
+            if (((!(updateMessage.loc == null)) && (moveUpdateMessage == null)))
             {
-                _local_3 = new RoomObjectMoveUpdateMessage(_arg_1.loc, _arg_1.loc, _arg_1.dir);
-                super.processUpdateMessage(_local_3);
+                moveUpdateMessage = new RoomObjectMoveUpdateMessage(updateMessage.loc, updateMessage.loc, updateMessage.dir);
+                super.processUpdateMessage(moveUpdateMessage);
             };
 
-            var _local_6:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (updateMessage as RoomObjectDataUpdateMessage);
 
-            if (_local_6 != null)
+            if (dataUpdateMessage != null)
             {
-                if (_local_6.state > 0)
+                if (dataUpdateMessage.state > 0)
                 {
-                    moveUpdateInterval = (500 / getUpdateIntervalValue(_local_6.state));
+                    moveUpdateInterval = (500 / getUpdateIntervalValue(dataUpdateMessage.state));
                 }
 
                 else
@@ -81,49 +81,49 @@
                     moveUpdateInterval = 1;
                 };
 
-                handleDataUpdateMessage(_local_6);
+                handleDataUpdateMessage(dataUpdateMessage);
                 return;
             };
 
-            if (((_local_3) && (_local_3.isSlideUpdate)))
+            if (((moveUpdateMessage) && (moveUpdateMessage.isSlideUpdate)))
             {
                 moveUpdateInterval = 500;
             };
 
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(updateMessage);
         }
 
-        protected function getUpdateIntervalValue(_arg_1:int):int
+        protected function getUpdateIntervalValue(state:int):int
         {
-            return (_arg_1 / 10);
+            return (state / 10);
         }
 
-        protected function getAnimationValue(_arg_1:int):int
+        protected function getAnimationValue(state:int):int
         {
-            return (_arg_1 % 10);
+            return (state % 10);
         }
 
-        private function handleDataUpdateMessage(_arg_1:RoomObjectDataUpdateMessage):void
+        private function handleDataUpdateMessage(dataUpdateMessage:RoomObjectDataUpdateMessage):void
         {
-            var _local_2:LegacyStuffData;
-            var _local_3:int = getAnimationValue(_arg_1.state);
+            var legacyStuffData:LegacyStuffData;
+            var animationValue:int = getAnimationValue(dataUpdateMessage.state);
 
-            if (_local_3 != _arg_1.state)
+            if (animationValue != dataUpdateMessage.state)
             {
-                _local_2 = new LegacyStuffData();
-                _local_2.setString(String(_local_3));
-                _arg_1 = new RoomObjectDataUpdateMessage(_local_3, _local_2, _arg_1.extra);
+                legacyStuffData = new LegacyStuffData();
+                legacyStuffData.setString(String(animationValue));
+                dataUpdateMessage = new RoomObjectDataUpdateMessage(animationValue, legacyStuffData, dataUpdateMessage.extra);
             };
 
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(dataUpdateMessage);
         }
 
-        override public function update(_arg_1:int):void
+        override public function update(time:int):void
         {
             if (object != null)
             {
                 _oldLocation.assign(object.getLocation());
-                super.update(_arg_1);
+                super.update(time);
 
                 if (Vector3d.dif(object.getLocation(), _oldLocation).length == 0)
                 {

@@ -5,9 +5,9 @@
 
         function dispose():void;
         function reset():void;
-        function feedRoomObject(_arg_1:IRoomObject):void;
-        function removeRoomObject(_arg_1:IRoomObject):void;
-        function update(_arg_1:uint):void;
+        function feedRoomObject(roomObject:IRoomObject):void;
+        function removeRoomObject(roomObject:IRoomObject):void;
+        function update(timestamp:uint):void;
 
     }
 }

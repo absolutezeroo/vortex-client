@@ -8,105 +8,105 @@
         private var _z:Number;
         private var _length:Number = NaN;
 
-        public function Vector3d(_arg_1:Number=0, _arg_2:Number=0, _arg_3:Number=0)
+        public function Vector3d(x:Number=0, y:Number=0, z:Number=0)
         {
-            _x = _arg_1;
-            _y = _arg_2;
-            _z = _arg_3;
+            _x = x;
+            _y = y;
+            _z = z;
         }
 
-        public static function sum(_arg_1:IVector3d, _arg_2:IVector3d):Vector3d
+        public static function sum(a:IVector3d, b:IVector3d):Vector3d
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((a == null) || (b == null)))
             {
                 return (null);
             };
 
-            return (new Vector3d((_arg_1.x + _arg_2.x), (_arg_1.y + _arg_2.y), (_arg_1.z + _arg_2.z)));
+            return (new Vector3d((a.x + b.x), (a.y + b.y), (a.z + b.z)));
         }
 
-        public static function dif(_arg_1:IVector3d, _arg_2:IVector3d):Vector3d
+        public static function dif(a:IVector3d, b:IVector3d):Vector3d
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((a == null) || (b == null)))
             {
                 return (null);
             };
 
-            return (new Vector3d((_arg_1.x - _arg_2.x), (_arg_1.y - _arg_2.y), (_arg_1.z - _arg_2.z)));
+            return (new Vector3d((a.x - b.x), (a.y - b.y), (a.z - b.z)));
         }
 
-        public static function product(_arg_1:IVector3d, _arg_2:Number):Vector3d
+        public static function product(vector:IVector3d, scalar:Number):Vector3d
         {
-            if (_arg_1 == null)
+            if (vector == null)
             {
                 return (null);
             };
 
-            return (new Vector3d((_arg_1.x * _arg_2), (_arg_1.y * _arg_2), (_arg_1.z * _arg_2)));
+            return (new Vector3d((vector.x * scalar), (vector.y * scalar), (vector.z * scalar)));
         }
 
-        public static function dotProduct(_arg_1:IVector3d, _arg_2:IVector3d):Number
+        public static function dotProduct(a:IVector3d, b:IVector3d):Number
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((a == null) || (b == null)))
             {
                 return (0);
             };
 
-            return (((_arg_1.x * _arg_2.x) + (_arg_1.y * _arg_2.y)) + (_arg_1.z * _arg_2.z));
+            return (((a.x * b.x) + (a.y * b.y)) + (a.z * b.z));
         }
 
-        public static function crossProduct(_arg_1:IVector3d, _arg_2:IVector3d):Vector3d
+        public static function crossProduct(a:IVector3d, b:IVector3d):Vector3d
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((a == null) || (b == null)))
             {
                 return (null);
             };
 
-            return (new Vector3d(((_arg_1.y * _arg_2.z) - (_arg_1.z * _arg_2.y)), ((_arg_1.z * _arg_2.x) - (_arg_1.x * _arg_2.z)), ((_arg_1.x * _arg_2.y) - (_arg_1.y * _arg_2.x))));
+            return (new Vector3d(((a.y * b.z) - (a.z * b.y)), ((a.z * b.x) - (a.x * b.z)), ((a.x * b.y) - (a.y * b.x))));
         }
 
-        public static function scalarProjection(_arg_1:IVector3d, _arg_2:IVector3d):Number
+        public static function scalarProjection(v:IVector3d, onto:IVector3d):Number
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((v == null) || (onto == null)))
             {
                 return (-1);
             };
 
-            var _local_3:Number = _arg_2.length;
+            var _local_3:Number = onto.length;
 
             if (_local_3 > 0)
             {
-                return ((((_arg_1.x * _arg_2.x) + (_arg_1.y * _arg_2.y)) + (_arg_1.z * _arg_2.z)) / _local_3);
+                return ((((v.x * onto.x) + (v.y * onto.y)) + (v.z * onto.z)) / _local_3);
             };
 
             return (-1);
         }
 
-        public static function cosAngle(_arg_1:IVector3d, _arg_2:IVector3d):Number
+        public static function cosAngle(a:IVector3d, b:IVector3d):Number
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((a == null) || (b == null)))
             {
                 return (0);
             };
 
-            var _local_3:Number = (_arg_1.length * _arg_2.length);
+            var _local_3:Number = (a.length * b.length);
 
             if (_local_3 == 0)
             {
                 return (0);
             };
 
-            return (Vector3d.dotProduct(_arg_1, _arg_2) / _local_3);
+            return (Vector3d.dotProduct(a, b) / _local_3);
         }
 
-        public static function isEqual(_arg_1:IVector3d, _arg_2:IVector3d):Boolean
+        public static function isEqual(a:IVector3d, b:IVector3d):Boolean
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((a == null) || (b == null)))
             {
                 return (false);
             };
 
-            if ((((_arg_1.x == _arg_2.x) && (_arg_1.y == _arg_2.y)) && (_arg_1.z == _arg_2.z)))
+            if ((((a.x == b.x) && (a.y == b.y)) && (a.z == b.z)))
             {
                 return (true);
             };
@@ -139,21 +139,21 @@
             return (_length);
         }
 
-        public function set x(_arg_1:Number):void
+        public function set x(value:Number):void
         {
-            _x = _arg_1;
+            _x = value;
             _length = NaN;
         }
 
-        public function set y(_arg_1:Number):void
+        public function set y(value:Number):void
         {
-            _y = _arg_1;
+            _y = value;
             _length = NaN;
         }
 
-        public function set z(_arg_1:Number):void
+        public function set z(value:Number):void
         {
-            _z = _arg_1;
+            _z = value;
             _length = NaN;
         }
 
@@ -164,61 +164,61 @@
             _z = -(_z);
         }
 
-        public function add(_arg_1:IVector3d):void
+        public function add(vector:IVector3d):void
         {
-            if (_arg_1 == null)
+            if (vector == null)
             {
                 return;
             };
 
-            _x = (_x + _arg_1.x);
-            _y = (_y + _arg_1.y);
-            _z = (_z + _arg_1.z);
+            _x = (_x + vector.x);
+            _y = (_y + vector.y);
+            _z = (_z + vector.z);
             _length = NaN;
         }
 
-        public function sub(_arg_1:IVector3d):void
+        public function sub(vector:IVector3d):void
         {
-            if (_arg_1 == null)
+            if (vector == null)
             {
                 return;
             };
 
-            _x = (_x - _arg_1.x);
-            _y = (_y - _arg_1.y);
-            _z = (_z - _arg_1.z);
+            _x = (_x - vector.x);
+            _y = (_y - vector.y);
+            _z = (_z - vector.z);
             _length = NaN;
         }
 
-        public function mul(_arg_1:Number):void
+        public function mul(value:Number):void
         {
-            _x = (_x * _arg_1);
-            _y = (_y * _arg_1);
-            _z = (_z * _arg_1);
+            _x = (_x * value);
+            _y = (_y * value);
+            _z = (_z * value);
             _length = NaN;
         }
 
-        public function div(_arg_1:Number):void
+        public function div(value:Number):void
         {
-            if (_arg_1 != 0)
+            if (value != 0)
             {
-                _x = (_x / _arg_1);
-                _y = (_y / _arg_1);
-                _z = (_z / _arg_1);
+                _x = (_x / value);
+                _y = (_y / value);
+                _z = (_z / value);
                 _length = NaN;
             };
         }
 
-        public function assign(_arg_1:IVector3d):void
+        public function assign(vector:IVector3d):void
         {
-            if (_arg_1 == null)
+            if (vector == null)
             {
                 return;
             };
 
-            _x = _arg_1.x;
-            _y = _arg_1.y;
-            _z = _arg_1.z;
+            _x = vector.x;
+            _y = vector.y;
+            _z = vector.z;
             _length = NaN;
         }
 

@@ -29,33 +29,33 @@
             return (getAllEventTypes(super.getEventTypes(), ["ROWRE_FRIEND_FURNITURE_ENGRAVING"]));
         }
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_arg_xml:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_arg_xml);
             object.getModelController().setNumber("furniture_friendfurni_engraving_type", engravingDialogType);
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_arg_updateMessage:RoomObjectUpdateMessage):void
         {
-            var _local_2:StringArrayStuffData;
-            var _local_3:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var stringArrayStuffData:StringArrayStuffData;
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (_arg_updateMessage as RoomObjectDataUpdateMessage);
 
-            if (_local_3 != null)
+            if (dataUpdateMessage != null)
             {
-                _local_2 = (_local_3.data as StringArrayStuffData);
+                stringArrayStuffData = (dataUpdateMessage.data as StringArrayStuffData);
 
-                if (_local_2 != null)
+                if (stringArrayStuffData != null)
                 {
-                    _state = _local_2.state;
+                    _state = stringArrayStuffData.state;
                 }
 
                 else
                 {
-                    _state = _local_3.state;
+                    _state = dataUpdateMessage.state;
                 };
             };
 
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(_arg_updateMessage);
         }
 
         override public function useObject():void

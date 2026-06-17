@@ -13,22 +13,22 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROFCAE_DICE_ACTIVATE", "ROFCAE_DICE_OFF"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var _eventTypes:Array = ["ROFCAE_DICE_ACTIVATE", "ROFCAE_DICE_OFF"];
+            return (getAllEventTypes(super.getEventTypes(), _eventTypes));
         }
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_model:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_model);
 
-            if (_arg_1 == null)
+            if (_model == null)
             {
                 return;
             };
 
-            var _local_2:XMLList = _arg_1.allspritesactivate;
+            var _allSpritesActivate:XMLList = _model.allspritesactivate;
 
-            if (_local_2.length() == 0)
+            if (_allSpritesActivate.length() == 0)
             {
                 _noTags = false;
             }
@@ -39,11 +39,11 @@
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_mouseEvent:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void
         {
-            var _local_3:RoomObjectEvent;
+            var _actionEvent:RoomObjectEvent;
 
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_mouseEvent == null) || (_geometry == null)))
             {
                 return;
             };
@@ -53,7 +53,7 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_mouseEvent.type)
             {
                 case "doubleClick":
 
@@ -63,42 +63,42 @@
                         {
                             if ((((!(_noTagsLastStateActivate)) || (object.getState(0) == 0)) || (object.getState(0) == 100)))
                             {
-                                _local_3 = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_ACTIVATE", object);
+                                _actionEvent = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_ACTIVATE", object);
                                 _noTagsLastStateActivate = true;
                             }
 
                             else
                             {
-                                _local_3 = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_OFF", object);
+                                _actionEvent = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_OFF", object);
                                 _noTagsLastStateActivate = false;
                             };
                         }
 
                         else
                         {
-                            if ((((_arg_1.spriteTag == "activate") || (object.getState(0) == 0)) || (object.getState(0) == 100)))
+                            if ((((_mouseEvent.spriteTag == "activate") || (object.getState(0) == 0)) || (object.getState(0) == 100)))
                             {
-                                _local_3 = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_ACTIVATE", object);
+                                _actionEvent = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_ACTIVATE", object);
                             }
 
                             else
                             {
-                                if (_arg_1.spriteTag == "deactivate")
+                                if (_mouseEvent.spriteTag == "deactivate")
                                 {
-                                    _local_3 = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_OFF", object);
+                                    _actionEvent = new RoomObjectFurnitureActionEvent("ROFCAE_DICE_OFF", object);
                                 };
                             };
                         };
 
-                        if (_local_3 != null)
+                        if (_actionEvent != null)
                         {
-                            eventDispatcher.dispatchEvent(_local_3);
+                            eventDispatcher.dispatchEvent(_actionEvent);
                         };
                     };
 
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_mouseEvent, _geometry);
                     return;
             };
         }

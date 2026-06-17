@@ -10,13 +10,13 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROFCAE_USE_HABBOWHEEL"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var eventTypes:Array = ["ROFCAE_USE_HABBOWHEEL"];
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_arg_mouseEvent:RoomSpriteMouseEvent, _arg_geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_arg_mouseEvent == null) || (_arg_geometry == null)))
             {
                 return;
             };
@@ -26,28 +26,28 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_arg_mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_arg_mouseEvent, _arg_geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var furnitureActionEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectFurnitureActionEvent("ROFCAE_USE_HABBOWHEEL", object);
+                furnitureActionEvent = new RoomObjectFurnitureActionEvent("ROFCAE_USE_HABBOWHEEL", object);
 
-                if (_local_1 != null)
+                if (furnitureActionEvent != null)
                 {
-                    eventDispatcher.dispatchEvent(_local_1);
+                    eventDispatcher.dispatchEvent(furnitureActionEvent);
                 };
             };
         }

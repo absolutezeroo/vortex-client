@@ -46,16 +46,16 @@ package onBoardingHc.steps
         private var _haloOverlay:Bitmap;
         private var _avatarGlow:Bitmap;
 
-        public function OnBoardingHcStepAvatarSelect(_arg_1:IOnBoardingHcContext)
+        public function OnBoardingHcStepAvatarSelect(context:IOnBoardingHcContext)
         {
-            _context = _arg_1;
+            _context = context;
             init();
             addEventListener("addedToStage", onAddedToStage);
         }
 
-        public function set baseUrl(_arg_1:String):void
+        public function set baseUrl(baseUrl:String):void
         {
-            _baseUrl = _arg_1;
+            _baseUrl = baseUrl;
         }
 
         public function dispose():void
@@ -65,14 +65,14 @@ package onBoardingHc.steps
             _createButton.dispose();
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
-            var _local_2:Timer = new Timer(20, 1);
-            _local_2.addEventListener("timerComplete", onAlignElements);
-            _local_2.start();
+            var alignTimer:Timer = new Timer(20, 1);
+            alignTimer.addEventListener("timerComplete", onAlignElements);
+            alignTimer.start();
         }
 
-        private function onAlignElements(_arg_1:TimerEvent):void
+        private function onAlignElements(_:TimerEvent):void
         {
             LoaderUI.lineUpVerticallyRevers(_playButton, 20, _infoPanel);
             LoaderUI.alignAnchors(_infoPanel, 0, "r", _playButton);
@@ -91,8 +91,8 @@ package onBoardingHc.steps
             _infoPanel = new Sprite();
             addChild(_infoPanel);
 
-            var _local_1:Bitmap = LoaderUI.createBalloon(640, 100, 0, false, 995918, "none");
-            _infoPanel.addChild(_local_1);
+            var panelBackground:Bitmap = LoaderUI.createBalloon(640, 100, 0, false, 995918, "none");
+            _infoPanel.addChild(panelBackground);
             _infoPanel.y = 180;
 
             _avatarDescription = LoaderUI.createTextField("", 18, 8309486, false);
@@ -103,7 +103,7 @@ package onBoardingHc.steps
             _avatarDescription.width = 260;
             _infoPanel.addChild(_avatarDescription);
             _infoPanel.addChild(_avatarName);
-            LoaderUI.lineUpVertically(_local_1, (15 - _local_1.height), _avatarName, 20, _avatarDescription);
+            LoaderUI.lineUpVertically(panelBackground, (15 - panelBackground.height), _avatarName, 20, _avatarDescription);
 
             _avatarGlow = new avatar_glow_png();
             _avatarGlow.blendMode = "add";
@@ -146,48 +146,48 @@ package onBoardingHc.steps
             addChild(_createButton);
         }
 
-        public function populateAvatars(_arg_1:Vector.<AvatarData>):void
+        public function populateAvatars(avatars:Vector.<AvatarData>):void
         {
-            var _local_4:Loader;
-            var _local_5:URLRequest;
-            var _local_3:Sprite;
-            var _local_8:Bitmap;
-            var _local_2:int;
+            var avatarLoader:Loader;
+            var avatarRequest:URLRequest;
+            var avatarContainer:Sprite;
+            var placeholder:Bitmap;
+            var itemPositionX:int;
 
             _avatarContainers = new Vector.<DisplayObjectContainer>(0);
-            _avatars = _arg_1;
+            _avatars = avatars;
 
-            var _local_6:int;
+            var avatarIndex:int;
 
-            for each (var _local_7:AvatarData in _arg_1)
+            for each (var avatar:AvatarData in avatars)
             {
-                if (_local_6 > 6)
+                if (avatarIndex > 6)
                     break;
 
-                _local_4 = new Loader();
-                _local_4.name = String(_local_6);
-                _local_5 = new URLRequest(getAvatarUrl(_local_7));
-                _local_4.load(_local_5);
-                _local_4.contentLoaderInfo.addEventListener("complete", onAvatarImageLoaded);
-                _local_4.contentLoaderInfo.addEventListener("error", onImageError);
-                _local_4.contentLoaderInfo.addEventListener("ioError", onImageError);
-                _local_4.contentLoaderInfo.addEventListener("securityError", onImageError);
+                avatarLoader = new Loader();
+                avatarLoader.name = String(avatarIndex);
+                avatarRequest = new URLRequest(getAvatarUrl(avatar));
+                avatarLoader.load(avatarRequest);
+                avatarLoader.contentLoaderInfo.addEventListener("complete", onAvatarImageLoaded);
+                avatarLoader.contentLoaderInfo.addEventListener("error", onImageError);
+                avatarLoader.contentLoaderInfo.addEventListener("ioError", onImageError);
+                avatarLoader.contentLoaderInfo.addEventListener("securityError", onImageError);
 
-                _local_3 = new Sprite();
-                _avatarContainers.push(_local_3);
-                _local_8 = new placeholder_avatar();
-                _local_3.addChild(_local_8);
-                _local_3.addChild(_local_4);
-                addChild(_local_3);
-                _local_3.name = String(_local_6);
-                _local_3.addEventListener("click", onAvatarClick);
-                _local_2 = (((_local_6 + 1) * _avatarSpacing) + (_local_6 * 100));
-                _local_3.x = _local_2;
-                _local_3.y = 50;
-                _local_6++;
+                avatarContainer = new Sprite();
+                _avatarContainers.push(avatarContainer);
+                placeholder = new placeholder_avatar();
+                avatarContainer.addChild(placeholder);
+                avatarContainer.addChild(avatarLoader);
+                addChild(avatarContainer);
+                avatarContainer.name = String(avatarIndex);
+                avatarContainer.addEventListener("click", onAvatarClick);
+                itemPositionX = (((avatarIndex + 1) * _avatarSpacing) + (avatarIndex * 100));
+                avatarContainer.x = itemPositionX;
+                avatarContainer.y = 50;
+                avatarIndex++;
             };
 
-            if (_arg_1.length > 0)
+            if (avatars.length > 0)
             {
                 updateDescription();
                 _selectedIndex = 0;
@@ -202,22 +202,22 @@ package onBoardingHc.steps
             };
         }
 
-        private function onImageError(_arg_1:ErrorEvent):void
+        private function onImageError(imageErrorEvent:ErrorEvent):void
         {
-            Logger.log(("[OnBoardingHcStepAvatarSelect] Image error: " + _arg_1.text));
+            Logger.log(("[OnBoardingHcStepAvatarSelect] Image error: " + imageErrorEvent.text));
         }
 
-        private function onAvatarClick(_arg_1:MouseEvent):void
+        private function onAvatarClick(clickEvent:MouseEvent):void
         {
-            _selectedIndex = _arg_1.currentTarget.name;
+            _selectedIndex = clickEvent.currentTarget.name;
             updateDescription();
             highlightAvatar(_avatarContainers[_selectedIndex]);
             _playButton.active = true;
         }
 
-        private function onAvatarImageLoaded(_arg_1:Event):void
+        private function onAvatarImageLoaded(imageEvent:Event):void
         {
-            (_arg_1.currentTarget as LoaderInfo).loader.parent.removeChildAt(0);
+            (imageEvent.currentTarget as LoaderInfo).loader.parent.removeChildAt(0);
             _avatarGlow.visible = true;
             _haloOverlay.visible = true;
             highlightAvatar(_avatarContainers[_selectedIndex]);
@@ -228,44 +228,44 @@ package onBoardingHc.steps
             if ((_avatars == null) || (_avatars.length == 0))
                 return;
 
-            var _local_1:AvatarData = _avatars[_selectedIndex];
-            _avatarName.text = _local_1.name;
-            _avatarDescription.text = _local_1.motto;
+            var selectedAvatar:AvatarData = _avatars[_selectedIndex];
+            _avatarName.text = selectedAvatar.name;
+            _avatarDescription.text = selectedAvatar.motto;
         }
 
-        private function highlightAvatar(_arg_1:DisplayObject):void
+        private function highlightAvatar(avatarDisplayObject:DisplayObject):void
         {
-            var _local_2:int = int((_arg_1.x + (_arg_1.width / 2)));
-            var _local_3:int = int((_arg_1.y + (_arg_1.height / 2)));
-            _avatarGlow.x = (_local_2 - (_avatarGlow.width / 2));
-            _avatarGlow.y = ((_local_3 - (_avatarGlow.height / 2)) + 15);
-            _haloOverlay.x = (_local_2 - (_haloOverlay.width / 2));
-            _haloOverlay.y = ((_local_3 + _haloOverlay.height) - 40);
+            var avatarCenterX:int = int((avatarDisplayObject.x + (avatarDisplayObject.width / 2)));
+            var avatarCenterY:int = int((avatarDisplayObject.y + (avatarDisplayObject.height / 2)));
+            _avatarGlow.x = (avatarCenterX - (_avatarGlow.width / 2));
+            _avatarGlow.y = ((avatarCenterY - (_avatarGlow.height / 2)) + 15);
+            _haloOverlay.x = (avatarCenterX - (_haloOverlay.width / 2));
+            _haloOverlay.y = ((avatarCenterY + _haloOverlay.height) - 40);
         }
 
-        private function getAvatarUrl(_arg_1:AvatarData):String
+        private function getAvatarUrl(avatar:AvatarData):String
         {
-            var _local_2:String = ((_baseUrl + "/habbo-imaging/avatarimage?user=") + _arg_1.name);
+            var avatarImageUrl:String = ((_baseUrl + "/habbo-imaging/avatarimage?user=") + avatar.name);
 
             if ((_baseUrl.indexOf("local") > -1) || (_baseUrl.indexOf("127.0.0.1") > -1))
             {
-                _local_2 = (("https://www.habbo.com/habbo-imaging/avatarimage?size=m&figure=" + _arg_1.figure) + "&direction=2");
+                avatarImageUrl = (("https://www.habbo.com/habbo-imaging/avatarimage?size=m&figure=" + avatar.figure) + "&direction=2");
             };
 
-            return (_local_2);
+            return (avatarImageUrl);
         }
 
-        private function onCancel(_arg_1:Button):void
+        private function onCancel(cancelButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_LOGIN);
         }
 
-        private function onChooseAvatar(_arg_1:Button):void
+        private function onChooseAvatar(chooseAvatarButton:Button):void
         {
             _context.loginWithAvatar(_avatars[_selectedIndex]);
         }
 
-        private function onCreateAvatar(_arg_1:Button):void
+        private function onCreateAvatar(createAvatarButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_AVATAR_CREATE);
         }

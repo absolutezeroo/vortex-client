@@ -4,8 +4,8 @@
 
     public class RoomRendererFactory extends Component implements IRoomRendererFactory {
 
-        public function RoomRendererFactory(_arg_1:IContext, _arg_2:uint = 0) {
-            super(_arg_1, _arg_2);
+        public function RoomRendererFactory(context:IContext, id:uint = 0) {
+            super(context, id);
         }
 
         public function createRenderer():IRoomRenderer {

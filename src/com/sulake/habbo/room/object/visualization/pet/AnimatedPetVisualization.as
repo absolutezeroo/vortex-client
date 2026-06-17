@@ -60,24 +60,24 @@
 
         override public function dispose():void
         {
-            var _local_2:int;
-            var _local_1:AnimationStateData;
+            var i:int;
+            var animationState:AnimationStateData;
             super.dispose();
 
             if (_animationStates != null)
             {
-                _local_2 = 0;
+                i = 0;
 
-                while (_local_2 < _animationStates.length)
+                while (i < _animationStates.length)
                 {
-                    _local_1 = (_animationStates[_local_2] as AnimationStateData);
+                    animationState = (_animationStates[i] as AnimationStateData);
 
-                    if (_local_1 != null)
+                    if (animationState != null)
                     {
-                        _local_1.dispose();
+                        animationState.dispose();
                     };
 
-                    _local_2++;
+                    i++;
                 };
 
                 _animationStates = null;
@@ -90,36 +90,36 @@
             };
         }
 
-        override protected function getAnimationId(_arg_1:AnimationStateData):int
+        override protected function getAnimationId(animationState:AnimationStateData):int
         {
-            return (_arg_1.animationId);
+            return (animationState.animationId);
         }
 
-        override public function initialize(_arg_1:IRoomObjectVisualizationData):Boolean
+        override public function initialize(data:IRoomObjectVisualizationData):Boolean
         {
-            var _local_2:BitmapDataAsset;
+            var experienceBubbleAsset:BitmapDataAsset;
 
-            if (!(_arg_1 is AnimatedPetVisualizationData))
+            if (!(data is AnimatedPetVisualizationData))
             {
                 return (false);
             };
 
-            _animationData = (_arg_1 as AnimatedPetVisualizationData);
+            _animationData = (data as AnimatedPetVisualizationData);
 
-            var _local_3:BitmapData;
+            var experienceBubbleBitmapData:BitmapData;
 
             if (_animationData.commonAssets != null)
             {
-                _local_2 = (_animationData.commonAssets.getAssetByName("pet_experience_bubble_png") as BitmapDataAsset);
+                experienceBubbleAsset = (_animationData.commonAssets.getAssetByName("pet_experience_bubble_png") as BitmapDataAsset);
 
-                if (_local_2 != null)
+                if (experienceBubbleAsset != null)
                 {
-                    _local_3 = (_local_2.content as BitmapData).clone();
-                    _experienceData = new ExperienceData(_local_3);
+                    experienceBubbleBitmapData = (experienceBubbleAsset.content as BitmapData).clone();
+                    _experienceData = new ExperienceData(experienceBubbleBitmapData);
                 };
             };
 
-            if (super.initialize(_arg_1))
+            if (super.initialize(data))
             {
                 return (true);
             };
@@ -127,29 +127,29 @@
             return (false);
         }
 
-        override public function update(_arg_1:IRoomGeometry, _arg_2:int, _arg_3:Boolean, _arg_4:Boolean):void
+        override public function update(geometry:IRoomGeometry, time:int, update:Boolean, skipUpdate:Boolean):void
         {
-            super.update(_arg_1, _arg_2, _arg_3, _arg_4);
-            updateExperienceBubble(_arg_2);
+            super.update(geometry, time, update, skipUpdate);
+            updateExperienceBubble(time);
         }
 
-        override protected function updateAnimation(_arg_1:Number):int
+        override protected function updateAnimation(elapsedTime:Number):int
         {
-            var _local_3:int;
-            var _local_2:IRoomObject = object;
+            var direction:int;
+            var roomObject:IRoomObject = object;
 
-            if (_local_2 != null)
+            if (roomObject != null)
             {
-                _local_3 = _local_2.getDirection().x;
+                direction = roomObject.getDirection().x;
 
-                if (_local_3 != _previousAnimationDirection)
+                if (direction != _previousAnimationDirection)
                 {
-                    _previousAnimationDirection = _local_3;
+                    _previousAnimationDirection = direction;
                     resetAllAnimationFrames();
                 };
             };
 
-            return (super.updateAnimation(_arg_1));
+            return (super.updateAnimation(elapsedTime));
         }
 
         override protected function updateModel(_arg_1:Number):Boolean

@@ -11,11 +11,11 @@
         private var _badgeId:String;
         private var _groupBadge:Boolean;
 
-        public function RoomObjectBadgeAssetEvent(_arg_1:String, _arg_2:IRoomObject, _arg_3:String, _arg_4:Boolean=true, _arg_5:Boolean=false, _arg_6:Boolean=false)
+        public function RoomObjectBadgeAssetEvent(type:String, roomObject:IRoomObject, badgeId:String, groupBadge:Boolean=true, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_2, _arg_5, _arg_6);
-            _badgeId = _arg_3;
-            _groupBadge = _arg_4;
+            super(type, roomObject, bubbles, cancelable);
+            _badgeId = badgeId;
+            _groupBadge = groupBadge;
         }
 
         public function get badgeId():String

@@ -25,43 +25,43 @@
         private var _isCached:Boolean = false;
         private var _isStatic:Boolean = true;
 
-        public function PlaneMaterialCellColumn(_arg_1:int, _arg_2:Array, _arg_3:int=1)
+        public function PlaneMaterialCellColumn(width:int, cells:Array, repeatMode:int=1)
         {
             super();
 
-            var _local_4:int;
-            var _local_5:PlaneMaterialCell = null;
+            var index:int;
+            var cell:PlaneMaterialCell = null;
 
-            if (_arg_1 < 1)
+            if (width < 1)
             {
-                _arg_1 = 1;
+                width = 1;
             };
 
-            _width = _arg_1;
+            _width = width;
 
-            if (_arg_2 != null)
+            if (cells != null)
             {
-                _local_4 = 0;
+                index = 0;
 
-                while (_local_4 < _arg_2.length)
+                while (index < cells.length)
                 {
-                    _local_5 = (_arg_2[_local_4] as PlaneMaterialCell);
+                    cell = (cells[index] as PlaneMaterialCell);
 
-                    if (_local_5 != null)
+                    if (cell != null)
                     {
-                        _cells.push(_local_5);
+                        _cells.push(cell);
 
-                        if (!_local_5.isStatic)
+                        if (!cell.isStatic)
                         {
                             _isStatic = false;
                         };
                     };
 
-                    _local_4++;
+                    index++;
                 };
             };
 
-            _repeatMode = _arg_3;
+            _repeatMode = repeatMode;
         }
 
         public function get isStatic():Boolean
@@ -81,23 +81,23 @@
 
         public function dispose():void
         {
-            var _local_1:int;
-            var _local_2:PlaneMaterialCell;
+            var index:int;
+            var cell:PlaneMaterialCell;
 
             if (_cells != null)
             {
-                _local_1 = 0;
+                index = 0;
 
-                while (_local_1 < _cells.length)
+                while (index < _cells.length)
                 {
-                    _local_2 = (_cells[_local_1] as PlaneMaterialCell);
+                    cell = (_cells[index] as PlaneMaterialCell);
 
-                    if (_local_2 != null)
+                    if (cell != null)
                     {
-                        _local_2.dispose();
+                        cell.dispose();
                     };
 
-                    _local_1++;
+                    index++;
                 };
 
                 _cells = null;
@@ -117,8 +117,8 @@
 
         public function clearCache():void
         {
-            var _local_1:int;
-            var _local_2:PlaneMaterialCell;
+            var index:int;
+            var cell:PlaneMaterialCell;
 
             if (!_isCached)
             {
@@ -140,18 +140,18 @@
 
             if (_cells != null)
             {
-                _local_1 = 0;
+                index = 0;
 
-                while (_local_1 < _cells.length)
+                while (index < _cells.length)
                 {
-                    _local_2 = (_cells[_local_1] as PlaneMaterialCell);
+                    cell = (_cells[index] as PlaneMaterialCell);
 
-                    if (_local_2 != null)
+                    if (cell != null)
                     {
-                        _local_2.clearCache();
+                        cell.clearCache();
                     };
 
-                    _local_1++;
+                    index++;
                 };
             };
 
@@ -160,12 +160,12 @@
 
         public function render(height:int, normal:IVector3d, offsetX:int, offsetY:int):BitmapData
         {
-            var _local_5:int;
+            var cellsHeight:int;
 
             if (_repeatMode == 0)
             {
-                _local_5 = getCellsHeight(_cells, normal);
-                height = _local_5;
+                cellsHeight = getCellsHeight(_cells, normal);
+                height = cellsHeight;
             };
 
             if (_cachedBitmapNormal == null)
@@ -252,34 +252,34 @@
             return (_cachedBitmapData);
         }
 
-        private function getCellsHeight(_arg_1:Array, _arg_2:IVector3d):int
+        private function getCellsHeight(cells:Array, normal:IVector3d):int
         {
-            var _local_3:int;
-            var _local_5:PlaneMaterialCell;
-            var _local_6:int;
+            var index:int;
+            var cell:PlaneMaterialCell;
+            var cellHeight:int;
 
-            if (((_arg_1 == null) || (_arg_1.length == 0)))
+            if (((cells == null) || (cells.length == 0)))
             {
                 return (0);
             };
 
-            var _local_4:int;
-            _local_3 = 0;
+            var totalHeight:int;
+            index = 0;
 
-            while (_local_3 < _arg_1.length)
+            while (index < cells.length)
             {
-                _local_5 = (_arg_1[_local_3] as PlaneMaterialCell);
+                cell = (cells[index] as PlaneMaterialCell);
 
-                if (_local_5 != null)
+                if (cell != null)
                 {
-                    _local_6 = _local_5.getHeight(_arg_2);
-                    _local_4 = (_local_4 + _local_6);
+                    cellHeight = cell.getHeight(normal);
+                    totalHeight = (totalHeight + cellHeight);
                 };
 
-                _local_3++;
+                index++;
             };
 
-            return (_local_4);
+            return (totalHeight);
         }
 
         private function renderCells(_arg_1:Array, _arg_2:int, _arg_3:Boolean, _arg_4:IVector3d, _arg_5:int=0, _arg_6:int=0):int

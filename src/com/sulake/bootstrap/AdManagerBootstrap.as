@@ -1,4 +1,4 @@
-﻿package com.sulake.bootstrap
+package com.sulake.bootstrap
 {
     import com.sulake.habbo.advertisement.AdManager;
     import com.sulake.core.runtime.IContext;
@@ -7,9 +7,9 @@
     public class AdManagerBootstrap extends AdManager 
     {
 
-        public function AdManagerBootstrap(_arg_1:IContext, _arg_2:uint=0, _arg_3:IAssetLibrary=null)
+        public function AdManagerBootstrap(context:IContext, flags:uint=0, assetLibrary:IAssetLibrary=null)
         {
-            super(_arg_1, _arg_2, _arg_3);
+            super(context, flags, assetLibrary);
         }
 
     }

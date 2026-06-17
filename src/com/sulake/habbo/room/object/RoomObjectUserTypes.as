@@ -19,33 +19,33 @@
             _SafeStr_3522["rentable_bot"] = 4;
         }
 
-        public static function getTypeId(_arg_1:String):int
+        public static function getTypeId(typeName:String):int
         {
-            return (_SafeStr_3522[_arg_1]);
+            return (_SafeStr_3522[typeName]);
         }
 
-        public static function getName(_arg_1:int):String
+        public static function getName(typeId:int):String
         {
-            for (var _local_2:String in _SafeStr_3522)
+            for (var typeName:String in _SafeStr_3522)
             {
-                if (_SafeStr_3522[_local_2] == _arg_1)
+                if (_SafeStr_3522[typeName] == typeId)
                 {
-                    return (_local_2);
+                    return (typeName);
                 };
             };
 
             return (null);
         }
 
-        public static function getVisualizationType(_arg_1:String):String
+        public static function getVisualizationType(typeName:String):String
         {
-            switch (_arg_1)
+            switch (typeName)
             {
                 case "bot":
                 case "rentable_bot":
                     return ("user");
                 default:
-                    return (_arg_1);
+                    return (typeName);
             };
         }
 

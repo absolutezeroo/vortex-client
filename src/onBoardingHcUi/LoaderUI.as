@@ -39,288 +39,284 @@
         private static const ETCHING_FILTER:DropShadowFilter = new DropShadowFilter(1, 90, 0xD1D400, 1, 1, 1);
         private static const NEGATIVE_ETCHING_FILTER:DropShadowFilter = new DropShadowFilter(1, 270, 0, 0.7, 1, 1);
 
-        public static function createTextField(_arg_1:String, _arg_2:int, _arg_3:uint, _arg_4:Boolean = false, _arg_5:Boolean = false, _arg_6:Boolean = false, _arg_7:Boolean = false, _arg_8:String = "left", _arg_9:Boolean = false, _arg_10:Boolean = false):TextField
+        public static function createTextField(text:String, size:int, color:uint, isBold:Boolean = false, isMultiline:Boolean = false, isInput:Boolean = false, isItalic:Boolean = false, align:String = "left", useKerning:Boolean = false, useThickness:Boolean = false):TextField
         {
-            var _local_11:TextFormat = new TextFormat("Ubuntu", _arg_2, _arg_3, _arg_4, _arg_7, _arg_10);
-            _local_11.align = _arg_8;
-            _local_11.kerning = _arg_9;
+            var format:TextFormat = new TextFormat("Ubuntu", size, color, isBold, isItalic, useThickness);
+            format.align = align;
+            format.kerning = useKerning;
 
-            var _local_12:LocalizedTextField = new LocalizedTextField();
-            _local_12.embedFonts = true;
-            _local_12.antiAliasType = "advanced";
-            _local_12.defaultTextFormat = _local_11;
-            _local_12.multiline = _arg_5;
-            _local_12.wordWrap = _arg_5;
-            _local_12.type = ((_arg_6) ? "input" : "dynamic");
-            _local_12.selectable = _arg_6;
-            _local_12.htmlText = _arg_1;
-            _local_12.autoSize = "left";
-            _local_12.width = _local_12.textWidth;
-            _local_12.height = _local_12.textHeight;
-            return (_local_12);
+            var field:LocalizedTextField = new LocalizedTextField();
+            field.embedFonts = true;
+            field.antiAliasType = "advanced";
+            field.defaultTextFormat = format;
+            field.multiline = isMultiline;
+            field.wordWrap = isMultiline;
+            field.type = ((isInput) ? "input" : "dynamic");
+            field.selectable = isInput;
+            field.htmlText = text;
+            field.autoSize = "left";
+            field.width = field.textWidth;
+            field.height = field.textHeight;
+            return (field);
         }
 
-        public static function addEtching(_arg_1:DisplayObject, _arg_2:Boolean = false):void
+        public static function addEtching(target:DisplayObject, isNegative:Boolean = false):void
         {
-            _arg_1.filters = [((_arg_2) ? NEGATIVE_ETCHING_FILTER.clone() : ETCHING_FILTER.clone())];
+            target.filters = [((isNegative) ? NEGATIVE_ETCHING_FILTER.clone() : ETCHING_FILTER.clone())];
         }
 
-        public static function lineUpHorizontally(_arg_1:DisplayObject, ..._args):void
+        public static function lineUpHorizontally(first:DisplayObject, ...args):void
         {
-            var _local_5:int;
-            var _local_3:int;
-            var _local_6:DisplayObject;
-            var _local_4:int = int((_args.length / 2));
-            _local_5 = 0;
+            var pairIndex:int = 0;
+            var spacing:int;
+            var nextItem:DisplayObject;
+            var totalPairs:int = int((args.length / 2));
 
-            while (_local_5 < _local_4)
+            while (pairIndex < totalPairs)
             {
-                _local_3 = _args[(_local_5 * 2)];
-                _local_6 = _args[((_local_5 * 2) + 1)];
-                _local_6.x = ((_arg_1.x + _arg_1.width) + _local_3);
-                _arg_1 = _local_6;
-                _local_5++;
+                spacing = args[(pairIndex * 2)];
+                nextItem = args[((pairIndex * 2) + 1)];
+                nextItem.x = ((first.x + first.width) + spacing);
+                first = nextItem;
+                pairIndex++;
             };
         }
 
-        public static function lineUpHorizontallyRevers(_arg_1:DisplayObject, ..._args):void
+        public static function lineUpHorizontallyRevers(first:DisplayObject, ...args):void
         {
-            var _local_5:int;
-            var _local_3:int;
-            var _local_6:DisplayObject;
-            var _local_4:int = int((_args.length / 2));
-            _local_5 = 0;
+            var pairIndex:int = 0;
+            var spacing:int;
+            var nextItem:DisplayObject;
+            var totalPairs:int = int((args.length / 2));
 
-            while (_local_5 < _local_4)
+            while (pairIndex < totalPairs)
             {
-                _local_3 = _args[(_local_5 * 2)];
-                _local_6 = _args[((_local_5 * 2) + 1)];
-                _local_6.x = ((_arg_1.x - _local_3) - _local_6.width);
-                _arg_1 = _local_6;
-                _local_5++;
+                spacing = args[(pairIndex * 2)];
+                nextItem = args[((pairIndex * 2) + 1)];
+                nextItem.x = ((first.x - spacing) - nextItem.width);
+                first = nextItem;
+                pairIndex++;
             };
         }
 
-        public static function lineUpVerticallyRevers(_arg_1:DisplayObject, ..._args):void
+        public static function lineUpVerticallyRevers(first:DisplayObject, ...args):void
         {
-            var _local_5:int;
-            var _local_3:int;
-            var _local_6:DisplayObject;
-            var _local_4:int = int((_args.length / 2));
-            _local_5 = 0;
+            var pairIndex:int = 0;
+            var spacing:int;
+            var nextItem:DisplayObject;
+            var totalPairs:int = int((args.length / 2));
 
-            while (_local_5 < _local_4)
+            while (pairIndex < totalPairs)
             {
-                _local_3 = _args[(_local_5 * 2)];
-                _local_6 = _args[((_local_5 * 2) + 1)];
-                _local_6.y = ((_arg_1.y - _local_3) - _local_6.height);
-                _arg_1 = _local_6;
-                _local_5++;
+                spacing = args[(pairIndex * 2)];
+                nextItem = args[((pairIndex * 2) + 1)];
+                nextItem.y = ((first.y - spacing) - nextItem.height);
+                first = nextItem;
+                pairIndex++;
             };
         }
 
-        public static function lineUpVertically(_arg_1:DisplayObject, ..._args):void
+        public static function lineUpVertically(first:DisplayObject, ...args):void
         {
-            var _local_5:int;
-            var _local_3:int;
-            var _local_6:DisplayObject;
-            var _local_4:int = int((_args.length / 2));
-            _local_5 = 0;
+            var pairIndex:int = 0;
+            var spacing:int;
+            var nextItem:DisplayObject;
+            var totalPairs:int = int((args.length / 2));
 
-            while (_local_5 < _local_4)
+            while (pairIndex < totalPairs)
             {
-                _local_3 = _args[(_local_5 * 2)];
-                _local_6 = _args[((_local_5 * 2) + 1)];
-                _local_6.y = ((_arg_1.y + _arg_1.height) + _local_3);
-                _arg_1 = _local_6;
-                _local_5++;
+                spacing = args[(pairIndex * 2)];
+                nextItem = args[((pairIndex * 2) + 1)];
+                nextItem.y = ((first.y + first.height) + spacing);
+                first = nextItem;
+                pairIndex++;
             };
         }
 
-        public static function lineUpElementsVertically(_arg_1:Vector.<DisplayObject>, _arg_2:int):void
+        public static function lineUpElementsVertically(items:Vector.<DisplayObject>, spacing:int):void
         {
-            var _local_3:int;
-            var _local_5:DisplayObject;
+            var index:int;
+            var nextItem:DisplayObject;
 
-            if (((_arg_1 == null) || (_arg_1.length < 2)))
+            if (((items == null) || (items.length < 2)))
             {
                 return;
             };
 
-            var _local_4:DisplayObject = _arg_1[0];
-            _local_3 = 0;
+            var previous:DisplayObject = items[0];
+            index = 0;
 
-            while (_local_3 < (_arg_1.length - 1))
+            while (index < (items.length - 1))
             {
-                _local_5 = _arg_1[(_local_3 + 1)];
-                _local_5.y = ((_local_4.y + _local_4.height) + _arg_2);
-                _local_4 = _local_5;
-                _local_3++;
+                nextItem = items[(index + 1)];
+                nextItem.y = ((previous.y + previous.height) + spacing);
+                previous = nextItem;
+                index++;
             };
         }
 
-        public static function alignAnchors(_arg_1:DisplayObject, _arg_2:int, _arg_3:String, ..._args):void
+        public static function alignAnchors(reference:DisplayObject, margin:int, anchor:String, ...targets):void
         {
-            for each (var _local_5:DisplayObject in _args)
+            for each (var current:DisplayObject in targets)
             {
-                if (_arg_3.indexOf("l") >= 0)
+                if (anchor.indexOf("l") >= 0)
                 {
-                    _local_5.x = (_arg_1.x + _arg_2);
+                    current.x = (reference.x + margin);
                 };
 
-                if (_arg_3.indexOf("c") >= 0)
+                if (anchor.indexOf("c") >= 0)
                 {
-                    _local_5.x = (_arg_1.x + int(((_arg_1.width - _local_5.width) / 2)));
+                    current.x = (reference.x + int(((reference.width - current.width) / 2)));
                 };
 
-                if (_arg_3.indexOf("r") >= 0)
+                if (anchor.indexOf("r") >= 0)
                 {
-                    _local_5.x = (((_arg_1.x + _arg_1.width) - _local_5.width) - _arg_2);
+                    current.x = (((reference.x + reference.width) - current.width) - margin);
                 };
 
-                if (_arg_3.indexOf("t") >= 0)
+                if (anchor.indexOf("t") >= 0)
                 {
-                    _local_5.y = (_arg_1.y + _arg_2);
+                    current.y = (reference.y + margin);
                 };
 
-                if (_arg_3.indexOf("m") >= 0)
+                if (anchor.indexOf("m") >= 0)
                 {
-                    _local_5.y = (_arg_1.y + int(((_arg_1.height - _local_5.height) / 2)));
+                    current.y = (reference.y + int(((reference.height - current.height) / 2)));
                 };
 
-                if (_arg_3.indexOf("b") >= 0)
+                if (anchor.indexOf("b") >= 0)
                 {
-                    _local_5.y = (((_arg_1.y + _arg_1.height) - _local_5.height) - _arg_2);
+                    current.y = (((reference.y + reference.height) - current.height) - margin);
                 };
             };
         }
 
-        public static function createBalloon(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:Boolean, _arg_5:uint = 0xFFFFFF, _arg_6:String = "up"):Bitmap
+        public static function createBalloon(width:int, height:int, pointPosition:int, isDark:Boolean, tint:uint = 0xFFFFFF, anchor:String = "up"):Bitmap
         {
-            var _local_9:Bitmap;
-            var _local_10:int;
-            var _local_11:int;
-            var _local_8:Bitmap;
+            var tipBitmap:Bitmap;
+            var tipHeight:int;
+            var tipWidth:int;
+            var balloon:Bitmap;
 
-            if (_arg_3 < 0)
+            if (pointPosition < 0)
             {
-                _arg_3 = int(((_arg_1 - 9) / 2));
+                pointPosition = int(((width - 9) / 2));
             };
 
-            var _local_7:NineSplitSprite = NineSplitSprite.DARK_BALLOON;
-            switch (_arg_6)
+            var balloonShape:NineSplitSprite = NineSplitSprite.DARK_BALLOON;
+            switch (anchor)
             {
                 case "up":
-                    _local_9 = new block_dark_point_up_png();
-                    _local_10 = _local_9.height;
-                    _local_8 = new Bitmap(new BitmapData(_arg_1, (_arg_2 + _local_9.height), true, 860986));
-                    _local_7.renderOn(_local_8, new Rectangle(0, _local_10, _arg_1, _arg_2));
-                    _local_8.bitmapData.copyPixels(_local_9.bitmapData, _local_9.bitmapData.rect, new Point(_arg_3, 0));
+                    tipBitmap = new block_dark_point_up_png();
+                    tipHeight = tipBitmap.height;
+                    balloon = new Bitmap(new BitmapData(width, (height + tipBitmap.height), true, 860986));
+                    balloonShape.renderOn(balloon, new Rectangle(0, tipHeight, width, height));
+                    balloon.bitmapData.copyPixels(tipBitmap.bitmapData, tipBitmap.bitmapData.rect, new Point(pointPosition, 0));
                     break;
                 case "down":
-                    _local_9 = new block_dark_point_down_png();
-                    _local_10 = _local_9.height;
-                    _local_8 = new Bitmap(new BitmapData(_arg_1, (_arg_2 + _local_9.height), true, 860986));
-                    _local_7.renderOn(_local_8, new Rectangle(0, _local_10, _arg_1, _arg_2));
-                    _local_8.bitmapData.copyPixels(_local_9.bitmapData, _local_9.bitmapData.rect, new Point(_arg_3, (_arg_2 + _local_10)));
+                    tipBitmap = new block_dark_point_down_png();
+                    tipHeight = tipBitmap.height;
+                    balloon = new Bitmap(new BitmapData(width, (height + tipBitmap.height), true, 860986));
+                    balloonShape.renderOn(balloon, new Rectangle(0, tipHeight, width, height));
+                    balloon.bitmapData.copyPixels(tipBitmap.bitmapData, tipBitmap.bitmapData.rect, new Point(pointPosition, (height + tipHeight)));
                     break;
                 case "left":
-                    _local_9 = new block_dark_point_left_png();
-                    _local_11 = _local_9.width;
-                    _local_8 = new Bitmap(new BitmapData((_arg_1 + _local_11), _arg_2, true, 0xFFFFFF));
-                    _local_7.renderOn(_local_8, new Rectangle(_local_11, 0, _arg_1, _arg_2));
-                    _local_8.bitmapData.copyPixels(_local_9.bitmapData, _local_9.bitmapData.rect, new Point(0, (_arg_3 - _local_11)));
+                    tipBitmap = new block_dark_point_left_png();
+                    tipWidth = tipBitmap.width;
+                    balloon = new Bitmap(new BitmapData((width + tipWidth), height, true, 0xFFFFFF));
+                    balloonShape.renderOn(balloon, new Rectangle(tipWidth, 0, width, height));
+                    balloon.bitmapData.copyPixels(tipBitmap.bitmapData, tipBitmap.bitmapData.rect, new Point(0, (pointPosition - tipWidth)));
                     break;
                 case "right":
-                    _local_9 = new block_dark_point_right_png();
-                    _local_11 = _local_9.width;
-                    _local_8 = new Bitmap(new BitmapData((_arg_1 + _local_11), _arg_2, true, 860986));
-                    _local_7.renderOn(_local_8, new Rectangle(0, 0, _arg_1, _arg_2));
-                    _local_8.bitmapData.copyPixels(_local_9.bitmapData, _local_9.bitmapData.rect, new Point(_arg_1, (_arg_3 - _local_11)));
+                    tipBitmap = new block_dark_point_right_png();
+                    tipWidth = tipBitmap.width;
+                    balloon = new Bitmap(new BitmapData((width + tipWidth), height, true, 860986));
+                    balloonShape.renderOn(balloon, new Rectangle(0, 0, width, height));
+                    balloon.bitmapData.copyPixels(tipBitmap.bitmapData, tipBitmap.bitmapData.rect, new Point(width, (pointPosition - tipWidth)));
                     break;
                 case "none":
-                    _local_8 = new Bitmap(new BitmapData(_arg_1, _arg_2, true, 860986));
-                    _local_7.renderOn(_local_8, new Rectangle(0, 0, _arg_1, _arg_2));
+                    balloon = new Bitmap(new BitmapData(width, height, true, 860986));
+                    balloonShape.renderOn(balloon, new Rectangle(0, 0, width, height));
             };
 
-            _local_8.bitmapData.colorTransform(_local_8.bitmapData.rect, new ColorTransform((((_arg_5 >> 16) & 0xFF) / 0xFF), (((_arg_5 >> 8) & 0xFF) / 0xFF), ((_arg_5 & 0xFF) / 0xFF)));
-            return (_local_8);
+            balloon.bitmapData.colorTransform(balloon.bitmapData.rect, new ColorTransform((((tint >> 16) & 0xFF) / 0xFF), (((tint >> 8) & 0xFF) / 0xFF), ((tint & 0xFF) / 0xFF)));
+            return (balloon);
         }
 
-        public static function createFrame(_arg_1:String, _arg_2:String, _arg_3:Rectangle, _arg_4:int = 1):Sprite
+        public static function createFrame(title:String, subtitle:String, bounds:Rectangle, style:int = 1):Sprite
         {
-            var _local_8:TextField;
-            var _local_9:Sprite = new Sprite();
-            _local_9.x = _arg_3.x;
-            _local_9.y = _arg_3.y;
+            var subtitleField:TextField;
+            var frame:Sprite = new Sprite();
+            frame.x = bounds.x;
+            frame.y = bounds.y;
 
-            if (_arg_4 == 1)
+            if (style == 1)
             {
-                _local_9.addChild(NineSplitSprite.FRAME.render(_arg_3.width, _arg_3.height));
+                frame.addChild(NineSplitSprite.FRAME.render(bounds.width, bounds.height));
             };
 
-            var _local_5:uint = ((_arg_4 == 2) ? 8309486 : 0xFFFFFF);
-            var _local_6:int = ((_arg_4 == 2) ? 24 : 40);
-            var _local_7:TextField = createTextField(_arg_1, _local_6, _local_5, false, false, false, false);
-            _local_7.y = -(_local_6 + 8);
-            _local_7.autoSize = "left";
-            _local_9.addChild(_local_7);
+            var titleColor:uint = ((style == 2) ? 8309486 : 0xFFFFFF);
+            var titleSize:int = ((style == 2) ? 24 : 40);
+            var titleField:TextField = createTextField(title, titleSize, titleColor, false, false, false, false);
+            titleField.y = -(titleSize + 8);
+            titleField.autoSize = "left";
+            frame.addChild(titleField);
 
-            if (_arg_4 == 2)
+            if (style == 2)
             {
-                _local_7.width = _arg_3.width;
-                _local_7.thickness = 50;
+                titleField.width = bounds.width;
+                titleField.thickness = 50;
             };
 
-            if (((!(_arg_2 == null)) && (!(_arg_2 == ""))))
+            if (((!(subtitle == null)) && (!(subtitle == ""))))
             {
-                _local_8 = createTextField(_arg_2, 10, 0xAAAAAA, true);
-                _local_8.x = 8;
-                _local_8.y = -(_local_6 + 16);
-                _local_8.autoSize = "left";
-                _local_9.addChild(_local_8);
+                subtitleField = createTextField(subtitle, 10, 0xAAAAAA, true);
+                subtitleField.x = 8;
+                subtitleField.y = -(titleSize + 16);
+                subtitleField.autoSize = "left";
+                frame.addChild(subtitleField);
             };
 
-            return (_local_9);
+            return (frame);
         }
 
-        public static function resizeFrame(_arg_1:Sprite, _arg_2:int, _arg_3:int):void
+        public static function resizeFrame(frame:Sprite, targetWidth:int, targetHeight:int):void
         {
-            _arg_1.removeChildAt(0);
-            _arg_1.addChildAt(NineSplitSprite.FRAME.render(_arg_2, _arg_3), 0);
+            frame.removeChildAt(0);
+            frame.addChildAt(NineSplitSprite.FRAME.render(targetWidth, targetHeight), 0);
         }
 
-        public static function createScale9GridShapeFromImage(_arg_1:BitmapData, _arg_2:Rectangle):Shape
+        public static function createScale9GridShapeFromImage(sourceBitmapData:BitmapData, sourceGrid:Rectangle):Shape
         {
-            var _local_8:int;
-            var _local_6:Number;
-            var _local_9:int;
-            var _local_3:Array = [(_arg_2.left - 0.001), (_arg_2.right + 0.001), _arg_1.width];
-            var _local_4:Array = [(_arg_2.top - 0.001), (_arg_2.bottom + 0.001), _arg_1.height];
-            var _local_5:Shape = new Shape();
-            var _local_7:Number = 0;
-            _local_8 = 0;
+            var xScaleIndex:int;
+            var sourceY:Number;
+            var yScaleIndex:int;
+            var sourceXGrid:Array = [(sourceGrid.left - 0.001), (sourceGrid.right + 0.001), sourceBitmapData.width];
+            var sourceYGrid:Array = [(sourceGrid.top - 0.001), (sourceGrid.bottom + 0.001), sourceBitmapData.height];
+            var scaleGrid:Shape = new Shape();
+            var sourceX:Number = 0;
+            xScaleIndex = 0;
 
-            while (_local_8 < 3)
+            while (xScaleIndex < 3)
             {
-                _local_6 = 0;
-                _local_9 = 0;
+                sourceY = 0;
+                yScaleIndex = 0;
 
-                while (_local_9 < 3)
+                while (yScaleIndex < 3)
                 {
-                    _local_5.graphics.beginBitmapFill(_arg_1);
-                    _local_5.graphics.drawRect(_local_7, _local_6, (_local_3[_local_8] - _local_7), (_local_4[_local_9] - _local_6));
-                    _local_5.graphics.endFill();
-                    _local_6 = _local_4[_local_9];
-                    _local_9++;
+                    scaleGrid.graphics.beginBitmapFill(sourceBitmapData);
+                    scaleGrid.graphics.drawRect(sourceX, sourceY, (sourceXGrid[xScaleIndex] - sourceX), (sourceYGrid[yScaleIndex] - sourceY));
+                    scaleGrid.graphics.endFill();
+                    sourceY = sourceYGrid[yScaleIndex];
+                    yScaleIndex++;
                 };
 
-                _local_7 = _local_3[_local_8];
-                _local_8++;
+                sourceX = sourceXGrid[xScaleIndex];
+                xScaleIndex++;
             };
 
-            _local_5.scale9Grid = _arg_2;
-            return (_local_5);
+            scaleGrid.scale9Grid = sourceGrid;
+            return (scaleGrid);
         }
 
         public static function createTextBorder():Shape

@@ -5,9 +5,9 @@
 
         private var _isTyping:Boolean;
 
-        public function RoomObjectAvatarTypingUpdateMessage(_arg_1:Boolean=false)
+        public function RoomObjectAvatarTypingUpdateMessage(isTyping:Boolean=false)
         {
-            _isTyping = _arg_1;
+            _isTyping = isTyping;
         }
 
         public function get isTyping():Boolean

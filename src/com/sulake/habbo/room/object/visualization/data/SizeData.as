@@ -1,7 +1,7 @@
-﻿package com.sulake.habbo.room.object.visualization.data
+package com.sulake.habbo.room.object.visualization.data
 {
     import com.sulake.core.utils.Map;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
 
     public class SizeData
     {
@@ -17,40 +17,40 @@
         private var _lastDirectionData:DirectionData = null;
         private var _lastDirection:int = -1;
 
-        public function SizeData(_arg_1:int, _arg_2:int)
+        public function SizeData(layerCount:int, angle:int)
         {
-            if (_arg_1 < 0)
+            if (layerCount < 0)
             {
-                _arg_1 = 0;
+                layerCount = 0;
             };
 
-            if (_arg_1 > 1000)
+            if (layerCount > 1000)
             {
-                _arg_1 = 1000;
+                layerCount = 1000;
             };
 
-            _layerCount = _arg_1;
+            _layerCount = layerCount;
 
-            if (_arg_2 < 1)
+            if (angle < 1)
             {
-                _arg_2 = 1;
+                angle = 1;
             };
 
-            if (_arg_2 > 360)
+            if (angle > 360)
             {
-                _arg_2 = 360;
+                angle = 360;
             };
 
-            _angle = _arg_2;
-            _defaultDirection = new DirectionData(_arg_1);
+            _angle = angle;
+            _defaultDirection = new DirectionData(layerCount);
             _directions = new Map();
             _colors = new Map();
         }
 
         public function dispose():void
         {
-            var _local_3:DirectionData;
-            var _local_1:ColorData;
+            var directionData:DirectionData;
+            var colorData:ColorData;
 
             if (_defaultDirection != null)
             {
@@ -58,23 +58,23 @@
                 _defaultDirection = null;
             };
 
-            var _local_2:int;
+            var index:int;
 
             if (_directions != null)
             {
-                _local_3 = null;
-                _local_2 = 0;
+                directionData = null;
+                index = 0;
 
-                while (_local_2 < _directions.length)
+                while (index < _directions.length)
                 {
-                    _local_3 = (_directions.getWithIndex(_local_2) as DirectionData);
+                    directionData = (_directions.getWithIndex(index) as DirectionData);
 
-                    if (_local_3 != null)
+                    if (directionData != null)
                     {
-                        _local_3.dispose();
+                        directionData.dispose();
                     };
 
-                    _local_2++;
+                    index++;
                 };
 
                 _directions.dispose();
@@ -85,19 +85,19 @@
 
             if (_colors != null)
             {
-                _local_1 = null;
-                _local_2 = 0;
+                colorData = null;
+                index = 0;
 
-                while (_local_2 < _colors.length)
+                while (index < _colors.length)
                 {
-                    _local_1 = (_colors.getWithIndex(_local_2) as ColorData);
+                    colorData = (_colors.getWithIndex(index) as ColorData);
 
-                    if (_local_1 != null)
+                    if (colorData != null)
                     {
-                        _local_1.dispose();
+                        colorData.dispose();
                     };
 
-                    _local_2++;
+                    index++;
                 };
 
                 _colors.dispose();
@@ -110,392 +110,392 @@
             return (_layerCount);
         }
 
-        public function defineLayers(_arg_1:XML):Boolean
+        public function defineLayers(xmlNode:XML):Boolean
         {
-            if (_arg_1 == null)
+            if (xmlNode == null)
             {
                 return (false);
             };
 
-            var _local_2:XMLList = _arg_1.layer;
-            return (defineDirection(_defaultDirection, _local_2));
+            var layerList:XMLList = xmlNode.layer;
+            return (defineDirection(_defaultDirection, layerList));
         }
 
-        public function defineDirections(_arg_1:XML):Boolean
+        public function defineDirections(xmlNode:XML):Boolean
         {
-            var _local_3:int;
-            var _local_8:XML;
-            var _local_7:int;
-            var _local_4:XMLList;
+            var index:int;
+            var directionXml:XML;
+            var directionId:int;
+            var layerList:XMLList;
 
-            if (_arg_1 == null)
+            if (xmlNode == null)
             {
                 return (false);
             };
 
-            var _local_2:Array = ["id"];
-            var _local_5:DirectionData;
-            var _local_6:XMLList = _arg_1.direction;
-            _local_3 = 0;
+            var requiredAttributes:Array = ["id"];
+            var directionData:DirectionData;
+            var directionList:XMLList = xmlNode.direction;
+            index = 0;
 
-            while (_local_3 < _local_6.length())
+            while (index < directionList.length())
             {
-                _local_8 = _local_6[_local_3];
+                directionXml = directionList[index];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_8, _local_2))
+                if (!XmlUtil.checkRequiredAttributes(directionXml, requiredAttributes))
                 {
                     return (false);
                 };
 
-                _local_7 = int(_local_8.@id);
-                _local_4 = _local_8.layer;
+                directionId = int(directionXml.@id);
+                layerList = directionXml.layer;
 
-                if (_directions.getValue(String(_local_7)) != null)
+                if (_directions.getValue(String(directionId)) != null)
                 {
                     return (false);
                 };
 
-                _local_5 = new DirectionData(layerCount);
-                _local_5.copyValues(_defaultDirection);
-                defineDirection(_local_5, _local_4);
-                _directions.add(_local_7, _local_5);
+                directionData = new DirectionData(layerCount);
+                directionData.copyValues(_defaultDirection);
+                defineDirection(directionData, layerList);
+                _directions.add(directionId, directionData);
                 _lastDirection = -1;
                 _lastDirectionData = null;
-                _local_3++;
+                index++;
             };
 
             return (true);
         }
 
-        private function defineDirection(_arg_1:DirectionData, _arg_2:XMLList):Boolean
+        private function defineDirection(directionData:DirectionData, layerList:XMLList):Boolean
         {
-            var _local_5:int;
-            var _local_10:XML;
-            var _local_7:int;
-            var _local_8:String;
-            var _local_4:String;
-            var _local_3:int;
-            var _local_6:int;
+            var index:int;
+            var layerXml:XML;
+            var layerId:int;
+            var attributeValue:String;
+            var inkValue:String;
+            var ignoreMouse:int;
+            var zOffset:int;
 
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((directionData == null) || (layerList == null)))
             {
                 return (false);
             };
 
-            var _local_9:Array = ["id"];
-            _local_5 = 0;
+            var requiredAttributes:Array = ["id"];
+            index = 0;
 
-            while (_local_5 < _arg_2.length())
+            while (index < layerList.length())
             {
-                _local_10 = _arg_2[_local_5];
+                layerXml = layerList[index];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_10, _local_9))
+                if (!XmlUtil.checkRequiredAttributes(layerXml, requiredAttributes))
                 {
                     return (false);
                 };
 
-                _local_7 = int(_local_10.@id);
+                layerId = int(layerXml.@id);
 
-                if (((_local_7 < 0) || (_local_7 >= layerCount)))
+                if (((layerId < 0) || (layerId >= layerCount)))
                 {
                     return (false);
                 };
 
-                _local_8 = _local_10.@tag;
+                attributeValue = layerXml.@tag;
 
-                if (_local_8.length > 0)
+                if (attributeValue.length > 0)
                 {
-                    _arg_1.setTag(_local_7, _local_8);
+                    directionData.setTag(layerId, attributeValue);
                 };
 
-                _local_4 = _local_10.@ink;
-                switch (_local_4)
+                inkValue = layerXml.@ink;
+                switch (inkValue)
                 {
                     case "ADD":
-                        _arg_1.setInk(_local_7, 1);
+                        directionData.setInk(layerId, 1);
                         break;
                     case "SUBTRACT":
-                        _arg_1.setInk(_local_7, 2);
+                        directionData.setInk(layerId, 2);
                         break;
                     case "DARKEN":
-                        _arg_1.setInk(_local_7, 3);
+                        directionData.setInk(layerId, 3);
                 };
 
-                _local_8 = _local_10.@alpha;
+                attributeValue = layerXml.@alpha;
 
-                if (_local_8.length > 0)
+                if (attributeValue.length > 0)
                 {
-                    _arg_1.setAlpha(_local_7, int(_local_8));
+                    directionData.setAlpha(layerId, int(attributeValue));
                 };
 
-                _local_8 = _local_10.@ignoreMouse;
+                attributeValue = layerXml.@ignoreMouse;
 
-                if (_local_8.length > 0)
+                if (attributeValue.length > 0)
                 {
-                    _local_3 = int(_local_8);
-                    _arg_1.setIgnoreMouse(_local_7, (!(_local_3 == 0)));
+                    ignoreMouse = int(attributeValue);
+                    directionData.setIgnoreMouse(layerId, (!(ignoreMouse == 0)));
                 };
 
-                _local_8 = _local_10.@x;
+                attributeValue = layerXml.@x;
 
-                if (_local_8.length > 0)
+                if (attributeValue.length > 0)
                 {
-                    _arg_1.setXOffset(_local_7, int(_local_8));
+                    directionData.setXOffset(layerId, int(attributeValue));
                 };
 
-                _local_8 = _local_10.@y;
+                attributeValue = layerXml.@y;
 
-                if (_local_8.length > 0)
+                if (attributeValue.length > 0)
                 {
-                    _arg_1.setYOffset(_local_7, int(_local_8));
+                    directionData.setYOffset(layerId, int(attributeValue));
                 };
 
-                _local_8 = _local_10.@z;
+                attributeValue = layerXml.@z;
 
-                if (_local_8.length > 0)
+                if (attributeValue.length > 0)
                 {
-                    _local_6 = int(_local_8);
-                    _arg_1.setZOffset(_local_7, (_local_6 / -1000));
+                    zOffset = int(attributeValue);
+                    directionData.setZOffset(layerId, (zOffset / -1000));
                 };
 
-                _local_5++;
+                index++;
             };
 
             return (true);
         }
 
-        public function defineColors(_arg_1:XML):Boolean
+        public function defineColors(xmlNode:XML):Boolean
         {
-            var _local_6:int;
-            var _local_3:XML;
-            var _local_13:String;
-            var _local_10:XMLList;
-            var _local_7:int;
-            var _local_4:XML;
-            var _local_9:int;
-            var _local_12:int;
+            var index:int;
+            var colorXml:XML;
+            var colorId:String;
+            var colorLayerList:XMLList;
+            var layerIndex:int;
+            var colorLayerXml:XML;
+            var layerId:int;
+            var colorValue:int;
 
-            if (_arg_1 == null)
+            if (xmlNode == null)
             {
                 return (true);
             };
 
-            var _local_5:ColorData;
-            var _local_11:Array = ["id"];
-            var _local_2:Array = ["id", "color"];
-            var _local_8:XMLList = _arg_1.color;
-            _local_6 = 0;
+            var colorData:ColorData;
+            var requiredColorAttributes:Array = ["id"];
+            var requiredColorLayerAttributes:Array = ["id", "color"];
+            var colorList:XMLList = xmlNode.color;
+            index = 0;
 
-            while (_local_6 < _local_8.length())
+            while (index < colorList.length())
             {
-                _local_3 = _local_8[_local_6];
+                colorXml = colorList[index];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_3, _local_11))
+                if (!XmlUtil.checkRequiredAttributes(colorXml, requiredColorAttributes))
                 {
                     return (false);
                 };
 
-                _local_13 = _local_3.@id;
+                colorId = colorXml.@id;
 
-                if (_colors.getValue(_local_13) != null)
+                if (_colors.getValue(colorId) != null)
                 {
                     return (false);
                 };
 
-                _local_5 = new ColorData(layerCount);
-                _local_10 = _local_3.colorLayer;
-                _local_7 = 0;
+                colorData = new ColorData(layerCount);
+                colorLayerList = colorXml.colorLayer;
+                layerIndex = 0;
 
-                while (_local_7 < _local_10.length())
+                while (layerIndex < colorLayerList.length())
                 {
-                    _local_4 = _local_10[_local_7];
+                    colorLayerXml = colorLayerList[layerIndex];
 
-                    if (!_SafeStr_93.checkRequiredAttributes(_local_4, _local_2))
+                    if (!XmlUtil.checkRequiredAttributes(colorLayerXml, requiredColorLayerAttributes))
                     {
-                        _local_5.dispose();
+                        colorData.dispose();
                         return (false);
                     };
 
-                    _local_9 = int(_local_4.@id);
-                    _local_12 = parseInt(_local_4.@color, 16);
-                    _local_5.setColor(_local_12, _local_9);
-                    _local_7++;
+                    layerId = int(colorLayerXml.@id);
+                    colorValue = parseInt(colorLayerXml.@color, 16);
+                    colorData.setColor(colorValue, layerId);
+                    layerIndex++;
                 };
 
-                if (_local_5 != null)
+                if (colorData != null)
                 {
-                    _colors.add(_local_13, _local_5);
+                    _colors.add(colorId, colorData);
                 };
 
-                _local_6++;
+                index++;
             };
 
             return (true);
         }
 
-        public function getDirectionValue(_arg_1:int):int
+        public function getDirectionValue(angle:int):int
         {
-            var _local_4:int;
-            var _local_5:int;
-            var _local_2:int;
-            var _local_6:int = int((((((_arg_1 % 360) + 360) + (_angle / 2)) % 360) / _angle));
+            var index:int;
+            var keyAngle:int;
+            var angleDiff:int;
+            var direction:int = int((((((angle % 360) + 360) + (_angle / 2)) % 360) / _angle));
 
-            if (_directions.getValue(String(_local_6)) != null)
+            if (_directions.getValue(String(direction)) != null)
             {
-                return (_local_6);
+                return (direction);
             };
 
-            _local_6 = (((_arg_1 % 360) + 360) % 360);
+            direction = (((angle % 360) + 360) % 360);
 
-            var _local_7:int = -1;
-            var _local_3:int = -1;
-            _local_4 = 0;
+            var bestDiff:int = -1;
+            var bestIndex:int = -1;
+            index = 0;
 
-            while (_local_4 < _directions.length)
+            while (index < _directions.length)
             {
-                _local_5 = (_directions.getKey(_local_4) * _angle);
-                _local_2 = (((_local_5 - _local_6) + 360) % 360);
+                keyAngle = (_directions.getKey(index) * _angle);
+                angleDiff = (((keyAngle - direction) + 360) % 360);
 
-                if (_local_2 > 180)
+                if (angleDiff > 180)
                 {
-                    _local_2 = (360 - _local_2);
+                    angleDiff = (360 - angleDiff);
                 };
 
-                if (((_local_2 < _local_7) || (_local_7 < 0)))
+                if (((angleDiff < bestDiff) || (bestDiff < 0)))
                 {
-                    _local_7 = _local_2;
-                    _local_3 = _local_4;
+                    bestDiff = angleDiff;
+                    bestIndex = index;
                 };
 
-                _local_4++;
+                index++;
             };
 
-            if (_local_3 >= 0)
+            if (bestIndex >= 0)
             {
-                return (_directions.getKey(_local_3));
+                return (_directions.getKey(bestIndex));
             };
 
             return (0);
         }
 
-        private function getDirectionData(_arg_1:int):DirectionData
+        private function getDirectionData(direction:int):DirectionData
         {
-            if (((_arg_1 == _lastDirection) && (!(_lastDirectionData == null))))
+            if (((direction == _lastDirection) && (!(_lastDirectionData == null))))
             {
                 return (_lastDirectionData);
             };
 
-            var _local_2:DirectionData;
-            _local_2 = (_directions.getValue(String(_arg_1)) as DirectionData);
+            var directionData:DirectionData;
+            directionData = (_directions.getValue(String(direction)) as DirectionData);
 
-            if (_local_2 == null)
+            if (directionData == null)
             {
-                _local_2 = _defaultDirection;
+                directionData = _defaultDirection;
             };
 
-            _lastDirection = _arg_1;
-            _lastDirectionData = _local_2;
+            _lastDirection = direction;
+            _lastDirectionData = directionData;
             return (_lastDirectionData);
         }
 
-        public function getTag(_arg_1:int, _arg_2:int):String
+        public function getTag(direction:int, layerId:int):String
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getTag(_arg_2));
+                return (directionData.getTag(layerId));
             };
 
             return ("");
         }
 
-        public function getInk(_arg_1:int, _arg_2:int):int
+        public function getInk(direction:int, layerId:int):int
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getInk(_arg_2));
+                return (directionData.getInk(layerId));
             };
 
             return (0);
         }
 
-        public function getAlpha(_arg_1:int, _arg_2:int):int
+        public function getAlpha(direction:int, layerId:int):int
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getAlpha(_arg_2));
+                return (directionData.getAlpha(layerId));
             };
 
             return (0xFF);
         }
 
-        public function getColor(_arg_1:int, _arg_2:int):uint
+        public function getColor(direction:int, layerId:int):uint
         {
-            var _local_3:ColorData = (_colors.getValue(String(_arg_2)) as ColorData);
+            var colorData:ColorData = (_colors.getValue(String(layerId)) as ColorData);
 
-            if (_local_3 != null)
+            if (colorData != null)
             {
-                return (_local_3.getColor(_arg_1));
+                return (colorData.getColor(direction));
             };
 
             return (0xFFFFFF);
         }
 
-        public function getIgnoreMouse(_arg_1:int, _arg_2:int):Boolean
+        public function getIgnoreMouse(direction:int, layerId:int):Boolean
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getIgnoreMouse(_arg_2));
+                return (directionData.getIgnoreMouse(layerId));
             };
 
             return (false);
         }
 
-        public function getXOffset(_arg_1:int, _arg_2:int):int
+        public function getXOffset(direction:int, layerId:int):int
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getXOffset(_arg_2));
+                return (directionData.getXOffset(layerId));
             };
 
             return (0);
         }
 
-        public function getYOffset(_arg_1:int, _arg_2:int):int
+        public function getYOffset(direction:int, layerId:int):int
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getYOffset(_arg_2));
+                return (directionData.getYOffset(layerId));
             };
 
             return (0);
         }
 
-        public function getZOffset(_arg_1:int, _arg_2:int):Number
+        public function getZOffset(direction:int, layerId:int):Number
         {
-            var _local_3:DirectionData;
-            _local_3 = getDirectionData(_arg_1);
+            var directionData:DirectionData;
+            directionData = getDirectionData(direction);
 
-            if (_local_3 != null)
+            if (directionData != null)
             {
-                return (_local_3.getZOffset(_arg_2));
+                return (directionData.getZOffset(layerId));
             };
 
             return (0);

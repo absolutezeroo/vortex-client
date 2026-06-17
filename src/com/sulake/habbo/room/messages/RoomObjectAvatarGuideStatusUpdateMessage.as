@@ -5,9 +5,9 @@
 
         private var _guideStatus:int;
 
-        public function RoomObjectAvatarGuideStatusUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarGuideStatusUpdateMessage(guideStatus:int)
         {
-            _guideStatus = _arg_1;
+            _guideStatus = guideStatus;
         }
 
         public function get guideStatus():int

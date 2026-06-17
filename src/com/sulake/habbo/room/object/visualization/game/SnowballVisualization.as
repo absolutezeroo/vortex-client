@@ -24,22 +24,22 @@
             super.dispose();
         }
 
-        override public function initialize(_arg_1:IRoomObjectVisualizationData):Boolean
+        override public function initialize(visualizationData:IRoomObjectVisualizationData):Boolean
         {
-            var _local_2:BitmapDataAsset;
-            _SafeStr_690 = (_arg_1 as SnowballVisualizationData);
+            var frameAsset:BitmapDataAsset;
+            _SafeStr_690 = (visualizationData as SnowballVisualizationData);
             createSprites(2);
-            _local_2 = (_SafeStr_690.assets.getAssetByName("snowball_small_png") as BitmapDataAsset);
-            getSprite(0).asset = (_local_2.content as BitmapData);
-            _local_2 = (_SafeStr_690.assets.getAssetByName("snowball_small_shadow_png") as BitmapDataAsset);
+            frameAsset = (_SafeStr_690.assets.getAssetByName("snowball_small_png") as BitmapDataAsset);
+            getSprite(0).asset = (frameAsset.content as BitmapData);
+            frameAsset = (_SafeStr_690.assets.getAssetByName("snowball_small_shadow_png") as BitmapDataAsset);
             _SafeStr_3405 = getSprite(1);
-            _SafeStr_3405.asset = (_local_2.content as BitmapData);
+            _SafeStr_3405.asset = (frameAsset.content as BitmapData);
             _SafeStr_3405.alpha = 100;
             _SafeStr_3405.relativeDepth = 1;
             return (true);
         }
 
-        override public function update(_arg_1:IRoomGeometry, _arg_2:int, _arg_3:Boolean, _arg_4:Boolean):void
+        override public function update(geometry:IRoomGeometry, updateId:int, hasUpdate:Boolean, isVisible:Boolean):void
         {
             _SafeStr_3405.offsetY = (object.getLocation().z * 16);
             _SafeStr_3405.alpha = Math.max(0, (100 - (_SafeStr_3405.offsetY / 10)));

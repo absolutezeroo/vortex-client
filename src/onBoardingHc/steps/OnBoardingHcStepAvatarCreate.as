@@ -30,9 +30,9 @@ package onBoardingHc.steps
         private var _nameValid:Boolean;
         private var _selectedGender:String = "M";
 
-        public function OnBoardingHcStepAvatarCreate(_arg_1:IOnBoardingHcContext)
+        public function OnBoardingHcStepAvatarCreate(context:IOnBoardingHcContext)
         {
-            _context = _arg_1;
+            _context = context;
             addEventListener("addedToStage", onAddedToStage);
         }
 
@@ -51,14 +51,14 @@ package onBoardingHc.steps
                 _femaleButton.dispose();
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
-            var _local_2:Timer = new Timer(20, 1);
-            _local_2.addEventListener("timerComplete", onAlignElements);
-            _local_2.start();
+            var alignTimer:Timer = new Timer(20, 1);
+            alignTimer.addEventListener("timerComplete", onAlignElements);
+            alignTimer.start();
         }
 
-        private function onAlignElements(_arg_1:TimerEvent):void
+        private function onAlignElements(_:TimerEvent):void
         {
             LoaderUI.alignAnchors(_nameField, 0, "r", _createButton);
             LoaderUI.lineUpHorizontallyRevers(_createButton, 20, _cancelButton);
@@ -129,32 +129,32 @@ package onBoardingHc.steps
             addChild(_createButton);
         }
 
-        private function onSelectMale(_arg_1:Button):void
+        private function onSelectMale(selectedButton:Button):void
         {
             _selectedGender = "M";
             _maleButton.active = false;
             _femaleButton.active = true;
         }
 
-        private function onSelectFemale(_arg_1:Button):void
+        private function onSelectFemale(selectedButton:Button):void
         {
             _selectedGender = "F";
             _femaleButton.active = false;
             _maleButton.active = true;
         }
 
-        private function onNameChange(_arg_1:Event):void
+        private function onNameChange(changeEvent:Event):void
         {
             _nameChecked = false;
             _nameValid = false;
             _createButton.active = false;
 
-            var _local_2:String = _nameField.text;
+            var avatarName:String = _nameField.text;
 
-            if (_local_2 && _local_2.length >= 3)
+            if (avatarName && avatarName.length >= 3)
             {
                 _statusField.text = "${connection.login.create_avatar.checking}";
-                _context.checkName(_local_2);
+                _context.checkName(avatarName);
             }
             else
             {
@@ -162,17 +162,17 @@ package onBoardingHc.steps
             };
         }
 
-        public function onNameCheckResult(_arg_1:Object, _arg_2:Boolean):void
+        public function onNameCheckResult(response:Object, isValid:Boolean):void
         {
             _nameChecked = true;
 
-            if (_arg_2)
+            if (isValid)
             {
                 // name/check response — true means it IS a check (not a select)
-                var _local_3:Boolean = (_arg_1 && _arg_1.valid == true);
-                _nameValid = _local_3;
+                var isNameAvailable:Boolean = (response && response.valid == true);
+                _nameValid = isNameAvailable;
 
-                if (_local_3)
+                if (isNameAvailable)
                 {
                     _statusField.text = "${connection.login.create_avatar.name_available}";
                     _createButton.active = true;
@@ -185,21 +185,21 @@ package onBoardingHc.steps
             };
         }
 
-        private function onCreate(_arg_1:Button):void
+        private function onCreate(createButton:Button):void
         {
             if (!_nameValid)
                 return;
 
-            var _local_2:String = _nameField.text;
+            var avatarName:String = _nameField.text;
 
-            if (!_local_2 || _local_2.length < 3)
+            if (!avatarName || avatarName.length < 3)
                 return;
 
             // figure is empty — server uses the configured default figure
-            _context.createAvatar(_local_2, "", _selectedGender);
+            _context.createAvatar(avatarName, "", _selectedGender);
         }
 
-        private function onCancel(_arg_1:Button):void
+        private function onCancel(cancelButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_AVATAR_SELECT);
         }

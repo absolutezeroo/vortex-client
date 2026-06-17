@@ -30,9 +30,9 @@
         private var _rolloverBackground:DisplayObject;
         private var _icon:Bitmap;
 
-        public function ColouredButton(_arg_1:String, _arg_2:String, _arg_3:Rectangle, _arg_4:Boolean, _arg_5:Function, _arg_6:uint = 0xFFFFFF)
+        public function ColouredButton(colorStyle:String, labelText:String, buttonBounds:Rectangle, fitWidthToText:Boolean, onClick:Function, glowColour:uint = 0xFFFFFF)
         {
-            switch (_arg_1)
+            switch (colorStyle)
             {
                 case "red":
                     _defaultBackground = LoaderUI.createScale9GridShapeFromImage(Bitmap(new button_red_png()).bitmapData, new Rectangle(8, 10, 6, 4));
@@ -54,7 +54,7 @@
                     _icon = Bitmap(new icon_hc());
             };
 
-            super(_arg_2, _arg_3, _arg_4, _arg_5, _arg_6);
+            super(labelText, buttonBounds, fitWidthToText, onClick, glowColour);
         }
 
         override protected function get defaultBackground():DisplayObject

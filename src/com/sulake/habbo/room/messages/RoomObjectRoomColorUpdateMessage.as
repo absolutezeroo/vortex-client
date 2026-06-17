@@ -12,13 +12,13 @@
         private var _light:int = 0;
         private var _bgOnly:Boolean = true;
 
-        public function RoomObjectRoomColorUpdateMessage(_arg_1:String, _arg_2:uint, _arg_3:int, _arg_4:Boolean)
+        public function RoomObjectRoomColorUpdateMessage(type:String, color:uint, light:int, bgOnly:Boolean)
         {
             super(null, null);
-            _type = _arg_1;
-            _color = _arg_2;
-            _light = _arg_3;
-            _bgOnly = _arg_4;
+            _type = type;
+            _color = color;
+            _light = light;
+            _bgOnly = bgOnly;
         }
 
         public function get type():String

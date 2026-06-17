@@ -82,9 +82,9 @@ package onBoardingHc
         private var _bgRight:Loader;
         private var _lastFrameTime:int;
 
-        public function OnBoardingHc(_arg_1:Dictionary)
+        public function OnBoardingHc(config:Dictionary)
         {
-            createFakeContext(_arg_1);
+            createFakeContext(config);
         }
 
         public function get ssoToken():String
@@ -135,49 +135,49 @@ package onBoardingHc
             return (_disposed);
         }
 
-        private function createConfiguration(_arg_1:IContext):HabboConfigurationManager
+        private function createConfiguration(context:IContext):HabboConfigurationManager
         {
-            var _local_5:XML = new XML("<manifest><library /></manifest>");
-            var _local_2:ByteArray = (new HabboConfigurationCom.manifest() as ByteArray);
-            var _local_3:XML = new XML(_local_2.readUTFBytes(_local_2.length));
-            _local_5.library.appendChild(_local_3.component.assets);
+            var manifestXml:XML = new XML("<manifest><library /></manifest>");
+            var manifestBytes:ByteArray = (new HabboConfigurationCom.manifest() as ByteArray);
+            var configurationXml:XML = new XML(manifestBytes.readUTFBytes(manifestBytes.length));
+            manifestXml.library.appendChild(configurationXml.component.assets);
 
-            var _local_4:IAssetLibrary = new AssetLibrary("_assetsConfiguration@");
-            _local_4.loadFromResource(_local_5, HabboConfigurationCom);
-            return (new HabboConfigurationManager(_arg_1, 0, _local_4));
+            var configurationLibrary:IAssetLibrary = new AssetLibrary("_assetsConfiguration@");
+            configurationLibrary.loadFromResource(manifestXml, HabboConfigurationCom);
+            return (new HabboConfigurationManager(context, 0, configurationLibrary));
         }
 
-        private function createLocalization(_arg_1:IContext):HabboLocalizationManager
+        private function createLocalization(context:IContext):HabboLocalizationManager
         {
-            var _local_5:XML = new XML("<manifest><library /></manifest>");
-            var _local_2:ByteArray = (new HabboLocalizationCom.manifest() as ByteArray);
-            var _local_3:XML = new XML(_local_2.readUTFBytes(_local_2.length));
-            _local_5.library.appendChild(_local_3.component.assets);
+            var manifestXml:XML = new XML("<manifest><library /></manifest>");
+            var localizationBytes:ByteArray = (new HabboLocalizationCom.manifest() as ByteArray);
+            var localizationXml:XML = new XML(localizationBytes.readUTFBytes(localizationBytes.length));
+            manifestXml.library.appendChild(localizationXml.component.assets);
 
-            var _local_4:IAssetLibrary = new AssetLibrary("_assetsLocalization@");
-            _local_4.loadFromResource(_local_5, HabboLocalizationCom);
-            return (new HabboLocalizationManager(_arg_1, 0, _local_4));
+            var localizationLibrary:IAssetLibrary = new AssetLibrary("_assetsLocalization@");
+            localizationLibrary.loadFromResource(manifestXml, HabboLocalizationCom);
+            return (new HabboLocalizationManager(context, 0, localizationLibrary));
         }
 
-        private function createCommunication(_arg_1:IContext):HabboCommunicationManager
+        private function createCommunication(context:IContext):HabboCommunicationManager
         {
-            var _local_3:ByteArray = (new HabboCommunicationCom.manifest() as ByteArray);
-            var _local_4:XML = new XML(_local_3.readUTFBytes(_local_3.length));
-            var _local_2:XML = new XML("<manifest><library /></manifest>");
-            _local_2.library.appendChild(_local_4.component.assets);
+            var communicationBytes:ByteArray = (new HabboCommunicationCom.manifest() as ByteArray);
+            var communicationXml:XML = new XML(communicationBytes.readUTFBytes(communicationBytes.length));
+            var manifestXml:XML = new XML("<manifest><library /></manifest>");
+            manifestXml.library.appendChild(communicationXml.component.assets);
 
-            var _local_5:IAssetLibrary = new AssetLibrary("_assetsTemp@", _local_2);
-            _local_5.loadFromResource(_local_2, HabboCommunicationCom);
-            return (new HabboCommunicationManager(_arg_1, 0, _local_5));
+            var communicationLibrary:IAssetLibrary = new AssetLibrary("_assetsTemp@", manifestXml);
+            communicationLibrary.loadFromResource(manifestXml, HabboCommunicationCom);
+            return (new HabboCommunicationManager(context, 0, communicationLibrary));
         }
 
-        private function createFakeContext(_arg_1:Dictionary):void
+        private function createFakeContext(config:Dictionary):void
         {
-            _context = new FakeContext(_arg_1);
+            _context = new FakeContext(config);
 
-            var _local_3:XML = new XML("<manifest><library /></manifest>");
-            var _local_2:IAssetLibrary = new AssetLibrary("_assetsTemp@", _local_3);
-            (_context.assets as AssetLibraryCollection).addAssetLibrary(_local_2);
+            var manifestXml:XML = new XML("<manifest><library /></manifest>");
+            var tempLibrary:IAssetLibrary = new AssetLibrary("_assetsTemp@", manifestXml);
+            (_context.assets as AssetLibraryCollection).addAssetLibrary(tempLibrary);
             _configuration = createConfiguration(_context);
             _localization = createLocalization(_context);
             _communication = createCommunication(_context);
@@ -188,16 +188,16 @@ package onBoardingHc
             _loginProvider.addEventListener("SSO_TOKEN_AVAILABLE", onSsoTokenAvailable);
         }
 
-        private function onSsoTokenAvailable(_arg_1:SsoTokenAvailableEvent):void
+        private function onSsoTokenAvailable(ssoTokenEvent:SsoTokenAvailableEvent):void
         {
-            _ssoToken = _arg_1.ssoToken;
+            _ssoToken = ssoTokenEvent.ssoToken;
             dispatchEvent(new Event(FLOW_FINISHED_EVENT));
         }
 
-        public function initLoginWithSsoToken(_arg_1:String, _arg_2:String):void
+        public function initLoginWithSsoToken(environmentId:String, ssoToken:String):void
         {
-            updateEnvironment(_arg_1, false);
-            _ssoToken = _arg_2;
+            updateEnvironment(environmentId, false);
+            _ssoToken = ssoToken;
             dispatchEvent(new Event(FLOW_FINISHED_EVENT));
         }
 
@@ -220,10 +220,10 @@ package onBoardingHc
             _logoArea = new Sprite();
             addChild(_logoArea);
 
-            var _local_1:Bitmap = new habbo_logo_png();
-            _local_1.x = 40;
-            _local_1.y = 40;
-            _logoArea.addChild(_local_1);
+            var logoBitmap:Bitmap = new habbo_logo_png();
+            logoBitmap.x = 40;
+            logoBitmap.y = 40;
+            _logoArea.addChild(logoBitmap);
 
             _mainArea = new Sprite();
             addChild(_mainArea);
@@ -267,28 +267,28 @@ package onBoardingHc
             ImageLoader.CreateLoader(_bgLeft, getProperty("landing.view.background_left.uri"), onImageComplete);
         }
 
-        private function onImageComplete(_arg_1:ImageLoaderEvent):void
+        private function onImageComplete(loaderEvent:ImageLoaderEvent):void
         {
-            Logger.log(("Image complete: " + _arg_1.url));
-            _arg_1.loader.visible = true;
-            TweenUtils.alphaTweenVisible(_arg_1.loader, 0, 1.2);
+            Logger.log(("Image complete: " + loaderEvent.url));
+            loaderEvent.loader.visible = true;
+            TweenUtils.alphaTweenVisible(loaderEvent.loader, 0, 1.2);
             layoutElements();
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
             removeEventListener("addedToStage", onAddedToStage);
             _lastFrameTime = getTimer();
             layoutElements();
         }
 
-        private function onEnterFrame(_arg_1:Event):void
+        private function onEnterFrame(frameEvent:Event):void
         {
             TweenUtils._SafeStr_265.advanceTime(((getTimer() - _lastFrameTime) / 1000));
             _lastFrameTime = getTimer();
         }
 
-        private function onStageResize(_arg_1:Event):void
+        private function onStageResize(stageEvent:Event):void
         {
             if (disposed)
                 return;
@@ -304,16 +304,16 @@ package onBoardingHc
             if (_background != null)
                 _background.resize();
 
-            var _local_1:int = (_mainArea.width + 20);
+            var minMainAreaWidth:int = (_mainArea.width + 20);
 
-            if (stage.stageWidth > _local_1)
+            if (stage.stageWidth > minMainAreaWidth)
             {
-                var _local_2:int = int(((stage.stageWidth - _local_1) / 2));
+                var centeredX:int = int(((stage.stageWidth - minMainAreaWidth) / 2));
 
-                if (_local_2 < 5)
-                    _local_2 = 5;
+                if (centeredX < 5)
+                    centeredX = 5;
 
-                _mainArea.x = _local_2;
+                _mainArea.x = centeredX;
             }
             else
             {
@@ -329,34 +329,34 @@ package onBoardingHc
             _bgLeft.y = ((stage.stageHeight - _bgLeft.height) + 50);
         }
 
-        public function showErrorMessage(_arg_1:String):void
+        public function showErrorMessage(errorMessage:String):void
         {
-            var _local_4:TextField;
-            var _local_3:Bitmap;
+            var messageField:TextField;
+            var background:Bitmap;
 
             if (_errorBalloon == null)
             {
-                _local_4 = LoaderUI.createTextField(_arg_1, 12, 0xFFFFFF, true);
-                LoaderUI.addEtching(_local_4, true);
-                _local_3 = LoaderUI.createBalloon((_local_4.width + 30), (_local_4.height + 17), -1, true, 11411485, "down");
+                messageField = LoaderUI.createTextField(errorMessage, 12, 0xFFFFFF, true);
+                LoaderUI.addEtching(messageField, true);
+                background = LoaderUI.createBalloon((messageField.width + 30), (messageField.height + 17), -1, true, 11411485, "down");
                 _errorBalloon = new Sprite();
-                _errorBalloon.addChild(_local_3);
-                _errorBalloon.addChild(_local_4);
-                _local_4.x = 15;
-                _local_4.y = 14;
+                _errorBalloon.addChild(background);
+                _errorBalloon.addChild(messageField);
+                messageField.x = 15;
+                messageField.y = 14;
                 _mainArea.addChild(_errorBalloon);
                 _errorBalloon.x = 300;
                 _errorBalloon.y = 300;
                 _errorBalloon.filters = [new GlowFilter(0, 0.24, 6, 6)];
             };
 
-            var _local_2:Timer = new Timer(3000, 1);
-            _local_2.addEventListener("timerComplete", onHideError);
-            _local_2.start();
+            var hideTimer:Timer = new Timer(3000, 1);
+            hideTimer.addEventListener("timerComplete", onHideError);
+            hideTimer.start();
             _errorBalloon.visible = true;
         }
 
-        private function onHideError(_arg_1:TimerEvent):void
+        private function onHideError(_:TimerEvent):void
         {
             if (_errorBalloon)
                 _errorBalloon.visible = false;
@@ -367,11 +367,11 @@ package onBoardingHc
             dispatchEvent(new Event(FLOW_FINISHED_EVENT));
         }
 
-        public function showScreen(_arg_1:int):void
+        public function showScreen(screenId:int):void
         {
             hideSteps();
 
-            switch (_arg_1)
+            switch (screenId)
             {
                 case SCREEN_ENVIRONMENT:
                     _stepContainer.addChild(_stepEnvironment);
@@ -420,39 +420,39 @@ package onBoardingHc
             };
         }
 
-        public function initLogin(_arg_1:String, _arg_2:String):void
+        public function initLogin(email:String, password:String):void
         {
-            _loginProvider.loginWithCredentials(_arg_1, _arg_2);
+            _loginProvider.loginWithCredentials(email, password);
         }
 
-        public function loginWithAvatar(_arg_1:AvatarData):void
+        public function loginWithAvatar(avatar:AvatarData):void
         {
-            _loginProvider.loginWithCredentialsWeb(_arg_1.uniqueId);
+            _loginProvider.loginWithCredentialsWeb(avatar.uniqueId);
         }
 
-        public function registerAccount(_arg_1:String, _arg_2:String):void
+        public function registerAccount(email:String, password:String):void
         {
             // Delegates to WebApiLoginProvider which calls /api/public/registration/new
             if (_loginProvider is WebApiLoginProvider)
             {
-                (WebApiLoginProvider(_loginProvider)).register(_arg_1, _arg_2);
+                (WebApiLoginProvider(_loginProvider)).register(email, password);
             };
         }
 
-        public function createAvatar(_arg_1:String, _arg_2:String, _arg_3:String):void
+        public function createAvatar(name:String, figure:String, gender:String):void
         {
             // name, figure, gender
             if (_loginProvider is WebApiLoginProvider)
             {
-                (WebApiLoginProvider(_loginProvider)).createAvatar(_arg_1, _arg_2, _arg_3);
+                (WebApiLoginProvider(_loginProvider)).createAvatar(name, figure, gender);
             };
         }
 
-        public function checkName(_arg_1:String):void
+        public function checkName(name:String):void
         {
             if (_loginProvider is WebApiLoginProvider)
             {
-                (WebApiLoginProvider(_loginProvider)).checkName(_arg_1);
+                (WebApiLoginProvider(_loginProvider)).checkName(name);
             };
         }
 
@@ -460,33 +460,33 @@ package onBoardingHc
         {
         }
 
-        public function showRegistrationError(_arg_1:Object):void
+        public function showRegistrationError(error:Object):void
         {
-            showError(_arg_1);
+            showError(error);
         }
 
-        public function showInvalidLoginError(_arg_1:Object):void
+        public function showInvalidLoginError(error:Object):void
         {
-            showError(_arg_1);
+            showError(error);
         }
 
-        public function nameCheckResponse(_arg_1:Object, _arg_2:Boolean):void
+        public function nameCheckResponse(response:Object, isValid:Boolean):void
         {
-            _stepAvatarCreate.onNameCheckResult(_arg_1, _arg_2);
+            _stepAvatarCreate.onNameCheckResult(response, isValid);
         }
 
-        public function showAccountError(_arg_1:Object):void
+        public function showAccountError(error:Object):void
         {
-            showError(_arg_1);
+            showError(error);
         }
 
         public function showLoadingScreen():void
         {
         }
 
-        public function saveLooksError(_arg_1:Object):void
+        public function saveLooksError(error:Object):void
         {
-            showError(_arg_1);
+            showError(error);
         }
 
         public function showTOS():void
@@ -499,18 +499,18 @@ package onBoardingHc
             _stepLogin.ready();
         }
 
-        public function populateCharacterList(_arg_1:Vector.<AvatarData>):void
+        public function populateCharacterList(avatars:Vector.<AvatarData>):void
         {
             showScreen(SCREEN_AVATAR_SELECT);
-            _stepAvatarSelect.populateAvatars(_arg_1);
+            _stepAvatarSelect.populateAvatars(avatars);
         }
 
-        public function showSelectAvatar(_arg_1:Object):void
+        public function showSelectAvatar(avatar:Object):void
         {
             showScreen(SCREEN_AVATAR_CREATE);
         }
 
-        public function showPromoHabbos(_arg_1:XML):void
+        public function showPromoHabbos(promoXml:XML):void
         {
         }
 
@@ -524,65 +524,65 @@ package onBoardingHc
             showErrorMessage("Error with captcha");
         }
 
-        private function showError(_arg_1:Object):void
+        private function showError(error:Object):void
         {
-            var _local_3:String;
-            var _local_4:Array = _arg_1 ? _arg_1.errors : null;
-            var _local_2:String = ((_local_4) && (_local_4.length > 0)) ? _local_4[0] : "";
+            var localizationKey:String;
+            var errorList:Array = error ? error.errors : null;
+            var resolvedError:String = ((errorList) && (errorList.length > 0)) ? errorList[0] : "";
 
-            if ((_local_2 == "") && (!(_arg_1 == null)))
+            if ((resolvedError == "") && (!(error == null)))
             {
-                if (_arg_1.error != null)
-                    _local_2 = _arg_1.error;
-                else if (_arg_1.message != null)
-                    _local_2 = _arg_1.message;
+                if (error.error != null)
+                    resolvedError = error.error;
+                else if (error.message != null)
+                    resolvedError = error.message;
             };
 
-            switch (_local_2)
+            switch (resolvedError)
             {
                 case "invalid-captcha":
                     showCaptchaError();
                     break;
                 case "login.user_banned":
-                    _local_3 = "connection.login.error.banned.desc";
+                    localizationKey = "connection.login.error.banned.desc";
                     break;
                 case "login.blocked":
-                    _local_3 = "connection.login.error.blocked.desc";
+                    localizationKey = "connection.login.error.blocked.desc";
                     break;
                 case "unauthorized-staff-login":
-                    _local_3 = "connection.login.error.unauthorized.staff";
+                    localizationKey = "connection.login.error.unauthorized.staff";
                     break;
                 case "pocket.auth.login_failed":
-                    _local_3 = "connection.login.error.-3.desc";
+                    localizationKey = "connection.login.error.-3.desc";
                     break;
                 case "pocket.auth.no_avatars":
-                    _local_3 = "connection.login.missing_avatars";
+                    localizationKey = "connection.login.missing_avatars";
                     break;
                 case "pocket.auth.valid_email_required":
-                    _local_3 = "connection.login.missing_credentials";
+                    localizationKey = "connection.login.missing_credentials";
                     break;
                 case "pocket.auth.password_required":
-                    _local_3 = "connection.login.missing_credentials";
+                    localizationKey = "connection.login.missing_credentials";
                     break;
                 case "ioError":
-                    _local_3 = "connection.login.error.-400.desc";
+                    localizationKey = "connection.login.error.-400.desc";
                     break;
                 default:
-                    _local_3 = "generic.error";
+                    localizationKey = "generic.error";
             };
 
-            if ((_local_3) && (_local_3.length > 0))
-                showErrorMessage(_localization.getLocalization(_local_3));
+            if ((localizationKey) && (localizationKey.length > 0))
+                showErrorMessage(_localization.getLocalization(localizationKey));
         }
 
-        public function getProperty(_arg_1:String, _arg_2:Dictionary = null):String
+        public function getProperty(propertyKey:String, parameters:Dictionary = null):String
         {
-            var _local_3:String = ((_configuration) ? _configuration.getProperty(_arg_1, _arg_2) : "");
+            var propertyValue:String = ((_configuration) ? _configuration.getProperty(propertyKey, parameters) : "");
 
-            if ((!(_local_3)) || (_local_3.length == 0))
-                Logger.log(("[OnBoardingHc] Add property: " + _arg_1));
+            if ((!(propertyValue)) || (propertyValue.length == 0))
+                Logger.log(("[OnBoardingHc] Add property: " + propertyKey));
 
-            return (_local_3);
+            return (propertyValue);
         }
 
         public function get isSsoEnabled():Boolean
@@ -618,28 +618,28 @@ package onBoardingHc
             showScreen(SCREEN_LOGIN);
         }
 
-        private function onClose(_arg_1:Button):void
+        private function onClose(closeButton:Button):void
         {
             removeChild(_closeButton);
             showScreen(SCREEN_LOGIN);
         }
 
-        public function updateEnvironment(_arg_1:String, _arg_2:Boolean):void
+        public function updateEnvironment(environmentId:String, shouldLoadLocalization:Boolean):void
         {
-            if (_arg_2)
+            if (shouldLoadLocalization)
             {
-                _localization.loadDefaultEmbedLocalizations(_arg_1);
+                _localization.loadDefaultEmbedLocalizations(environmentId);
                 return;
             };
 
-            CommunicationUtils.writeSOLProperty("environment", _arg_1);
-            _configuration.updateEnvironmentId(_arg_1);
+            CommunicationUtils.writeSOLProperty("environment", environmentId);
+            _configuration.updateEnvironmentId(environmentId);
 
             if (_stepEnvironment)
                 _stepEnvironment.updateEnvironment();
 
             _localization.loadDefaultEmbedLocalizations(_configuration.getProperty("environment.id"));
-            Logger.log(("[OnBoardingHc] updated environment: " + _arg_1));
+            Logger.log(("[OnBoardingHc] updated environment: " + environmentId));
             _communication.updateHostParameters();
             _localization.requestLocalizationInit();
         }

@@ -28,15 +28,15 @@
         private var _maxWidth:Number;
         private var _prompt:String;
 
-        public function InputField(_arg_1:IUIContext, _arg_2:int, _arg_3:String, _arg_4:String, _arg_5:String, _arg_6:String, _arg_7:Boolean = false)
+        public function InputField(uiContext:IUIContext, width:int, promptText:String, defaultText:String, title:String, subTitle:String, isPassword:Boolean = false)
         {
-            _context = _arg_1;
-            _dialogWidth = _arg_2;
-            _prompt = _arg_3;
-            _inputDefaultString = ((_arg_4 == null) ? "" : _arg_4);
-            _caption = _arg_5;
-            _subCaption = _arg_6;
-            _isPassword = _arg_7;
+            _context = uiContext;
+            _dialogWidth = width;
+            _prompt = promptText;
+            _inputDefaultString = ((defaultText == null) ? "" : defaultText);
+            _caption = title;
+            _subCaption = subTitle;
+            _isPassword = isPassword;
             init();
         }
 
@@ -72,25 +72,25 @@
             _frame = LoaderUI.createFrame(_caption, _subCaption, new Rectangle(0, 0, _dialogWidth, 1), _style);
             addChild(_frame);
 
-            var _local_2:int;
-            var _local_1:Sprite = new Sprite();
+            var contentX:int = 0;
+            var inputContainer:Sprite = new Sprite();
             _background = NineSplitSprite.INPUT_FIELD_HITCH.render(_dialogWidth, 31);
-            _local_1.addChild(_background);
-            _frame.addChild(_local_1);
-            _local_1.x = _local_2;
-            _maxWidth = (_local_1.width - 30);
+            inputContainer.addChild(_background);
+            _frame.addChild(inputContainer);
+            inputContainer.x = contentX;
+            _maxWidth = (inputContainer.width - 30);
             _promptField = LoaderUI.createTextField(_prompt, 18, 0x666666, true, false, false, false);
             _promptField.alpha = 0.8;
-            _promptField.x = (_local_1.x + 16);
-            _promptField.y = (_local_1.y + int(((_local_1.height - _promptField.height) / 2)));
+            _promptField.x = (inputContainer.x + 16);
+            _promptField.y = (inputContainer.y + int(((inputContainer.height - _promptField.height) / 2)));
             _promptField.width = _maxWidth;
             _promptField.visible = ((_inputDefaultString == null) || (_inputDefaultString.length == 0));
             _frame.addChild(_promptField);
             _field = LoaderUI.createTextField(_inputDefaultString, 18, 0x666666, true, false, true, false);
             _field.displayAsPassword = _isPassword;
             _frame.addChild(_field);
-            _field.x = (_local_1.x + 16);
-            _field.y = (_local_1.y + int(((_local_1.height - _field.height) / 2)));
+            _field.x = (inputContainer.x + 16);
+            _field.y = (inputContainer.y + int(((inputContainer.height - _field.height) / 2)));
             _field.width = _maxWidth;
             _field.addEventListener("click", onInputClicked);
             _field.addEventListener("change", onInputChange);
@@ -101,13 +101,13 @@
                 _field.width = _maxWidth;
             };
 
-            _local_1.addEventListener("click", onInputBackgroundClicked);
+            inputContainer.addEventListener("click", onInputBackgroundClicked);
 
-            var _local_3:int = -50;
-            _frame.y = -(int((_local_3 / 2)));
+            var yOffset:int = -50;
+            _frame.y = -(int((yOffset / 2)));
         }
 
-        private function onInputChange(_arg_1:Event):void
+        private function onInputChange(inputEvent:Event):void
         {
             _promptField.visible = (_field.text.length == 0);
 
@@ -117,19 +117,19 @@
                 _field.width = _maxWidth;
             };
 
-            if (_arg_1 != null)
+            if (inputEvent != null)
             {
-                dispatchEvent(_arg_1.clone());
+                dispatchEvent(inputEvent.clone());
             };
         }
 
-        private function onInputBackgroundClicked(_arg_1:MouseEvent):void
+        private function onInputBackgroundClicked(_:MouseEvent):void
         {
             _context.stage.focus = _field;
             onInputClicked(null);
         }
 
-        private function onInputClicked(_arg_1:Event):void
+        private function onInputClicked(_:Event):void
         {
             if (_inputClickedAlready)
             {

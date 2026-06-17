@@ -5,9 +5,9 @@
 
         private var _value:int;
 
-        public function RoomObjectAvatarPlayerValueUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarPlayerValueUpdateMessage(value:int)
         {
-            _value = _arg_1;
+            _value = value;
         }
 
         public function get value():int

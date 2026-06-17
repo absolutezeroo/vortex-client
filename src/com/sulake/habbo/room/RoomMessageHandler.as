@@ -135,9 +135,9 @@
         private var _SafeStr_3654:int = -1;
         private var _SafeStr_3655:int = -1;
 
-        public function RoomMessageHandler(_arg_1:IRoomCreator)
+        public function RoomMessageHandler(roomCreator:IRoomCreator)
         {
-            _SafeStr_3650 = _arg_1;
+            _SafeStr_3650 = roomCreator;
             _SafeStr_3207 = new RoomPlaneParser();
             _initialConnection = true;
         }
@@ -156,7 +156,7 @@
             _SafeStr_3651 = null;
         }
 
-        public function setCurrentRoom(_arg_1:int):void
+        public function setCurrentRoom(roomId:int):void
         {
             if (_SafeStr_555 != 0)
             {
@@ -166,7 +166,7 @@
                 };
             };
 
-            _SafeStr_555 = _arg_1;
+            _SafeStr_555 = roomId;
             _SafeStr_3651 = null;
         }
 

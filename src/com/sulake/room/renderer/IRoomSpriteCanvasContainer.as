@@ -4,11 +4,11 @@
     public /*dynamic*/interface IRoomSpriteCanvasContainer {
 
         function get roomObjectVariableAccurateZ():String;
-        function getRoomObject(_arg_1:String):IRoomObject;
-        function getRoomObjectWithIndex(_arg_1:int):IRoomObject;
-        function getRoomObjectIdWithIndex(_arg_1:int):String;
+        function getRoomObject(roomObjectId:String):IRoomObject;
+        function getRoomObjectWithIndex(index:int):IRoomObject;
+        function getRoomObjectIdWithIndex(index:int):String;
         function getRoomObjectCount():int;
-        function getRoomObjectIdentifier(_arg_1:IRoomObject):String;
+        function getRoomObjectIdentifier(roomObject:IRoomObject):String;
 
     }
 }

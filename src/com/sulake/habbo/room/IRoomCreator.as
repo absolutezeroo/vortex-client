@@ -12,20 +12,20 @@
         public /*dynamic*/ interface IRoomCreator extends IRoomObjectCreator 
     {
 
-        function initializeRoom(_arg_1:int, _arg_2:XML):void;
-        function getRoom(_arg_1:int):IRoomInstance;
-        function disposeRoom(_arg_1:int):void;
-        function setOwnUserId(_arg_1:int, _arg_2:int):void;
-        function setWorldType(_arg_1:int, _arg_2:String):void;
-        function getObjectRoom(_arg_1:int):IRoomObjectController;
-        function setFurniStackingHeightMap(_arg_1:int, _arg_2:FurniStackingHeightMap):void;
-        function getFurniStackingHeightMap(_arg_1:int):FurniStackingHeightMap;
-        function getLegacyGeometry(_arg_1:int):LegacyWallGeometry;
-        function getTileObjectMap(_arg_1:int):TileObjectMap;
-        function getRoomNumberValue(_arg_1:int, _arg_2:String):Number;
-        function getRoomStringValue(_arg_1:int, _arg_2:String):String;
-        function setIsPlayingGame(_arg_1:int, _arg_2:Boolean):void;
-        function refreshTileObjectMap(_arg_1:int, _arg_2:String):void;
+        function initializeRoom(roomId:int, roomData:XML):void;
+        function getRoom(roomId:int):IRoomInstance;
+        function disposeRoom(roomId:int):void;
+        function setOwnUserId(roomId:int, ownUserRoomId:int):void;
+        function setWorldType(roomId:int, worldType:String):void;
+        function getObjectRoom(roomId:int):IRoomObjectController;
+        function setFurniStackingHeightMap(roomId:int, furniStackingHeightMap:FurniStackingHeightMap):void;
+        function getFurniStackingHeightMap(roomId:int):FurniStackingHeightMap;
+        function getLegacyGeometry(roomId:int):LegacyWallGeometry;
+        function getTileObjectMap(roomId:int):TileObjectMap;
+        function getRoomNumberValue(roomId:int, key:String):Number;
+        function getRoomStringValue(roomId:int, key:String):String;
+        function setIsPlayingGame(roomId:int, isPlayingGame:Boolean):void;
+        function refreshTileObjectMap(roomId:int, category:String):void;
         function get configuration():ICoreConfiguration;
         function get roomSessionManager():IRoomSessionManager;
         function get sessionDataManager():ISessionDataManager;

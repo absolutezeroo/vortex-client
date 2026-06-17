@@ -26,9 +26,9 @@ package onBoardingHc.steps
         private var _tokenField:InputField;
         private var _initialized:Boolean;
 
-        public function OnBoardingHcStepSsoToken(_arg_1:OnBoardingHc)
+        public function OnBoardingHcStepSsoToken(context:OnBoardingHc)
         {
-            _context = _arg_1;
+            _context = context;
             addEventListener("addedToStage", onAddedToStage);
             init();
         }
@@ -52,14 +52,14 @@ package onBoardingHc.steps
             LoaderUI.alignAnchors(_cancelButton, 0, "l", _registerButton);
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
-            var _local_2:Timer = new Timer(20, 1);
-            _local_2.addEventListener("timerComplete", onAlignElements);
-            _local_2.start();
+            var alignTimer:Timer = new Timer(20, 1);
+            alignTimer.addEventListener("timerComplete", onAlignElements);
+            alignTimer.start();
         }
 
-        private function onAlignElements(_arg_1:TimerEvent):void
+        private function onAlignElements(alignEvent:TimerEvent):void
         {
             onAlignButtons();
         }
@@ -99,22 +99,22 @@ package onBoardingHc.steps
             _tokenField.y = 100;
         }
 
-        private function onInputKeyboardEvent(_arg_1:KeyboardEvent):void
+        private function onInputKeyboardEvent(keyboardEvent:KeyboardEvent):void
         {
-            if (_arg_1.charCode == 13)
+            if (keyboardEvent.charCode == 13)
             {
                 if ((_playButton) && (_playButton.active))
                     onLogin(null);
             };
         }
 
-        private function onInputChange(_arg_1:Event):void
+        private function onInputChange(inputEvent:Event):void
         {
-            var _local_2:Vector.<String> = new Vector.<String>();
+            var tokenParts:Vector.<String> = new Vector.<String>();
 
-            if (validateToken(_local_2))
+            if (validateToken(tokenParts))
             {
-                _context.updateEnvironment(_local_2[0], true);
+                _context.updateEnvironment(tokenParts[0], true);
                 _playButton.active = true;
             }
             else
@@ -138,18 +138,18 @@ package onBoardingHc.steps
             onAlignButtons();
         }
 
-        private function onRegister(_arg_1:Button):void
+        private function onRegister(registerButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_REGISTER);
         }
 
-        private function onLogin(_arg_1:Button):void
+        private function onLogin(loginButton:Button):void
         {
-            var _local_2:Vector.<String> = new Vector.<String>();
+            var tokenParts:Vector.<String> = new Vector.<String>();
 
-            if (validateToken(_local_2))
+            if (validateToken(tokenParts))
             {
-                _context.initLoginWithSsoToken(_local_2[0], _local_2[1]);
+                _context.initLoginWithSsoToken(tokenParts[0], tokenParts[1]);
             }
             else
             {
@@ -157,27 +157,27 @@ package onBoardingHc.steps
             };
         }
 
-        private function validateToken(_arg_1:Vector.<String>):Boolean
+        private function validateToken(tokenParts:Vector.<String>):Boolean
         {
-            var _local_4:String = _tokenField.text;
+            var tokenValue:String = _tokenField.text;
 
-            if (!_local_4 || _local_4.length == 0)
+            if (!tokenValue || tokenValue.length == 0)
                 return (false);
 
-            var _local_3:Array = _local_4.split(".");
+            var tokenSegments:Array = tokenValue.split(".");
 
-            if (_local_3.length < 2)
+            if (tokenSegments.length < 2)
                 return (false);
 
-            var _local_2:String = _local_3[0].replace("hh", "");
-            _local_2 = _local_2.replace("br", "pt");
-            _local_2 = _local_2.replace("us", "en");
-            _arg_1.push(_local_2);
-            _arg_1.push((_local_3 as Array).slice(1).join("."));
+            var environment:String = tokenSegments[0].replace("hh", "");
+            environment = environment.replace("br", "pt");
+            environment = environment.replace("us", "en");
+            tokenParts.push(environment);
+            tokenParts.push((tokenSegments as Array).slice(1).join("."));
             return (true);
         }
 
-        private function onCancel(_arg_1:Button):void
+        private function onCancel(cancelButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_ENVIRONMENT);
         }

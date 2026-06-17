@@ -3,9 +3,9 @@
     public class RoomManagerException extends Error 
     {
 
-        public function RoomManagerException(_arg_1:String="", _arg_2:int=0)
+        public function RoomManagerException(message:String="", id:int=0)
         {
-            super(_arg_1, _arg_2);
+            super(message, id);
         }
 
     }

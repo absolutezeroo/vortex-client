@@ -16,14 +16,14 @@
         private var _objectId:int;
         private var _bitmapData:BitmapData;
 
-        public function RoomObjectRoomAdUpdateMessage(_arg_1:String, _arg_2:String, _arg_3:String, _arg_4:int=-1, _arg_5:BitmapData=null)
+        public function RoomObjectRoomAdUpdateMessage(type:String, asset:String, clickUrl:String, objectId:int=-1, bitmapData:BitmapData=null)
         {
             super(null, null);
-            _type = _arg_1;
-            _asset = _arg_2;
-            _clickUrl = _arg_3;
-            _objectId = _arg_4;
-            _bitmapData = _arg_5;
+            _type = type;
+            _asset = asset;
+            _clickUrl = clickUrl;
+            _objectId = objectId;
+            _bitmapData = bitmapData;
         }
 
         public function get type():String

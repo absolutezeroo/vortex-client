@@ -9,11 +9,11 @@
         private var _realTargetLoc:IVector3d;
         private var _isSlideUpdate:Boolean;
 
-        public function RoomObjectMoveUpdateMessage(_arg_1:IVector3d, _arg_2:IVector3d, _arg_3:IVector3d, _arg_4:Boolean=false)
+        public function RoomObjectMoveUpdateMessage(oldLoc:IVector3d, targetLoc:IVector3d, newLoc:IVector3d, isSlideUpdate:Boolean=false)
         {
-            super(_arg_1, _arg_3);
-            _isSlideUpdate = _arg_4;
-            _realTargetLoc = _arg_2;
+            super(oldLoc, newLoc);
+            _isSlideUpdate = isSlideUpdate;
+            _realTargetLoc = targetLoc;
         }
 
         public function get targetLoc():IVector3d

@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.visualization.utils
+package com.sulake.room.object.visualization.utils
 {
     import com.sulake.core.utils.Map;
     import com.sulake.core.assets.IAssetLibrary;
@@ -6,7 +6,7 @@
     import flash.utils.getTimer;
     import com.sulake.core.assets.IAsset;
     import flash.utils.ByteArray;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.core.assets.BitmapDataAsset;
     import flash.display.BitmapData;
 
@@ -259,7 +259,7 @@
 
             for each (var _local_5:XML in _arg_1)
             {
-                if (_SafeStr_93.checkRequiredAttributes(_local_5, PALETTE_ATTRIBUTES))
+                if (XmlUtil.checkRequiredAttributes(_local_5, PALETTE_ATTRIBUTES))
                 {
                     _local_6 = _local_5.@id;
                     _local_7 = _local_5.@source;

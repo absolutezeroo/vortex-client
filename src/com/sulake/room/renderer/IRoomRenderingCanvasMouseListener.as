@@ -5,7 +5,7 @@
 
     public /*dynamic*/interface IRoomRenderingCanvasMouseListener {
 
-        function processRoomCanvasMouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomObject, _arg_3:IRoomGeometry):void;
+        function processRoomCanvasMouseEvent(mouseEvent:RoomSpriteMouseEvent, roomObject:IRoomObject, geometry:IRoomGeometry):void;
 
     }
 }

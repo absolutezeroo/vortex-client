@@ -9,9 +9,9 @@
         public static const CURRENT_USER_ID:String = "RODRE_CURRENT_USER_ID";
         public static const URL_PREFIX:String = "RODRE_URL_PREFIX";
 
-        public function RoomObjectDataRequestEvent(_arg_1:String, _arg_2:IRoomObject, _arg_3:Boolean=false, _arg_4:Boolean=false)
+        public function RoomObjectDataRequestEvent(type:String, roomObject:IRoomObject, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_2, _arg_3, _arg_4);
+            super(type, roomObject, bubbles, cancelable);
         }
 
     }

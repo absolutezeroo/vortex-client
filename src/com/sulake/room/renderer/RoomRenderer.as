@@ -14,12 +14,12 @@
         private var _disposed:Boolean = false;
         private var _roomObjectVariableAccurateZ:String = null;
 
-        public function RoomRenderer(_arg_1:Component) {
+        public function RoomRenderer(component:Component) {
             _objects = new Map();
             _canvases = new Map();
 
-            if (_arg_1 != null) {
-                _component = _arg_1;
+            if (component != null) {
+                _component = component;
             }
             ;
         }
@@ -32,13 +32,13 @@
             return (_roomObjectVariableAccurateZ);
         }
 
-        public function set roomObjectVariableAccurateZ(_arg_1:String):void {
-            _roomObjectVariableAccurateZ = _arg_1;
+        public function set roomObjectVariableAccurateZ(variableName:String):void {
+            _roomObjectVariableAccurateZ = variableName;
         }
 
         public function dispose():void {
-            var _local_2:int;
-            var _local_1:RoomSpriteCanvas;
+            var _index:int;
+            var _canvas:RoomSpriteCanvas;
 
             if (disposed) {
                 return;
@@ -46,17 +46,17 @@
             ;
 
             if (_canvases != null) {
-                _local_2 = 0;
+                _index = 0;
 
-                while (_local_2 < _canvases.length) {
-                    _local_1 = (_canvases.getWithIndex(_local_2) as RoomSpriteCanvas);
+                while (_index < _canvases.length) {
+                    _canvas = (_canvases.getWithIndex(_index) as RoomSpriteCanvas);
 
-                    if (_local_1 != null) {
-                        _local_1.dispose();
+                    if (_canvas != null) {
+                        _canvas.dispose();
                     }
                     ;
 
-                    _local_2++;
+                    _index++;
                 }
                 ;
 
@@ -83,54 +83,54 @@
             _objects.reset();
         }
 
-        public function getRoomObjectIdentifier(_arg_1:IRoomObject):String {
-            if (_arg_1 != null) {
-                return String((_arg_1.getInstanceId()));
+        public function getRoomObjectIdentifier(roomObject:IRoomObject):String {
+            if (roomObject != null) {
+                return String((roomObject.getInstanceId()));
             }
             ;
 
             return (null);
         }
 
-        public function feedRoomObject(_arg_1:IRoomObject):void {
-            if (_arg_1 == null) {
+        public function feedRoomObject(roomObject:IRoomObject):void {
+            if (roomObject == null) {
                 return;
             }
             ;
 
-            _objects.add(getRoomObjectIdentifier(_arg_1), _arg_1);
+            _objects.add(getRoomObjectIdentifier(roomObject), roomObject);
         }
 
-        public function removeRoomObject(_arg_1:IRoomObject):void {
-            var _local_3:int;
-            var _local_2:RoomSpriteCanvas;
-            var _local_4:String = getRoomObjectIdentifier(_arg_1);
-            _objects.remove(_local_4);
-            _local_3 = 0;
+        public function removeRoomObject(roomObject:IRoomObject):void {
+            var _index:int;
+            var _canvas:RoomSpriteCanvas;
+            var _roomObjectId:String = getRoomObjectIdentifier(roomObject);
+            _objects.remove(_roomObjectId);
+            _index = 0;
 
-            while (_local_3 < _canvases.length) {
-                _local_2 = (_canvases.getWithIndex(_local_3) as RoomSpriteCanvas);
+            while (_index < _canvases.length) {
+                _canvas = (_canvases.getWithIndex(_index) as RoomSpriteCanvas);
 
-                if (_local_2 != null) {
-                    _local_2.roomObjectRemoved(_local_4);
+                if (_canvas != null) {
+                    _canvas.roomObjectRemoved(_roomObjectId);
                 }
                 ;
 
-                _local_3++;
+                _index++;
             }
             ;
         }
 
-        public function getRoomObject(_arg_1:String):IRoomObject {
-            return (_objects.getValue(_arg_1) as IRoomObject);
+        public function getRoomObject(roomObjectId:String):IRoomObject {
+            return (_objects.getValue(roomObjectId) as IRoomObject);
         }
 
-        public function getRoomObjectWithIndex(_arg_1:int):IRoomObject {
-            return (_objects.getWithIndex(_arg_1) as IRoomObject);
+        public function getRoomObjectWithIndex(index:int):IRoomObject {
+            return (_objects.getWithIndex(index) as IRoomObject);
         }
 
-        public function getRoomObjectIdWithIndex(_arg_1:int):String {
-            return (_objects.getKey(_arg_1) as String);
+        public function getRoomObjectIdWithIndex(index:int):String {
+            return (_objects.getKey(index) as String);
         }
 
         public function getRoomObjectCount():int {
@@ -138,81 +138,81 @@
         }
 
         public function render():void {
-            var _local_3:int;
-            var _local_2:IRoomRenderingCanvas;
-            var _local_1:int = getTimer();
+            var _index:int;
+            var _canvas:IRoomRenderingCanvas;
+            var _timestamp:int = getTimer();
             ErrorReportStorage.addDebugData("Canvas count", String(_canvases.length));
-            _local_3 = (_canvases.length - 1);
+            _index = (_canvases.length - 1);
 
-            while (_local_3 >= 0) {
-                _local_2 = (_canvases.getWithIndex(_local_3) as IRoomRenderingCanvas);
+            while (_index >= 0) {
+                _canvas = (_canvases.getWithIndex(_index) as IRoomRenderingCanvas);
 
-                if (_local_2 != null) {
-                    _local_2.render(_local_1);
+                if (_canvas != null) {
+                    _canvas.render(_timestamp);
                 }
                 ;
 
-                _local_3--;
+                _index--;
             }
             ;
         }
 
-        public function createCanvas(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int):IRoomRenderingCanvas {
-            var _local_6:RoomGeometry;
-            var _local_5:IRoomRenderingCanvas = (_canvases.getValue(String(_arg_1)) as IRoomRenderingCanvas);
+        public function createCanvas(canvasId:int, width:int, height:int, scale:int):IRoomRenderingCanvas {
+            var _geometry:RoomGeometry;
+            var _canvas:IRoomRenderingCanvas = (_canvases.getValue(String(canvasId)) as IRoomRenderingCanvas);
 
-            if (_local_5 != null) {
-                _local_5.initialize(_arg_2, _arg_3);
-                _local_6 = (_local_5.geometry as RoomGeometry);
+            if (_canvas != null) {
+                _canvas.initialize(width, height);
+                _geometry = (_canvas.geometry as RoomGeometry);
 
-                if (_local_6) {
-                    _local_6.scale = _arg_4;
+                if (_geometry) {
+                    _geometry.scale = scale;
                 }
                 ;
 
-                return (_local_5);
+                return (_canvas);
             }
             ;
 
-            _local_5 = createCanvasInstance(_arg_1, _arg_2, _arg_3, _arg_4);
-            _canvases.add(String(_arg_1), _local_5);
-            return (_local_5);
+            _canvas = createCanvasInstance(canvasId, width, height, scale);
+            _canvases.add(String(canvasId), _canvas);
+            return (_canvas);
         }
 
-        protected function createCanvasInstance(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int):IRoomRenderingCanvas {
-            return (new RotatingRoomSpriteCanvas(this, _arg_1, _arg_2, _arg_3, _arg_4));
+        protected function createCanvasInstance(canvasId:int, width:int, height:int, scale:int):IRoomRenderingCanvas {
+            return (new RotatingRoomSpriteCanvas(this, canvasId, width, height, scale));
         }
 
-        public function getCanvas(_arg_1:int):IRoomRenderingCanvas {
-            return (_canvases.getValue(String(_arg_1)) as IRoomRenderingCanvas);
+        public function getCanvas(canvasId:int):IRoomRenderingCanvas {
+            return (_canvases.getValue(String(canvasId)) as IRoomRenderingCanvas);
         }
 
-        public function disposeCanvas(_arg_1:int):Boolean {
-            var _local_2:RoomSpriteCanvas = (_canvases.remove(String(_arg_1)) as RoomSpriteCanvas);
+        public function disposeCanvas(canvasId:int):Boolean {
+            var _canvas:RoomSpriteCanvas = (_canvases.remove(String(canvasId)) as RoomSpriteCanvas);
 
-            if (_local_2 != null) {
-                _local_2.dispose();
+            if (_canvas != null) {
+                _canvas.dispose();
             }
             ;
 
             return (false);
         }
 
-        public function update(_arg_1:uint):void {
-            var _local_3:int;
-            var _local_2:RoomSpriteCanvas;
+        public function update(timestamp:uint):void {
+            var _index:int;
+            var _canvas:RoomSpriteCanvas;
             render();
-            _local_3 = (_canvases.length - 1);
+            _index = (_canvases.length - 1);
 
-            while (_local_3 >= 0) {
-                _local_2 = (_canvases.getWithIndex(_local_3) as RoomSpriteCanvas);
+            while (_index >= 0) {
+                _canvas = (_canvases.getWithIndex(_index) as RoomSpriteCanvas);
 
-                if (_local_2 != null) {
-                    _local_2.update();
+                if (_canvas != null) {
+                    _canvas.update();
                 }
                 ;
 
-                _local_3--;
+                _index--;
             }
             ;
         }

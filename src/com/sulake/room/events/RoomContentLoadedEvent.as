@@ -11,10 +11,10 @@
 
         private var _contentType:String;
 
-        public function RoomContentLoadedEvent(_arg_1:String, _arg_2:String, _arg_3:Boolean=false, _arg_4:Boolean=false)
+        public function RoomContentLoadedEvent(type:String, contentType:String, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_3, _arg_4);
-            _contentType = _arg_2;
+            super(type, bubbles, cancelable);
+            _contentType = contentType;
         }
 
         public function get contentType():String

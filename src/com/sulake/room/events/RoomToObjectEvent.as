@@ -5,9 +5,9 @@
     public class RoomToObjectEvent extends Event 
     {
 
-        public function RoomToObjectEvent(_arg_1:String, _arg_2:Boolean=false, _arg_3:Boolean=false)
+        public function RoomToObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_2, _arg_3);
+            super(type, bubbles, cancelable);
         }
 
     }

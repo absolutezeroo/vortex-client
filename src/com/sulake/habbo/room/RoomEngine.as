@@ -1,4 +1,4 @@
-﻿package com.sulake.habbo.room
+package com.sulake.habbo.room
 {
     import com.sulake.core.runtime.Component;
     import com.sulake.room.IRoomManagerListener;
@@ -67,7 +67,7 @@
     import com.sulake.habbo.room.events.RoomEngineEvent;
     import com.sulake.habbo.room.messages.RoomObjectRoomUpdateMessage;
     import com.sulake.habbo.room.messages.RoomObjectRoomMaskUpdateMessage;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.habbo.room.messages.RoomObjectRoomColorUpdateMessage;
     import com.sulake.habbo.room.events.RoomEngineRoomColorEvent;
     import com.sulake.habbo.room.events.RoomEngineHSLColorEnableEvent;
@@ -1656,7 +1656,7 @@
                         {
                             _local_7 = _local_17[_local_20];
 
-                            if (_SafeStr_93.checkRequiredAttributes(_local_7, _local_27))
+                            if (XmlUtil.checkRequiredAttributes(_local_7, _local_27))
                             {
                                 _local_16 = Number(_local_7.@x);
                                 _local_14 = Number(_local_7.@y);

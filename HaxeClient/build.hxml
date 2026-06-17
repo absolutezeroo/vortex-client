@@ -1,6 +1,0 @@
--cp src
--cp HaxeClient/src
--main Main
--js web/main.js
--dce full
--debug

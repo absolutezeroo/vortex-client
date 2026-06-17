@@ -5,9 +5,9 @@
 
         private var _numberOfWords:int;
 
-        public function RoomObjectAvatarChatUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarChatUpdateMessage(numberOfWords:int)
         {
-            _numberOfWords = _arg_1;
+            _numberOfWords = numberOfWords;
         }
 
         public function get numberOfWords():int

@@ -18,11 +18,11 @@
         private var _objectId:int;
         private var _category:int;
 
-        public function RoomEngineObjectEvent(_arg_1:String, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:Boolean=false, _arg_6:Boolean=false)
+        public function RoomEngineObjectEvent(type:String, roomId:int, objectId:int, category:int, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_2, _arg_5, _arg_6);
-            _objectId = _arg_3;
-            _category = _arg_4;
+            super(type, roomId, bubbles, cancelable);
+            _objectId = objectId;
+            _category = category;
         }
 
         public function get objectId():int

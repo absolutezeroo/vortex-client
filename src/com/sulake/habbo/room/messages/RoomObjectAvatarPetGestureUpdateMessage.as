@@ -5,9 +5,9 @@
 
         private var _gesture:String;
 
-        public function RoomObjectAvatarPetGestureUpdateMessage(_arg_1:String)
+        public function RoomObjectAvatarPetGestureUpdateMessage(gesture:String)
         {
-            _gesture = _arg_1;
+            _gesture = gesture;
         }
 
         public function get gesture():String

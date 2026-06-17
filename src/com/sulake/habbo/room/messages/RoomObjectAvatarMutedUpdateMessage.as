@@ -5,9 +5,9 @@
 
         private var _isMuted:Boolean;
 
-        public function RoomObjectAvatarMutedUpdateMessage(_arg_1:Boolean=false)
+        public function RoomObjectAvatarMutedUpdateMessage(isMuted:Boolean=false)
         {
-            _isMuted = _arg_1;
+            _isMuted = isMuted;
         }
 
         public function get isMuted():Boolean

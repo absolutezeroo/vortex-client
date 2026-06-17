@@ -84,10 +84,10 @@
         private var _whereYouClickIsWhereYouGo:Boolean = true;
         private var _objectPlacementSource:String;
 
-        public function RoomObjectEventHandler(_arg_1:IRoomEngineServices)
+        public function RoomObjectEventHandler(roomEngineServices:IRoomEngineServices)
         {
             _eventIds = new Map();
-            _roomEngine = _arg_1;
+            _roomEngine = roomEngineServices;
         }
 
         protected function get roomEngine():IRoomEngineServices
@@ -106,69 +106,69 @@
             _roomEngine = null;
         }
 
-        public function initializeRoomObjectInsert(_arg_1:String, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:int, _arg_6:String=null, _arg_7:IStuffData=null, _arg_8:int=-1, _arg_9:int=-1, _arg_10:String=null):Boolean
+        public function initializeRoomObjectInsert(placementSource:String, objectId:int, category:int, typeId:int, state:int, instanceData:String=null, stuffData:IStuffData=null, frameNumber:int=-1, animFrame:int=-1, posture:String=null):Boolean
         {
-            _objectPlacementSource = _arg_1;
+            _objectPlacementSource = placementSource;
 
-            var _local_11:IVector3d = new Vector3d(-100, -100);
-            var _local_12:IVector3d = new Vector3d(0);
-            setSelectedObjectData(_arg_2, _arg_3, _arg_4, _local_11, _local_12, "OBJECT_PLACE", _arg_5, _arg_6, _arg_7, _arg_8, _arg_9, _arg_10);
+            var initialLocation:IVector3d = new Vector3d(-100, -100);
+            var initialDirection:IVector3d = new Vector3d(0);
+            setSelectedObjectData(objectId, category, typeId, initialLocation, initialDirection, "OBJECT_PLACE", state, instanceData, stuffData, frameNumber, animFrame, posture);
 
             if (_roomEngine != null)
             {
-                _roomEngine.setObjectMoverIconSprite(_arg_5, _arg_4, false, _arg_6, _arg_7, _arg_8, _arg_9, _arg_10);
+                _roomEngine.setObjectMoverIconSprite(state, typeId, false, instanceData, stuffData, frameNumber, animFrame, posture);
                 _roomEngine.setObjectMoverIconSpriteVisible(false);
             };
 
             return (true);
         }
 
-        public function cancelRoomObjectInsert(_arg_1:int):Boolean
+        public function cancelRoomObjectInsert(roomId:int):Boolean
         {
-            resetSelectedObjectData(_arg_1);
+            resetSelectedObjectData(roomId);
             return (true);
         }
 
-        private function getSelectedObjectData(_arg_1:int):SelectedRoomObjectData
+        private function getSelectedObjectData(roomId:int):SelectedRoomObjectData
         {
             if (_roomEngine == null)
             {
                 return (null);
             };
 
-            var _local_2:ISelectedRoomObjectData = _roomEngine.getSelectedObjectData(_arg_1);
-            return (_local_2 as SelectedRoomObjectData);
+            var selectedObjectData:ISelectedRoomObjectData = _roomEngine.getSelectedObjectData(roomId);
+            return (selectedObjectData as SelectedRoomObjectData);
         }
 
-        private function setSelectedObjectData(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:IVector3d, _arg_5:IVector3d, _arg_6:String, _arg_7:int=0, _arg_8:String=null, _arg_9:IStuffData=null, _arg_10:int=-1, _arg_11:int=-1, _arg_12:String=null):void
+        private function setSelectedObjectData(roomId:int, objectId:int, category:int, location:IVector3d, direction:IVector3d, operation:String, typeId:int=0, instanceData:String=null, stuffData:IStuffData=null, state:int=-1, animFrame:int=-1, posture:String=null):void
         {
-            resetSelectedObjectData(_arg_1);
+            resetSelectedObjectData(roomId);
 
             if (_roomEngine == null)
             {
                 return;
             };
 
-            var _local_13:SelectedRoomObjectData = new SelectedRoomObjectData(_arg_2, _arg_3, _arg_6, _arg_4, _arg_5, _arg_7, _arg_8, _arg_9, _arg_10, _arg_11, _arg_12);
-            _roomEngine.setSelectedObjectData(_arg_1, _local_13);
+            var selectedObjectData:SelectedRoomObjectData = new SelectedRoomObjectData(objectId, category, operation, location, direction, typeId, instanceData, stuffData, state, animFrame, posture);
+            _roomEngine.setSelectedObjectData(roomId, selectedObjectData);
         }
 
-        private function updateSelectedObjectData(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:IVector3d, _arg_5:IVector3d, _arg_6:String, _arg_7:int=0, _arg_8:String=null, _arg_9:IStuffData=null, _arg_10:int=-1, _arg_11:int=-1, _arg_12:String=null):void
+        private function updateSelectedObjectData(roomId:int, objectId:int, category:int, location:IVector3d, direction:IVector3d, operation:String, typeId:int=0, instanceData:String=null, stuffData:IStuffData=null, state:int=-1, animFrame:int=-1, posture:String=null):void
         {
             if (_roomEngine == null)
             {
                 return;
             };
 
-            var _local_13:SelectedRoomObjectData = new SelectedRoomObjectData(_arg_2, _arg_3, _arg_6, _arg_4, _arg_5, _arg_7, _arg_8, _arg_9, _arg_10, _arg_11, _arg_12);
-            _roomEngine.setSelectedObjectData(_arg_1, _local_13);
+            var selectedObjectData:SelectedRoomObjectData = new SelectedRoomObjectData(objectId, category, operation, location, direction, typeId, instanceData, stuffData, state, animFrame, posture);
+            _roomEngine.setSelectedObjectData(roomId, selectedObjectData);
         }
 
-        private function resetSelectedObjectData(_arg_1:int):void
+        private function resetSelectedObjectData(roomId:int):void
         {
-            var _local_5:IRoomObjectController;
-            var _local_3:int;
-            var _local_4:int;
+            var objectController:IRoomObjectController;
+            var objectId:int;
+            var category:int;
 
             if (_roomEngine == null)
             {
@@ -180,48 +180,48 @@
                 _roomEngine.removeObjectMoverIconSprite();
             };
 
-            var _local_2:SelectedRoomObjectData = getSelectedObjectData(_arg_1);
+            var selectedObjectData:SelectedRoomObjectData = getSelectedObjectData(roomId);
 
-            if (_local_2 != null)
+            if (selectedObjectData != null)
             {
-                if (((_local_2.operation == "OBJECT_MOVE") || (_local_2.operation == "OBJECT_MOVE_TO")))
+                if (((selectedObjectData.operation == "OBJECT_MOVE") || (selectedObjectData.operation == "OBJECT_MOVE_TO")))
                 {
-                    _local_5 = (_roomEngine.getRoomObject(_arg_1, _local_2.id, _local_2.category) as IRoomObjectController);
+                    objectController = (_roomEngine.getRoomObject(roomId, selectedObjectData.id, selectedObjectData.category) as IRoomObjectController);
 
-                    if (((!(_local_5 == null)) && (!(_local_2.operation == "OBJECT_MOVE_TO"))))
+                    if (((!(objectController == null)) && (!(selectedObjectData.operation == "OBJECT_MOVE_TO"))))
                     {
-                        _local_5.setLocation(_local_2.loc);
-                        _local_5.setDirection(_local_2.dir);
+                        objectController.setLocation(selectedObjectData.loc);
+                        objectController.setDirection(selectedObjectData.dir);
                     };
 
-                    setObjectAlphaMultiplier(_local_5, 1);
+                    setObjectAlphaMultiplier(objectController, 1);
 
-                    if (_local_2.category == 20)
+                    if (selectedObjectData.category == 20)
                     {
-                        _roomEngine.updateObjectRoomWindow(_arg_1, _local_2.id, true);
+                        _roomEngine.updateObjectRoomWindow(roomId, selectedObjectData.id, true);
                     };
 
-                    updateSelectedObjectData(_arg_1, _local_2.id, _local_2.category, _local_2.loc, _local_2.dir, "OBJECT_MOVE", _local_2.typeId, _local_2.instanceData, _local_2.stuffData, _local_2.state, _local_2.animFrame, _local_2.posture);
+                    updateSelectedObjectData(roomId, selectedObjectData.id, selectedObjectData.category, selectedObjectData.loc, selectedObjectData.dir, "OBJECT_MOVE", selectedObjectData.typeId, selectedObjectData.instanceData, selectedObjectData.stuffData, selectedObjectData.state, selectedObjectData.animFrame, selectedObjectData.posture);
                 };
 
-                if (_local_2.operation == "OBJECT_PLACE")
+                if (selectedObjectData.operation == "OBJECT_PLACE")
                 {
-                    _local_3 = _local_2.id;
-                    _local_4 = _local_2.category;
-                    switch (_local_4)
+                    objectId = selectedObjectData.id;
+                    category = selectedObjectData.category;
+                    switch (category)
                     {
                         case 10:
-                            _roomEngine.disposeObjectFurniture(_arg_1, _local_3);
+                            _roomEngine.disposeObjectFurniture(roomId, objectId);
                             break;
                         case 20:
-                            _roomEngine.disposeObjectWallItem(_arg_1, _local_3);
+                            _roomEngine.disposeObjectWallItem(roomId, objectId);
                             break;
                         case 100:
-                            _roomEngine.disposeObjectUser(_arg_1, _local_3);
+                            _roomEngine.disposeObjectUser(roomId, objectId);
                     };
                 };
 
-                _roomEngine.setSelectedObjectData(_arg_1, null);
+                _roomEngine.setSelectedObjectData(roomId, null);
             };
         }
 

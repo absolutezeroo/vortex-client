@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object
+package com.sulake.room.object
 {
     import com.sulake.room.utils.IVector3d;
     import com.sulake.room.object.visualization.IRoomObjectVisualization;
@@ -17,9 +17,10 @@
         function getVisualization():IRoomObjectVisualization;
         function getMouseHandler():IRoomObjectMouseHandler;
         function getAvatarLibraryAssetName():String;
-        function getState(_arg_1:int):int;
+        function getState(_stateIndex:int):int;
         function getUpdateID():int;
         function tearDown():void;
 
     }
 }
+

@@ -5,9 +5,9 @@
 
         private var _isPlayingGame:Boolean;
 
-        public function RoomObjectAvatarPlayingGameMessage(_arg_1:Boolean=false)
+        public function RoomObjectAvatarPlayingGameMessage(isPlayingGame:Boolean=false)
         {
-            _isPlayingGame = _arg_1;
+            _isPlayingGame = isPlayingGame;
         }
 
         public function get isPlayingGame():Boolean

@@ -28,20 +28,20 @@
             super.tearDown();
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_arg_updateMessage:RoomObjectUpdateMessage):void
         {
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(_arg_updateMessage);
 
             if (object.getModelController().getNumber("furniture_real_room_object") != 1)
             {
                 return;
             };
 
-            var _local_2:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (_arg_updateMessage as RoomObjectDataUpdateMessage);
 
-            if (_local_2 != null)
+            if (dataUpdateMessage != null)
             {
-                if (_local_2.state == 1)
+                if (dataUpdateMessage.state == 1)
                 {
                     eventDispatcher.dispatchEvent(new RoomObjectWidgetRequestEvent("ROWRE_HIGH_SCORE_DISPLAY", object));
                 }
@@ -51,14 +51,14 @@
                     eventDispatcher.dispatchEvent(new RoomObjectWidgetRequestEvent("ROWRE_HIDE_HIGH_SCORE_DISPLAY", object));
                 };
 
-                _state = _local_2.state;
+                _state = dataUpdateMessage.state;
                 return;
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_arg_mouseEvent:RoomSpriteMouseEvent, _arg_geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_arg_mouseEvent == null) || (_arg_geometry == null)))
             {
                 return;
             };
@@ -68,13 +68,13 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_arg_mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_arg_mouseEvent, _arg_geometry);
                     return;
             };
         }

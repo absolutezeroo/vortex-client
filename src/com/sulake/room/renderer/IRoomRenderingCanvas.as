@@ -8,22 +8,22 @@
 
     public /*dynamic*/interface IRoomRenderingCanvas {
 
-        function set useMask(_arg_1:Boolean):void;
-        function initialize(_arg_1:int, _arg_2:int):void;
+        function set useMask(useMask:Boolean):void;
+        function initialize(width:int, height:int):void;
         function get width():int;
         function get height():int;
-        function set screenOffsetX(_arg_1:int):void;
-        function set screenOffsetY(_arg_1:int):void;
+        function set screenOffsetX(screenOffsetX:int):void;
+        function set screenOffsetY(screenOffsetY:int):void;
         function get screenOffsetX():int;
         function get screenOffsetY():int;
-        function render(_arg_1:int, _arg_2:Boolean = false):void;
+        function render(timestamp:int, forceRedraw:Boolean = false):void;
         function get displayObject():DisplayObject;
         function get geometry():IRoomGeometry;
-        function set mouseListener(_arg_1:IRoomRenderingCanvasMouseListener):void;
-        function handleMouseEvent(_arg_1:int, _arg_2:int, _arg_3:String, _arg_4:Boolean, _arg_5:Boolean, _arg_6:Boolean, _arg_7:Boolean):Boolean;
+        function set mouseListener(mouseListener:IRoomRenderingCanvasMouseListener):void;
+        function handleMouseEvent(mouseX:int, mouseY:int, eventType:String, ctrlKey:Boolean, shiftKey:Boolean, altKey:Boolean, isRightClick:Boolean):Boolean;
         function getSortableSpriteList():Vector.<RoomObjectSpriteData>;
         function getPlaneSortableSprites():Array;
-        function setScale(_arg_1:Number, _arg_2:Point = null, _arg_3:Point = null, _arg_4:Boolean = false):void;
+        function setScale(scale:Number, registrationPoint:Point = null, offsetPoint:Point = null, instant:Boolean = false):void;
         function get scale():Number;
         function takeScreenShot():BitmapData;
         function skipSpriteVisibilityChecking():void;

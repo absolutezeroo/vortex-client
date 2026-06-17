@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.visualization
+package com.sulake.room.object.visualization
 {
     import com.sulake.room.object.IRoomObject;
     import com.sulake.room.object.visualization.utils.IGraphicAssetCollection;
@@ -9,26 +9,26 @@
     import flash.geom.Rectangle;
     import flash.geom.Point;
 
-    public class RoomObjectSpriteVisualization implements IRoomObjectSpriteVisualization 
+    public class RoomObjectSpriteVisualization implements IRoomObjectSpriteVisualization
     {
 
-        protected static const _SafeStr_1264:String = "_";
+        protected static const ICON_LAYER_PREFIX:String = "_";
         protected static const ICON_LAYER_ID:String = "_icon_";
 
-        private static var _SafeStr_4460:int = 0;
+        private static var _nextInstanceId:int = 0;
 
         private var _layersInUse:Array;
         private var _object:IRoomObject;
         private var _assetCollection:IGraphicAssetCollection;
-        protected var _SafeStr_3271:int = -1;
-        protected var _SafeStr_3270:int = -1;
-        protected var _SafeStr_3272:int = -1;
+        protected var _cachedImageLeft:int = -1;
+        protected var _cachedImageTop:int = -1;
+        protected var _cachedLayerCount:int = -1;
         private var _instanceId:int = 0;
         private var _updateID:int = 0;
 
         public function RoomObjectSpriteVisualization()
         {
-            _instanceId = _SafeStr_4460++;
+            _instanceId = _nextInstanceId++;
             _layersInUse = [];
             _object = null;
             _assetCollection = null;
@@ -36,17 +36,17 @@
 
         public function dispose():void
         {
-            var _local_1:RoomObjectSprite;
+            var sprite:RoomObjectSprite;
 
             if (_layersInUse != null)
             {
                 while (_layersInUse.length > 0)
                 {
-                    _local_1 = (_layersInUse[0] as RoomObjectSprite);
+                    sprite = (_layersInUse[0] as RoomObjectSprite);
 
-                    if (_local_1 != null)
+                    if (sprite != null)
                     {
-                        _local_1.dispose();
+                        sprite.dispose();
                     };
 
                     _layersInUse.pop();
@@ -59,14 +59,14 @@
             assetCollection = null;
         }
 
-        public function set assetCollection(_arg_1:IGraphicAssetCollection):void
+        public function set assetCollection(collection:IGraphicAssetCollection):void
         {
             if (_assetCollection != null)
             {
                 _assetCollection.removeReference();
             };
 
-            _assetCollection = _arg_1;
+            _assetCollection = collection;
 
             if (_assetCollection != null)
             {
@@ -74,7 +74,7 @@
             };
         }
 
-        public function setExternalBaseUrls(_arg_1:String, _arg_2:String, _arg_3:Boolean):void
+        public function setExternalBaseUrls(imageBaseUrl:String, extraDataBaseUrl:String, useExtraDataBatches:Boolean):void
         {
         }
 
@@ -93,26 +93,26 @@
             return (_instanceId);
         }
 
-        protected function createSprites(_arg_1:int):void
+        protected function createSprites(spriteCount:int):void
         {
-            var _local_2:RoomObjectSprite;
+            var sprite:RoomObjectSprite;
 
-            while (_layersInUse.length > _arg_1)
+            while (_layersInUse.length > spriteCount)
             {
-                _local_2 = (_layersInUse[(_layersInUse.length - 1)] as RoomObjectSprite);
+                sprite = (_layersInUse[(_layersInUse.length - 1)] as RoomObjectSprite);
 
-                if (_local_2 != null)
+                if (sprite != null)
                 {
-                    _local_2.dispose();
+                    sprite.dispose();
                 };
 
                 _layersInUse.pop();
             };
 
-            while (_layersInUse.length < _arg_1)
+            while (_layersInUse.length < spriteCount)
             {
-                _local_2 = new RoomObjectSprite();
-                _layersInUse.push(_local_2);
+                sprite = new RoomObjectSprite();
+                _layersInUse.push(sprite);
             };
         }
 
@@ -121,34 +121,34 @@
             return (addSpriteAt(_layersInUse.length));
         }
 
-        public function addSpriteAt(_arg_1:int):IRoomObjectSprite
+        public function addSpriteAt(index:int):IRoomObjectSprite
         {
-            var _local_2:IRoomObjectSprite = new RoomObjectSprite();
+            var sprite:IRoomObjectSprite = new RoomObjectSprite();
 
-            if (_arg_1 >= _layersInUse.length)
+            if (index >= _layersInUse.length)
             {
-                _layersInUse.push(_local_2);
+                _layersInUse.push(sprite);
             }
 
             else
             {
-                _layersInUse.splice(_arg_1, 0, _local_2);
+                _layersInUse.splice(index, 0, sprite);
             };
 
-            return (_local_2);
+            return (sprite);
         }
 
-        public function removeSprite(_arg_1:IRoomObjectSprite):void
+        public function removeSprite(sprite:IRoomObjectSprite):void
         {
-            var _local_2:int = _layersInUse.indexOf(_arg_1);
+            var spriteIndex:int = _layersInUse.indexOf(sprite);
 
-            if (_local_2 == -1)
+            if (spriteIndex == -1)
             {
                 throw (new Error("Trying to remove non-existing sprite!"));
             };
 
-            _layersInUse.splice(_local_2, 1);
-            RoomObjectSprite(_arg_1).dispose();
+            _layersInUse.splice(spriteIndex, 1);
+            RoomObjectSprite(sprite).dispose();
         }
 
         public function get spriteCount():int
@@ -156,11 +156,11 @@
             return (_layersInUse.length);
         }
 
-        public function getSprite(_arg_1:int):IRoomObjectSprite
+        public function getSprite(index:int):IRoomObjectSprite
         {
-            if (((_arg_1 >= 0) && (_arg_1 < _layersInUse.length)))
+            if (((index >= 0) && (index < _layersInUse.length)))
             {
-                return (_layersInUse[_arg_1]);
+                return (_layersInUse[index]);
             };
 
             return (null);
@@ -171,12 +171,12 @@
             return (_object);
         }
 
-        public function set object(_arg_1:IRoomObject):void
+        public function set object(roomObject:IRoomObject):void
         {
-            _object = _arg_1;
+            _object = roomObject;
         }
 
-        public function update(_arg_1:IRoomGeometry, _arg_2:int, _arg_3:Boolean, _arg_4:Boolean):void
+        public function update(roomGeometry:IRoomGeometry, timeSinceLastUpdate:int, hasAnimation:Boolean, update:Boolean):void
         {
         }
 
@@ -187,9 +187,9 @@
 
         protected function reset():void
         {
-            _SafeStr_3271 = 0xFFFFFFFF;
-            _SafeStr_3270 = 0xFFFFFFFF;
-            _SafeStr_3272 = -1;
+            _cachedImageLeft = 0xFFFFFFFF;
+            _cachedImageTop = 0xFFFFFFFF;
+            _cachedLayerCount = -1;
         }
 
         public function getSpriteList():Array
@@ -197,7 +197,7 @@
             return (null);
         }
 
-        public function initialize(_arg_1:IRoomObjectVisualizationData):Boolean
+        public function initialize(data:IRoomObjectVisualizationData):Boolean
         {
             return (false);
         }
@@ -207,199 +207,180 @@
             return (getImage(0, -1));
         }
 
-        public function getImage(bgColor:int, originalID:int):BitmapData
+        public function getImage(bgColor:int, originalId:int):BitmapData
         {
-            var _local_15:Number;
-            var _local_13:Number;
-            var _local_18:Number;
-            var _local_6:int;
-            var _local_14:int;
-            var _local_8:int;
-            var _local_4:int;
-            var _local_17:ColorTransform;
-            var _local_12:Matrix;
-            var _local_7:Rectangle = boundingRectangle;
+            var spriteColor:Number;
+            var redChannel:Number;
+            var greenChannel:Number;
+            var blueChannel:Number;
+            var spriteAlphaMultiplier:Number;
+            var depth:Number;
+            var sprite:IRoomObjectSprite;
+            var colorTransform:ColorTransform;
+            var drawMatrix:Matrix;
+            var spriteRectangle:Rectangle = boundingRectangle;
 
-            if ((_local_7.width * _local_7.height) == 0)
+            if ((spriteRectangle.width * spriteRectangle.height) == 0)
             {
                 return (null);
             };
 
-            var _local_9:int = spriteCount;
-            var _local_3:IRoomObjectSprite;
-            var _local_11:Array = [];
-            var _local_10:int;
-            var _local_5:BitmapData;
-            _local_10 = 0;
+            var spriteTotal:int = spriteCount;
+            var drawnSprite:IRoomObjectSprite;
+            var orderedSprites:Array = [];
+            var spriteIndex:int;
+            var currentBitmap:BitmapData;
+            spriteIndex = 0;
 
-            while (_local_10 < _local_9)
+            while (spriteIndex < spriteTotal)
             {
-                _local_3 = getSprite(_local_10);
+                drawnSprite = getSprite(spriteIndex);
 
-                if (((!(_local_3 == null)) && (_local_3.visible)))
+                if (((!(drawnSprite == null)) && (drawnSprite.visible)))
                 {
-                    _local_5 = _local_3.asset;
+                    currentBitmap = drawnSprite.asset;
 
-                    if (_local_5 != null)
+                    if (currentBitmap != null)
                     {
-                        _local_11.push(_local_3);
+                        orderedSprites.push(drawnSprite);
                     };
                 };
 
-                _local_10++;
+                spriteIndex++;
             };
 
-            _local_11.sortOn("relativeDepth", 16);
-            _local_11.reverse();
+            orderedSprites.sortOn("relativeDepth", 16);
+            orderedSprites.reverse();
 
-            var _local_16:BitmapData;
+            var output:BitmapData;
             try
             {
-                _local_16 = new BitmapData(_local_7.width, _local_7.height, true, bgColor);
+                output = new BitmapData(spriteRectangle.width, spriteRectangle.height, true, bgColor);
             }
-
-            catch(e:ArgumentError)
+            catch (e:ArgumentError)
             {
                 Logger.log(("Unable to create BitmapData object! " + e));
             };
 
-            if (!_local_16)
+            if (!output)
             {
                 return (new BitmapData(1, 1, true));
             };
 
-            _local_10 = 0;
-
-            while (_local_10 < _local_11.length)
+            spriteIndex = 0;
+            while (spriteIndex < orderedSprites.length)
             {
-                _local_3 = (_local_11[_local_10] as IRoomObjectSprite);
-                _local_5 = _local_3.asset;
+                drawnSprite = (orderedSprites[spriteIndex] as IRoomObjectSprite);
+                currentBitmap = drawnSprite.asset;
 
-                if (_local_5 != null)
+                if (currentBitmap != null)
                 {
-                    _local_6 = _local_3.color;
-                    _local_14 = (_local_6 >> 16);
-                    _local_8 = ((_local_6 >> 8) & 0xFF);
-                    _local_4 = (_local_6 & 0xFF);
-                    _local_17 = null;
+                    spriteColor = drawnSprite.color;
+                    redChannel = ((spriteColor >> 16) & 0xFF);
+                    greenChannel = ((spriteColor >> 8) & 0xFF);
+                    blueChannel = (spriteColor & 0xFF);
+                    colorTransform = null;
 
-                    if ((((_local_14 < 0xFF) || (_local_8 < 0xFF)) || (_local_4 < 0xFF)))
+                    if ((((redChannel < 0xFF) || (greenChannel < 0xFF)) || (blueChannel < 0xFF)))
                     {
-                        _local_18 = (_local_14 / 0xFF);
-                        _local_15 = (_local_8 / 0xFF);
-                        _local_13 = (_local_4 / 0xFF);
-                        _local_17 = new ColorTransform(_local_18, _local_15, _local_13, (_local_3.alpha / 0xFF));
+                        redChannel = (redChannel / 0xFF);
+                        greenChannel = (greenChannel / 0xFF);
+                        spriteAlphaMultiplier = (blueChannel / 0xFF);
+                        depth = (drawnSprite.alpha / 0xFF);
+                        colorTransform = new ColorTransform(redChannel, greenChannel, spriteAlphaMultiplier, depth);
                     }
-
                     else
                     {
-                        if (_local_3.alpha < 0xFF)
+                        if (drawnSprite.alpha < 0xFF)
                         {
-                            _local_17 = new ColorTransform(1, 1, 1, (_local_3.alpha / 0xFF));
+                            colorTransform = new ColorTransform(1, 1, 1, (drawnSprite.alpha / 0xFF));
                         };
                     };
 
-                    if (bgColor == 0)
-                    {
-                        if (_local_3.blendMode == "add")
-                        {
-                            if (_local_17 == null)
-                            {
-                                _local_17 = new ColorTransform(1, 1, 1, 0);
-                            }
+                    drawMatrix = new Matrix();
 
-                            else
-                            {
-                                _local_17.alphaMultiplier = 0;
-                            };
-                        };
+                    if (drawnSprite.flipH)
+                    {
+                        drawMatrix.scale(-1, 1);
+                        drawMatrix.translate(currentBitmap.width, 0);
                     };
 
-                    _local_12 = new Matrix();
-
-                    if (_local_3.flipH)
+                    if (drawnSprite.flipV)
                     {
-                        _local_12.scale(-1, 1);
-                        _local_12.translate(_local_5.width, 0);
+                        drawMatrix.scale(1, -1);
+                        drawMatrix.translate(0, currentBitmap.height);
                     };
 
-                    if (_local_3.flipV)
-                    {
-                        _local_12.scale(1, -1);
-                        _local_12.translate(0, _local_5.height);
-                    };
-
-                    _local_12.translate((_local_3.offsetX - _local_7.left), (_local_3.offsetY - _local_7.top));
-                    _local_16.draw(_local_5, _local_12, _local_17, _local_3.blendMode, null, false);
+                    drawMatrix.translate((drawnSprite.offsetX - spriteRectangle.left), (drawnSprite.offsetY - spriteRectangle.top));
+                    output.draw(currentBitmap, drawMatrix, colorTransform, drawnSprite.blendMode, null, false);
                 };
 
-                _local_10++;
+                spriteIndex++;
             };
 
-            return (_local_16);
+            return (output);
         }
 
         public function get boundingRectangle():Rectangle
         {
-            var _local_3:Point;
-            var _local_5:int = spriteCount;
-            var _local_1:IRoomObjectSprite;
-            var _local_4:Rectangle = new Rectangle();
-            var _local_6:int;
-            var _local_2:BitmapData;
-            _local_6 = 0;
+            var position:Point;
+            var layerCount:int = spriteCount;
+            var sprite:IRoomObjectSprite;
+            var bounds:Rectangle = new Rectangle();
+            var index:int;
+            var spriteBitmap:BitmapData;
+            index = 0;
 
-            while (_local_6 < _local_5)
+            while (index < layerCount)
             {
-                _local_1 = getSprite(_local_6);
+                sprite = getSprite(index);
 
-                if (((!(_local_1 == null)) && (_local_1.visible)))
+                if (((!(sprite == null)) && (sprite.visible)))
                 {
-                    _local_2 = _local_1.asset;
+                    spriteBitmap = sprite.asset;
 
-                    if (_local_2 != null)
+                    if (spriteBitmap != null)
                     {
-                        _local_3 = new Point(_local_1.offsetX, _local_1.offsetY);
+                        position = new Point(sprite.offsetX, sprite.offsetY);
 
-                        if (_local_6 == 0)
+                        if (index == 0)
                         {
-                            _local_4.left = _local_3.x;
-                            _local_4.top = _local_3.y;
-                            _local_4.right = (_local_3.x + _local_1.width);
-                            _local_4.bottom = (_local_3.y + _local_1.height);
+                            bounds.left = position.x;
+                            bounds.top = position.y;
+                            bounds.right = (position.x + sprite.width);
+                            bounds.bottom = (position.y + sprite.height);
                         }
 
                         else
                         {
-                            if (_local_3.x < _local_4.left)
+                            if (position.x < bounds.left)
                             {
-                                _local_4.left = _local_3.x;
+                                bounds.left = position.x;
                             };
 
-                            if (_local_3.y < _local_4.top)
+                            if (position.y < bounds.top)
                             {
-                                _local_4.top = _local_3.y;
+                                bounds.top = position.y;
                             };
 
-                            if ((_local_3.x + _local_1.width) > _local_4.right)
+                            if ((position.x + sprite.width) > bounds.right)
                             {
-                                _local_4.right = (_local_3.x + _local_1.width);
+                                bounds.right = (position.x + sprite.width);
                             };
 
-                            if ((_local_3.y + _local_1.height) > _local_4.bottom)
+                            if ((position.y + sprite.height) > bounds.bottom)
                             {
-                                _local_4.bottom = (_local_3.y + _local_1.height);
+                                bounds.bottom = (position.y + sprite.height);
                             };
                         };
                     };
                 };
 
-                _local_6++;
+                index++;
             };
 
-            return (_local_4);
+            return (bounds);
         }
 
     }
 }
-

@@ -14,16 +14,16 @@
         private var _relativeDepth:Number = 0;
         private var _status:int;
 
-        public function GuideStatusBubble(_arg_1:int, _arg_2:AvatarVisualization, _arg_3:int)
+        public function GuideStatusBubble(id:int, avatar:AvatarVisualization, status:int)
         {
-            _id = _arg_1;
-            _avatar = _arg_2;
-            _status = _arg_3;
+            _id = id;
+            _avatar = avatar;
+            _status = status;
         }
 
-        public function set relativeDepth(_arg_1:Number):void
+        public function set relativeDepth(value:Number):void
         {
-            _relativeDepth = _arg_1;
+            _relativeDepth = value;
         }
 
         public function get id():int

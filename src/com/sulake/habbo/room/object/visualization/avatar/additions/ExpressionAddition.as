@@ -10,11 +10,11 @@
         protected var _SafeStr_1265:AvatarVisualization;
         private var _type:int = -1;
 
-        public function ExpressionAddition(_arg_1:int, _arg_2:int, _arg_3:AvatarVisualization)
+        public function ExpressionAddition(id:int, type:int, avatarVisualization:AvatarVisualization)
         {
-            _type = _arg_2;
-            _SafeStr_698 = _arg_1;
-            _SafeStr_1265 = _arg_3;
+            _type = type;
+            _SafeStr_698 = id;
+            _SafeStr_1265 = avatarVisualization;
         }
 
         public function get type():int
@@ -37,11 +37,11 @@
             _SafeStr_1265 = null;
         }
 
-        public function update(_arg_1:IRoomObjectSprite, _arg_2:Number):void
+        public function update(sprite:IRoomObjectSprite, scale:Number):void
         {
         }
 
-        public function animate(_arg_1:IRoomObjectSprite):Boolean
+        public function animate(sprite:IRoomObjectSprite):Boolean
         {
             return (false);
         }

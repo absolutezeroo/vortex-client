@@ -9,11 +9,11 @@ package onBoardingHc
         private var _loader:Loader;
         private var _url:String;
 
-        public function ImageLoaderEvent(_arg_1:String, _arg_2:Loader, _arg_3:String)
+        public function ImageLoaderEvent(eventType:String, loader:Loader, url:String)
         {
-            _loader = _arg_2;
-            _url = _arg_3;
-            super(_arg_1, false, false);
+            _loader = loader;
+            _url = url;
+            super(eventType, false, false);
         }
 
         public function get loader():Loader

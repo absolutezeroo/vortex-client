@@ -10,13 +10,13 @@
         private var _saturation:int;
         private var _lightness:int;
 
-        public function RoomEngineHSLColorEnableEvent(_arg_1:String, _arg_2:int, _arg_3:Boolean, _arg_4:int, _arg_5:int, _arg_6:int, _arg_7:Boolean=false, _arg_8:Boolean=false)
+        public function RoomEngineHSLColorEnableEvent(type:String, roomId:int, enable:Boolean, hue:int, saturation:int, lightness:int, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_2, _arg_7, _arg_8);
-            _enable = _arg_3;
-            _hue = _arg_4;
-            _saturation = _arg_5;
-            _lightness = _arg_6;
+            super(type, roomId, bubbles, cancelable);
+            _enable = enable;
+            _hue = hue;
+            _saturation = saturation;
+            _lightness = lightness;
         }
 
         public function get enable():Boolean

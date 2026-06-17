@@ -10,13 +10,13 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE_ECOTRONBOX"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var _eventTypes:Array = ["ROWRE_ECOTRONBOX"];
+            return (getAllEventTypes(super.getEventTypes(), _eventTypes));
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_mouseEvent:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_mouseEvent == null) || (_geometry == null)))
             {
                 return;
             };
@@ -26,25 +26,25 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_mouseEvent, _geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var _widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_ECOTRONBOX", object);
-                eventDispatcher.dispatchEvent(_local_1);
+                _widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_ECOTRONBOX", object);
+                eventDispatcher.dispatchEvent(_widgetRequestEvent);
             };
         }
 

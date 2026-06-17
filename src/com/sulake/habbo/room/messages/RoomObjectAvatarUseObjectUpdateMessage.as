@@ -5,9 +5,9 @@
 
         private var _itemType:int;
 
-        public function RoomObjectAvatarUseObjectUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarUseObjectUpdateMessage(itemType:int)
         {
-            _itemType = _arg_1;
+            _itemType = itemType;
         }
 
         public function get itemType():int

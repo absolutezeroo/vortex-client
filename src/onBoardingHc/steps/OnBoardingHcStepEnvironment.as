@@ -47,20 +47,20 @@ package onBoardingHc.steps
         private var _initialized:Boolean;
         private var _selectionSprite:Sprite;
 
-        public function OnBoardingHcStepEnvironment(_arg_1:OnBoardingHc)
+        public function OnBoardingHcStepEnvironment(context:OnBoardingHc)
         {
-            _context = _arg_1;
+            _context = context;
             addEventListener("addedToStage", onAddedToStage);
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
-            var _local_2:Timer = new Timer(20, 1);
-            _local_2.addEventListener("timerComplete", onAlignElements);
-            _local_2.start();
+            var alignTimer:Timer = new Timer(20, 1);
+            alignTimer.addEventListener("timerComplete", onAlignElements);
+            alignTimer.start();
         }
 
-        private function onAlignElements(_arg_1:TimerEvent = null):void
+        private function onAlignElements(layoutEvent:TimerEvent = null):void
         {
             LoaderUI.alignAnchors(this, 0, "c", _selectionOverlay);
             LoaderUI.alignAnchors(_selectionOverlay, 0, "r", _loginButton);
@@ -99,18 +99,18 @@ package onBoardingHc.steps
             _environments = _context.getProperty("live.environment.list").split("/");
             _flags = new Vector.<Bitmap>();
 
-            var _local_1:String;
-            var _local_2:Bitmap;
+            var environmentCode:String;
+            var environmentFlag:Bitmap;
 
-            for each (_local_1 in _environments)
+            for each (environmentCode in _environments)
             {
-                if ((_local_1 == null) || (_local_1.length == 0))
+                if ((environmentCode == null) || (environmentCode.length == 0))
                 {
                     continue;
                 };
 
-                _local_2 = resolveEnvironmentFlag(_local_1.toLowerCase());
-                _flags.push(_local_2);
+                environmentFlag = resolveEnvironmentFlag(environmentCode.toLowerCase());
+                _flags.push(environmentFlag);
             }
 
             if (_flags.length == 0)
@@ -154,23 +154,23 @@ package onBoardingHc.steps
 
         public function updateEnvironment():void
         {
-            var _local_1:String = _context.getProperty("environment.id");
-            var _local_2:int = _environments.indexOf(_local_1);
-            _selectedIndex = (_local_2 == -1) ? 0 : _local_2;
+            var currentEnvironment:String = _context.getProperty("environment.id");
+            var environmentIndex:int = _environments.indexOf(currentEnvironment);
+            _selectedIndex = (environmentIndex == -1) ? 0 : environmentIndex;
             chooseEnvironment();
         }
 
         public function initView():void
         {
-            var _local_7:int;
-            var _local_8:Sprite;
-            var _local_10:Bitmap;
-            var _local_3:int;
-            var _local_2:int;
-            var _local_6:int;
-            var _local_9:int;
-            var _local_4:int;
-            var _local_5:int;
+            var flagIndex:int;
+            var flagContainer:Sprite;
+            var flagBitmap:Bitmap;
+            var cellWidth:int;
+            var cellMargin:int;
+            var cellColumn:int;
+            var cellRow:int;
+            var iconX:int;
+            var iconY:int;
 
             addTitleField();
 
@@ -183,37 +183,37 @@ package onBoardingHc.steps
             _chosenIcon = Bitmap(new flag_icon_selected_png());
             _selectionSprite.addChild(_chosenIcon);
 
-            var _local_11:Number = 0.5;
-            _selectionSprite.scaleY = _local_11;
-            _selectionSprite.scaleX = _local_11;
+            var overlayScale:Number = 0.5;
+            _selectionSprite.scaleY = overlayScale;
+            _selectionSprite.scaleX = overlayScale;
 
-            var _local_1:int = 100;
-            _local_7 = 0;
+            var containerOffsetY:int = 100;
+            flagIndex = 0;
 
-            while (_local_7 < _flags.length)
+            while (flagIndex < _flags.length)
             {
-                _local_8 = new Sprite();
-                _local_10 = (_flags[_local_7] as Bitmap);
+                flagContainer = new Sprite();
+                flagBitmap = (_flags[flagIndex] as Bitmap);
 
-                if (_local_10 != null)
-                    _local_8.addChild(_local_10);
+                if (flagBitmap != null)
+                    flagContainer.addChild(flagBitmap);
 
-                addChild(_local_8);
-                _environmentContainers.push(_local_8);
-                _local_8.name = String(_local_7);
-                _local_8.addEventListener("click", onEnvironmentClick);
-                _local_11 = 0.5;
-                _local_8.scaleY = _local_11;
-                _local_8.scaleX = _local_11;
-                _local_3 = 80;
-                _local_2 = 5;
-                _local_6 = (_local_7 % 9);
-                _local_9 = int((_local_7 / 9));
-                _local_4 = ((_local_6 * _local_3) + (_local_6 * _local_2));
-                _local_5 = ((_local_9 * _local_3) + (_local_9 * _local_2));
-                _local_8.x = _local_4;
-                _local_8.y = (_local_1 + _local_5);
-                _local_7++;
+                addChild(flagContainer);
+                _environmentContainers.push(flagContainer);
+                flagContainer.name = String(flagIndex);
+                flagContainer.addEventListener("click", onEnvironmentClick);
+                overlayScale = 0.5;
+                flagContainer.scaleY = overlayScale;
+                flagContainer.scaleX = overlayScale;
+                cellWidth = 80;
+                cellMargin = 5;
+                cellColumn = (flagIndex % 9);
+                cellRow = int((flagIndex / 9));
+                iconX = ((cellColumn * cellWidth) + (cellColumn * cellMargin));
+                iconY = ((cellRow * cellWidth) + (cellRow * cellMargin));
+                flagContainer.x = iconX;
+                flagContainer.y = (containerOffsetY + iconY);
+                flagIndex++;
             };
 
             _environmentName = LoaderUI.createTextField("", 20, 0xFFFFFF, false, true, false, false);
@@ -244,9 +244,9 @@ package onBoardingHc.steps
             };
         }
 
-        private function onEnvironmentClick(_arg_1:Event):void
+        private function onEnvironmentClick(clickEvent:Event):void
         {
-            _selectedIndex = _arg_1.currentTarget.name;
+            _selectedIndex = clickEvent.currentTarget.name;
             chooseEnvironment();
             _context.updateEnvironment(_environments[_selectedIndex], true);
             onAlignElements();
@@ -254,25 +254,25 @@ package onBoardingHc.steps
 
         private function chooseEnvironment():void
         {
-            var _local_1:Sprite = _environmentContainers[_selectedIndex];
+            var selectedFlag:Sprite = _environmentContainers[_selectedIndex];
 
-            if (_local_1 == null)
+            if (selectedFlag == null)
                 return;
 
-            _selectionSprite.x = ((_local_1.x - ((_selectionSprite.width - _local_1.width) / 2)) - 1);
-            _selectionSprite.y = ((_local_1.y - ((_selectionSprite.height - _local_1.height) / 2)) - 1);
+            _selectionSprite.x = ((selectedFlag.x - ((_selectionSprite.width - selectedFlag.width) / 2)) - 1);
+            _selectionSprite.y = ((selectedFlag.y - ((_selectionSprite.height - selectedFlag.height) / 2)) - 1);
             _selectionSprite.visible = true;
             _loginButton.active = true;
             updateDescription();
         }
 
-        private function onButtonSelect(_arg_1:DisplayObject):void
+        private function onButtonSelect(button:DisplayObject):void
         {
             _context.updateEnvironment(_environments[_selectedIndex], false);
             _context.showScreen(OnBoardingHc.SCREEN_LOGIN);
         }
 
-        private function onButtonSelectToken(_arg_1:DisplayObject):void
+        private function onButtonSelectToken(button:DisplayObject):void
         {
             if (!(_context && _context.isSsoEnabled))
             {
@@ -283,9 +283,9 @@ package onBoardingHc.steps
             _context.showScreen(OnBoardingHc.SCREEN_SSO_TOKEN);
         }
 
-        private function resolveEnvironmentFlag(_arg_1:String):Bitmap
+        private function resolveEnvironmentFlag(environmentCode:String):Bitmap
         {
-            switch (_arg_1)
+            switch (environmentCode)
             {
                 case "en":
                     return (Bitmap(new flag_icon_en_png()));
@@ -315,8 +315,8 @@ package onBoardingHc.steps
 
         private function updateDescription():void
         {
-            var _local_1:String = _environments[_selectedIndex];
-            _environmentName.text = _context.getProperty(("connection.info.name." + _local_1));
+            var selectedEnvironment:String = _environments[_selectedIndex];
+            _environmentName.text = _context.getProperty(("connection.info.name." + selectedEnvironment));
         }
 
         public function get environmentId():String
@@ -326,8 +326,8 @@ package onBoardingHc.steps
 
         public function get environmentAvailable():Boolean
         {
-            var _local_1:String = _context.getProperty("environment.id");
-            return (_environments.indexOf(_local_1) > -1);
+            var currentEnvironment:String = _context.getProperty("environment.id");
+            return (_environments.indexOf(currentEnvironment) > -1);
         }
 
     }

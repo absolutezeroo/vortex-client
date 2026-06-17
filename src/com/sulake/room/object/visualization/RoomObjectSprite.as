@@ -1,13 +1,13 @@
-﻿package com.sulake.room.object.visualization
+package com.sulake.room.object.visualization
 {
     import flash.display.BitmapData;
     import flash.geom.Point;
     import com.sulake.room.object.enum.RoomObjectSpriteType;
 
-    public final class RoomObjectSprite implements IRoomObjectSprite 
+    public final class RoomObjectSprite implements IRoomObjectSprite
     {
 
-        private static var _SafeStr_4460:int = 0;
+        private static var _nextInstanceId:int = 0;
 
         private var _asset:BitmapData = null;
         private var _assetName:String = "";
@@ -33,12 +33,12 @@
         private var _updateId:int = 0;
         private var _instanceId:int = 0;
         private var _filters:Array = null;
-        protected var _SafeStr_4461:int = RoomObjectSpriteType.DEFAULT;
+        protected var _spriteType:int = RoomObjectSpriteType.DEFAULT;
         private var _objectType:String;
 
         public function RoomObjectSprite()
         {
-            _instanceId = _SafeStr_4460++;
+            _instanceId = _nextInstanceId++;
         }
 
         public function dispose():void
@@ -63,9 +63,9 @@
             return (_assetPosture);
         }
 
-        public function set assetPosture(_arg_1:String):void
+        public function set assetPosture(posture:String):void
         {
-            _assetPosture = _arg_1;
+            _assetPosture = posture;
         }
 
         public function get assetGesture():String
@@ -73,9 +73,9 @@
             return (_assetGesture);
         }
 
-        public function set assetGesture(_arg_1:String):void
+        public function set assetGesture(gesture:String):void
         {
-            _assetGesture = _arg_1;
+            _assetGesture = gesture;
         }
 
         public function get visible():Boolean
@@ -170,7 +170,7 @@
 
         public function get spriteType():int
         {
-            return (_SafeStr_4461);
+            return (_spriteType);
         }
 
         public function get objectType():String
@@ -178,9 +178,9 @@
             return (_objectType);
         }
 
-        public function set objectType(_arg_1:String):void
+        public function set objectType(type:String):void
         {
-            _objectType = _arg_1;
+            _objectType = type;
         }
 
         public function get planeId():int
@@ -188,193 +188,193 @@
             return (_planeId);
         }
 
-        public function set planeId(_arg_1:int):void
+        public function set planeId(planeId:int):void
         {
-            _planeId = _arg_1;
+            _planeId = planeId;
         }
 
-        public function set spriteType(_arg_1:int):void
+        public function set spriteType(spriteType:int):void
         {
-            _SafeStr_4461 = _arg_1;
+            _spriteType = spriteType;
         }
 
-        public function set asset(_arg_1:BitmapData):void
+        public function set asset(bitmapData:BitmapData):void
         {
-            if (_arg_1 == _asset)
+            if (bitmapData == _asset)
             {
                 return;
             };
 
-            if (_arg_1 != null)
+            if (bitmapData != null)
             {
-                _width = _arg_1.width;
-                _height = _arg_1.height;
+                _width = bitmapData.width;
+                _height = bitmapData.height;
             };
 
-            _asset = _arg_1;
+            _asset = bitmapData;
             _updateId++;
         }
 
-        public function set assetName(_arg_1:String):void
+        public function set assetName(name:String):void
         {
-            if (_arg_1 == _assetName)
+            if (name == _assetName)
             {
                 return;
             };
 
-            _assetName = _arg_1;
+            _assetName = name;
             _updateId++;
         }
 
-        public function set visible(_arg_1:Boolean):void
+        public function set visible(visible:Boolean):void
         {
-            if (_arg_1 == _visible)
+            if (visible == _visible)
             {
                 return;
             };
 
-            _visible = _arg_1;
+            _visible = visible;
             _updateId++;
         }
 
-        public function set tag(_arg_1:String):void
+        public function set tag(tag:String):void
         {
-            if (_arg_1 == _tag)
+            if (tag == _tag)
             {
                 return;
             };
 
-            _tag = _arg_1;
+            _tag = tag;
             _updateId++;
         }
 
-        public function set alpha(_arg_1:int):void
+        public function set alpha(value:int):void
         {
-            _arg_1 = (_arg_1 & 0xFF);
+            value = (value & 0xFF);
 
-            if (_arg_1 == _alpha)
+            if (value == _alpha)
             {
                 return;
             };
 
-            _alpha = _arg_1;
+            _alpha = value;
             _updateId++;
         }
 
-        public function set color(_arg_1:int):void
+        public function set color(value:int):void
         {
-            _arg_1 = (_arg_1 & 0xFFFFFF);
+            value = (value & 0xFFFFFF);
 
-            if (_arg_1 == _color)
+            if (value == _color)
             {
                 return;
             };
 
-            _color = _arg_1;
+            _color = value;
             _updateId++;
         }
 
-        public function set blendMode(_arg_1:String):void
+        public function set blendMode(mode:String):void
         {
-            if (_arg_1 == _blendMode)
+            if (mode == _blendMode)
             {
                 return;
             };
 
-            _blendMode = _arg_1;
+            _blendMode = mode;
             _updateId++;
         }
 
-        public function set filters(_arg_1:Array):void
+        public function set filters(filters:Array):void
         {
-            if (_arg_1 == _filters)
+            if (filters == _filters)
             {
                 return;
             };
 
-            _filters = _arg_1;
+            _filters = filters;
             _updateId++;
         }
 
-        public function set flipH(_arg_1:Boolean):void
+        public function set flipH(flipHorizontal:Boolean):void
         {
-            if (_arg_1 == _flipH)
+            if (flipHorizontal == _flipH)
             {
                 return;
             };
 
-            _flipH = _arg_1;
+            _flipH = flipHorizontal;
             _updateId++;
         }
 
-        public function set flipV(_arg_1:Boolean):void
+        public function set flipV(flipVertical:Boolean):void
         {
-            if (_arg_1 == _flipV)
+            if (flipVertical == _flipV)
             {
                 return;
             };
 
-            _flipV = _arg_1;
+            _flipV = flipVertical;
             _updateId++;
         }
 
-        public function set direction(_arg_1:int):void
+        public function set direction(direction:int):void
         {
-            _direction = _arg_1;
+            _direction = direction;
         }
 
-        public function set offsetX(_arg_1:int):void
+        public function set offsetX(xOffset:int):void
         {
-            if (_arg_1 == _offset.x)
+            if (xOffset == _offset.x)
             {
                 return;
             };
 
-            _offset.x = _arg_1;
+            _offset.x = xOffset;
             _updateId++;
         }
 
-        public function set offsetY(_arg_1:int):void
+        public function set offsetY(yOffset:int):void
         {
-            if (_arg_1 == _offset.y)
+            if (yOffset == _offset.y)
             {
                 return;
             };
 
-            _offset.y = _arg_1;
+            _offset.y = yOffset;
             _updateId++;
         }
 
-        public function set relativeDepth(_arg_1:Number):void
+        public function set relativeDepth(depth:Number):void
         {
-            if (_arg_1 == _relativeDepth)
+            if (depth == _relativeDepth)
             {
                 return;
             };
 
-            _relativeDepth = _arg_1;
+            _relativeDepth = depth;
             _updateId++;
         }
 
-        public function set varyingDepth(_arg_1:Boolean):void
+        public function set varyingDepth(varying:Boolean):void
         {
-            if (_arg_1 == _varyingDepth)
+            if (varying == _varyingDepth)
             {
                 return;
             };
 
-            _varyingDepth = _arg_1;
+            _varyingDepth = varying;
             _updateId++;
         }
 
-        public function set clickHandling(_arg_1:Boolean):void
+        public function set clickHandling(value:Boolean):void
         {
-            if (_clickHandling == _arg_1)
+            if (_clickHandling == value)
             {
                 return;
             };
 
-            _clickHandling = _arg_1;
+            _clickHandling = value;
             _updateId++;
         }
 
@@ -383,14 +383,14 @@
             return (_alphaTolerance);
         }
 
-        public function set alphaTolerance(_arg_1:int):void
+        public function set alphaTolerance(value:int):void
         {
-            if (_alphaTolerance == _arg_1)
+            if (_alphaTolerance == value)
             {
                 return;
             };
 
-            _alphaTolerance = _arg_1;
+            _alphaTolerance = value;
             _updateId++;
         }
 
@@ -399,11 +399,10 @@
             return (_libraryAssetName);
         }
 
-        public function set libraryAssetName(_arg_1:String):void
+        public function set libraryAssetName(name:String):void
         {
-            _libraryAssetName = _arg_1;
+            _libraryAssetName = name;
         }
 
     }
 }
-

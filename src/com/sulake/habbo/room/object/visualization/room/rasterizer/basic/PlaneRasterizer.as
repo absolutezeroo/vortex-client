@@ -1,4 +1,4 @@
-﻿package com.sulake.habbo.room.object.visualization.room.rasterizer.basic
+package com.sulake.habbo.room.object.visualization.room.rasterizer.basic
 {
     import com.sulake.habbo.room.object.visualization.room.rasterizer.IPlaneRasterizer;
     import com.sulake.room.object.visualization.utils.IGraphicAssetCollection;
@@ -7,8 +7,8 @@
     import com.sulake.room.object.visualization.utils.IGraphicAsset;
     import com.sulake.core.assets.BitmapDataAsset;
     import flash.display.BitmapData;
-    import com.sulake.room.utils._SafeStr_93;
-    import com.sulake.room.utils._SafeStr_217;
+    import com.sulake.room.utils.XmlUtil;
+    import com.sulake.room.utils.BitmapDataUtil;
     import flash.geom.Point;
     import com.sulake.room.utils.IRoomGeometry;
     import com.sulake.room.utils.Vector3d;
@@ -306,7 +306,7 @@
             {
                 _local_6 = _local_5[_local_7];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_6, ["id"]))
+                if (XmlUtil.checkRequiredAttributes(_local_6, ["id"]))
                 {
                     _local_16 = _local_6.@id;
 
@@ -320,7 +320,7 @@
                         {
                             _local_13 = _local_3[_local_9];
 
-                            if (_SafeStr_93.checkRequiredAttributes(_local_13, ["assetName"]))
+                            if (XmlUtil.checkRequiredAttributes(_local_13, ["assetName"]))
                             {
                                 _local_8 = -1;
                                 _local_18 = 1;
@@ -362,7 +362,7 @@
                                         {
                                             if (_local_17.flipH)
                                             {
-                                                _local_12 = _SafeStr_217.getFlipHBitmapData(_local_12);
+                                                _local_12 = BitmapDataUtil.getFlipHBitmapData(_local_12);
                                             }
 
                                             else
@@ -421,7 +421,7 @@
             {
                 _local_15 = _local_17[_local_4];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_15, ["id"]))
+                if (XmlUtil.checkRequiredAttributes(_local_15, ["id"]))
                 {
                     _local_20 = _local_15.@id;
                     _local_8 = new PlaneMaterial();
@@ -656,7 +656,7 @@
                 {
                     _local_5 = _local_3[_local_4];
 
-                    if (_SafeStr_93.checkRequiredAttributes(_local_5, _local_7))
+                    if (XmlUtil.checkRequiredAttributes(_local_5, _local_7))
                     {
                         _local_6 = _local_5.@assetName;
                         _local_2.push(_local_6);
@@ -688,7 +688,7 @@
                 {
                     _local_3 = _local_4[_local_6];
 
-                    if (_SafeStr_93.checkRequiredAttributes(_local_3, _local_8))
+                    if (XmlUtil.checkRequiredAttributes(_local_3, _local_8))
                     {
                         _local_5 = parseInt(_local_3.@x);
                         _local_7 = parseInt(_local_3.@y);
@@ -763,7 +763,7 @@
             {
                 _local_3 = _arg_2[_local_8];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_3, ["size"]))
+                if (XmlUtil.checkRequiredAttributes(_local_3, ["size"]))
                 {
                     _local_16 = parseInt(_local_3.@size);
                     _local_6 = _local_3.@horizontalAngle;
@@ -795,7 +795,7 @@
                             _local_17 = null;
                             _local_11 = 1;
 
-                            if (_SafeStr_93.checkRequiredAttributes(_local_13, ["materialId"]))
+                            if (XmlUtil.checkRequiredAttributes(_local_13, ["materialId"]))
                             {
                                 _local_12 = _local_13.@materialId;
                                 _local_17 = getMaterial(_local_12);

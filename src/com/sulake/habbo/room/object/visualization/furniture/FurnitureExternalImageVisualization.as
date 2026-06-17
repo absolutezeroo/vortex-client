@@ -25,17 +25,17 @@
             hasOutline = true;
         }
 
-        override public function setExternalBaseUrls(_arg_1:String, _arg_2:String, _arg_3:Boolean):void
+        override public function setExternalBaseUrls(baseUrl:String, extraDataUrl:String, batchesEnabled:Boolean):void
         {
-            _baseUrl = _arg_1;
-            _extraDataUrl = _arg_2;
-            _batchesEnabled = _arg_3;
+            _baseUrl = baseUrl;
+            _extraDataUrl = extraDataUrl;
+            _batchesEnabled = batchesEnabled;
         }
 
         override protected function getThumbnailURL():String
         {
-            var _local_2:String;
-            var _local_3:String;
+            var externalImageId:String;
+            var thumbnailUrl:String;
 
             if ((((!(object)) || (_baseUrl == "disabled")) || (_url == "REJECTED")))
             {
@@ -47,9 +47,9 @@
                 return (_url);
             };
 
-            var _local_1:String = object.getModel().getString("furniture_data");
+            var furnitureData:String = object.getModel().getString("furniture_data");
 
-            if (_local_1 == null)
+            if (furnitureData == null)
             {
                 return (null);
             };
@@ -66,13 +66,13 @@
                     _typePrefix = "postcards/selfie/";
                 };
 
-                _local_2 = getJsonValue(_local_1, "id", null);
+                externalImageId = getJsonValue(furnitureData, "id", null);
 
-                if (((_local_2) && (_local_2.length > 0)))
+                if (((externalImageId) && (externalImageId.length > 0)))
                 {
                     if (!_extraDataLoading)
                     {
-                        _externalImageUUID = _local_2;
+                        _externalImageUUID = externalImageId;
                         _extraDataLoading = true;
 
                         if (_batchesEnabled)
@@ -82,15 +82,15 @@
 
                         else
                         {
-                            loadExtraData(_local_2);
+                            loadExtraData(externalImageId);
                         };
                     };
 
                     return null;
                 };
 
-                _local_3 = getJsonValue(_local_1, "w", "url");
-                _local_3 = buildThumbnailUrl(_local_3, _typePrefix);
+                thumbnailUrl = getJsonValue(furnitureData, "w", "url");
+                thumbnailUrl = buildThumbnailUrl(thumbnailUrl, _typePrefix);
             }
 
             catch(error:Error)
@@ -98,8 +98,8 @@
                 return (null);
             };
 
-            _url = _local_3;
-            return (_local_3);
+            _url = thumbnailUrl;
+            return (thumbnailUrl);
         }
 
         public function getExternalImageUUID():String

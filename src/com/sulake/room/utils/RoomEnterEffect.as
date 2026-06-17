@@ -10,62 +10,62 @@
         public static const STATE_RUNNING:int = 2;
         public static const STATE_OVER:int = 3;
 
-        private static var _SafeStr_448:int = 0;
-        private static var _SafeStr_4512:Boolean = false;
-        private static var _SafeStr_4513:Number;
-        private static var _SafeStr_4514:int = 0;
-        private static var _SafeStr_4515:int = 20000;
-        private static var _SafeStr_4516:int = 2000;
+        private static var _state:int = 0;
+        private static var _isVisible:Boolean = false;
+        private static var _delta:Number;
+        private static var _startTime:int = 0;
+        private static var _startDelay:int = 20000;
+        private static var _duration:int = 2000;
 
-        public static function init(_arg_1:int, _arg_2:int):void
+        public static function init(startDelay:int, duration:int):void
         {
-            _SafeStr_4513 = 0;
-            _SafeStr_4515 = _arg_1;
-            _SafeStr_4516 = _arg_2;
-            _SafeStr_4514 = getTimer();
-            _SafeStr_448 = 1;
+            _delta = 0;
+            _startDelay = startDelay;
+            _duration = duration;
+            _startTime = getTimer();
+            _state = 1;
         }
 
         public static function turnVisualizationOn():void
         {
-            if (((_SafeStr_448 == 0) || (_SafeStr_448 == 3)))
+            if (((_state == 0) || (_state == 3)))
             {
                 return;
             };
 
-            var _local_1:int = (getTimer() - _SafeStr_4514);
+            var elapsed:int = (getTimer() - _startTime);
 
-            if (_local_1 > (_SafeStr_4515 + _SafeStr_4516))
+            if (elapsed > (_startDelay + _duration))
             {
-                _SafeStr_448 = 3;
+                _state = 3;
                 return;
             };
 
-            _SafeStr_4512 = true;
+            _isVisible = true;
 
-            if (_local_1 < _SafeStr_4515)
+            if (elapsed < _startDelay)
             {
-                _SafeStr_448 = 1;
+                _state = 1;
                 return;
             };
 
-            _SafeStr_448 = 2;
-            _SafeStr_4513 = ((_local_1 - _SafeStr_4515) / _SafeStr_4516);
+            _state = 2;
+            _delta = ((elapsed - _startDelay) / _duration);
         }
 
         public static function turnVisualizationOff():void
         {
-            _SafeStr_4512 = false;
+            _isVisible = false;
         }
 
         public static function isVisualizationOn():Boolean
         {
-            return ((_SafeStr_4512) && (isRunning()));
+            return ((_isVisible) && (isRunning()));
         }
 
         public static function isRunning():Boolean
         {
-            if (((_SafeStr_448 == 1) || (_SafeStr_448 == 2)))
+            if (((_state == 1) || (_state == 2)))
             {
                 return (true);
             };
@@ -73,16 +73,16 @@
             return (false);
         }
 
-        public static function getDelta(_arg_1:Number=0, _arg_2:Number=1):Number
+        public static function getDelta(min:Number=0, max:Number=1):Number
         {
-            return (Math.min(Math.max(_SafeStr_4513, _arg_1), _arg_2));
+            return (Math.min(Math.max(_delta, min), max));
         }
 
         public static function get totalRunningTime():int
         {
-            return (_SafeStr_4515 + _SafeStr_4516);
+            return (_startDelay + _duration);
         }
 
     }
 }
-
+

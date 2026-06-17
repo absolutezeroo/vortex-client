@@ -15,15 +15,15 @@
         private var _width:int;
         private var _height:int;
 
-        public function RoomObjectRoomFloorHoleUpdateMessage(_arg_1:String, _arg_2:int, _arg_3:int=0, _arg_4:int=0, _arg_5:int=0, _arg_6:int=0)
+        public function RoomObjectRoomFloorHoleUpdateMessage(type:String, id:int, x:int=0, y:int=0, width:int=0, height:int=0)
         {
             super(null, null);
-            _type = _arg_1;
-            _id = _arg_2;
-            _x = _arg_3;
-            _y = _arg_4;
-            _width = _arg_5;
-            _height = _arg_6;
+            _type = type;
+            _id = id;
+            _x = x;
+            _y = y;
+            _width = width;
+            _height = height;
         }
 
         public function get type():String

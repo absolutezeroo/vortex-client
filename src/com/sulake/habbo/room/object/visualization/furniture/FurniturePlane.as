@@ -39,19 +39,19 @@
         private var _width:Number = 0;
         private var _height:Number = 0;
 
-        public function FurniturePlane(_arg_1:IVector3d, _arg_2:IVector3d, _arg_3:IVector3d)
+        public function FurniturePlane(_locationVector:IVector3d, _leftSideVector:IVector3d, _rightSideVector:IVector3d)
         {
             _origin = new Vector3d();
             _location = new Vector3d();
-            _location.assign(_arg_1);
+            _location.assign(_locationVector);
             _leftSide = new Vector3d();
-            _leftSide.assign(_arg_2);
+            _leftSide.assign(_leftSideVector);
             _rightSide = new Vector3d();
-            _rightSide.assign(_arg_3);
+            _rightSide.assign(_rightSideVector);
             _leftSideOriginal = new Vector3d();
-            _leftSideOriginal.assign(_arg_2);
+            _leftSideOriginal.assign(_leftSideVector);
             _rightSideOriginal = new Vector3d();
-            _rightSideOriginal.assign(_arg_3);
+            _rightSideOriginal.assign(_rightSideVector);
             _normal = Vector3d.crossProduct(_leftSide, _rightSide);
 
             if (_normal.length > 0)

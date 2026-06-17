@@ -6,9 +6,9 @@
     public class FurnitureChangeStateWhenStepOnLogic extends FurnitureLogic 
     {
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_model:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_model);
             eventDispatcher.addEventListener("ROAME_MOVE_TO", onOwnAvatarMove);
         }
 
@@ -18,37 +18,37 @@
             super.tearDown();
         }
 
-        private function onOwnAvatarMove(_arg_1:RoomToObjectOwnAvatarMoveEvent):void
+        private function onOwnAvatarMove(_moveEvent:RoomToObjectOwnAvatarMoveEvent):void
         {
-            var _local_6:int;
-            var _local_5:int;
-            var _local_7:IVector3d;
-            var _local_3:int;
-            var _local_4:int;
+            var _sizeX:int;
+            var _sizeY:int;
+            var _direction:IVector3d;
+            var _swap:int;
+            var _directionIndex:int;
 
             if (object == null)
             {
                 return;
             };
 
-            var _local_2:IVector3d = object.getLocation();
+            var _location:IVector3d = object.getLocation();
 
-            if (_arg_1.targetLoc)
+            if (_moveEvent.targetLoc)
             {
-                _local_6 = object.getModel().getNumber("furniture_size_x");
-                _local_5 = object.getModel().getNumber("furniture_size_y");
-                _local_7 = object.getDirection();
-                _local_3 = 0;
-                _local_4 = int((((_local_7.x + 45) % 360) / 90));
+                _sizeX = object.getModel().getNumber("furniture_size_x");
+                _sizeY = object.getModel().getNumber("furniture_size_y");
+                _direction = object.getDirection();
+                _swap = 0;
+                _directionIndex = int((((_direction.x + 45) % 360) / 90));
 
-                if (((_local_4 == 1) || (_local_4 == 3)))
+                if (((_directionIndex == 1) || (_directionIndex == 3)))
                 {
-                    _local_3 = _local_6;
-                    _local_6 = _local_5;
-                    _local_5 = _local_3;
+                    _swap = _sizeX;
+                    _sizeX = _sizeY;
+                    _sizeY = _swap;
                 };
 
-                if ((((_arg_1.targetLoc.x >= _local_2.x) && (_arg_1.targetLoc.x < (_local_2.x + _local_6))) && ((_arg_1.targetLoc.y >= _local_2.y) && (_arg_1.targetLoc.y < (_local_2.y + _local_5)))))
+                if ((((_moveEvent.targetLoc.x >= _location.x) && (_moveEvent.targetLoc.x < (_location.x + _sizeX))) && ((_moveEvent.targetLoc.y >= _location.y) && (_moveEvent.targetLoc.y < (_location.y + _sizeY)))))
                 {
                     object.setState(1, 0);
                 }

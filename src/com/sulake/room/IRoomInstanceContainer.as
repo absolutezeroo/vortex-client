@@ -3,7 +3,7 @@
 
     public /*dynamic*/interface IRoomInstanceContainer {
 
-        function createRoomObject(_arg_1:String, _arg_2:int, _arg_3:String, _arg_4:int):IRoomObject;
+        function createRoomObject(_roomId:String, _objectId:int, _objectType:String, _category:int):IRoomObject;
         function createRoomObjectManager():IRoomObjectManager;
 
     }

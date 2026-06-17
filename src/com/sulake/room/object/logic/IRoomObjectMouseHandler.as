@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.logic
+package com.sulake.room.object.logic
 {
     import com.sulake.room.events.RoomSpriteMouseEvent;
     import com.sulake.room.utils.IRoomGeometry;
@@ -6,7 +6,8 @@
     public /*dynamic*/ interface IRoomObjectMouseHandler 
     {
 
-        function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void;
+        function mouseEvent(_event:RoomSpriteMouseEvent, _geometry:IRoomGeometry):void;
 
     }
 }
+

@@ -10,12 +10,12 @@
         private var _data:IStuffData = null;
         private var _extra:Number = NaN;
 
-        public function RoomObjectDataUpdateMessage(_arg_1:int, _arg_2:IStuffData, _arg_3:Number=NaN)
+        public function RoomObjectDataUpdateMessage(state:int, data:IStuffData, extra:Number=NaN)
         {
             super(null, null);
-            _state = _arg_1;
-            _data = _arg_2;
-            _extra = _arg_3;
+            _state = state;
+            _data = data;
+            _extra = extra;
         }
 
         public function get state():int

@@ -7,8 +7,8 @@
     {
 
         function get id():int;
-        function update(_arg_1:IRoomObjectSprite, _arg_2:Number):void;
-        function animate(_arg_1:IRoomObjectSprite):Boolean;
+        function update(sprite:IRoomObjectSprite, scale:Number):void;
+        function animate(sprite:IRoomObjectSprite):Boolean;
 
     }
 }

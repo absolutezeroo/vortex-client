@@ -1,7 +1,7 @@
-﻿package com.sulake.habbo.room.object.visualization.data
+package com.sulake.habbo.room.object.visualization.data
 {
     import com.sulake.core.utils.Map;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
 
     public class AnimationSizeData extends SizeData
     {
@@ -69,7 +69,7 @@
             {
                 _local_10 = _local_9[_local_6];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_10, _local_7))
+                if (!XmlUtil.checkRequiredAttributes(_local_10, _local_7))
                 {
                     return (false);
                 };

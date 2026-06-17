@@ -1,10 +1,10 @@
-﻿package com.sulake.habbo.room.object.logic.furniture
+package com.sulake.habbo.room.object.logic.furniture
 {
     import com.sulake.habbo.room.object.logic.MovingObjectLogic;
     import com.sulake.room.messages.RoomObjectUpdateMessage;
     import com.sulake.room.utils.Vector3d;
     import com.sulake.room.object.IRoomObjectController;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.room.object.IRoomObjectModelController;
     import com.sulake.habbo.room.events.RoomObjectRoomAdEvent;
     import com.sulake.room.events.RoomObjectEvent;
@@ -41,21 +41,21 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["RORAE_ROOM_AD_TOOLTIP_SHOW", "RORAE_ROOM_AD_TOOLTIP_HIDE", "RORAE_ROOM_AD_FURNI_DOUBLE_CLICK", "ROSCE_STATE_CHANGE", "ROE_MOUSE_CLICK", "RORAE_ROOM_AD_FURNI_CLICK", "ROE_MOUSE_DOWN"];
+            var eventTypes:Array = ["RORAE_ROOM_AD_TOOLTIP_SHOW", "RORAE_ROOM_AD_TOOLTIP_HIDE", "RORAE_ROOM_AD_FURNI_DOUBLE_CLICK", "ROSCE_STATE_CHANGE", "ROE_MOUSE_CLICK", "RORAE_ROOM_AD_FURNI_CLICK", "ROE_MOUSE_DOWN"];
 
             if (widget != null)
             {
-                _local_1.push("ROWRE_OPEN_WIDGET");
-                _local_1.push("ROWRE_CLOSE_WIDGET");
+                eventTypes.push("ROWRE_OPEN_WIDGET");
+                eventTypes.push("ROWRE_CLOSE_WIDGET");
             };
 
             if (contextMenu != null)
             {
-                _local_1.push("ROWRE_OPEN_FURNI_CONTEXT_MENU");
-                _local_1.push("ROWRE_CLOSE_FURNI_CONTEXT_MENU");
+                eventTypes.push("ROWRE_OPEN_FURNI_CONTEXT_MENU");
+                eventTypes.push("ROWRE_CLOSE_FURNI_CONTEXT_MENU");
             };
 
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
         override public function dispose():void
@@ -65,23 +65,23 @@
             _directions = null;
         }
 
-        override public function set object(_arg_1:IRoomObjectController):void
+        override public function set object(roomObjectController:IRoomObjectController):void
         {
-            super.object = _arg_1;
+            super.object = roomObjectController;
 
-            if (((!(_arg_1 == null)) && (_arg_1.getLocation().length > 0)))
+            if (((!(roomObjectController == null)) && (roomObjectController.getLocation().length > 0)))
             {
                 _directionInitialized = true;
             };
         }
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(furnitureData:XML):void
         {
-            var _local_6:int;
-            var _local_11:XML;
-            var _local_7:int;
+            var directionIndex:int;
+            var directionXml:XML;
+            var directionId:int;
 
-            if (_arg_1 == null)
+            if (furnitureData == null)
             {
                 return;
             };
@@ -91,41 +91,41 @@
             _sizeZ = 0;
             _directions = [];
 
-            var _local_10:XMLList = _arg_1.model.dimensions;
+            var dimensions:XMLList = furnitureData.model.dimensions;
 
-            if (_local_10.length() == 0)
+            if (dimensions.length() == 0)
             {
                 return;
             };
 
-            var _local_2:XMLList = _local_10.@x;
+            var dimensionAttribute:XMLList = dimensions.@x;
 
-            if (_local_2.length() == 1)
+            if (dimensionAttribute.length() == 1)
             {
-                _sizeX = Number(_local_2);
+                _sizeX = Number(dimensionAttribute);
             };
 
-            _local_2 = _local_10.@y;
+            dimensionAttribute = dimensions.@y;
 
-            if (_local_2.length() == 1)
+            if (dimensionAttribute.length() == 1)
             {
-                _sizeY = Number(_local_2);
+                _sizeY = Number(dimensionAttribute);
             };
 
-            _local_2 = _local_10.@z;
+            dimensionAttribute = dimensions.@z;
 
-            if (_local_2.length() == 1)
+            if (dimensionAttribute.length() == 1)
             {
-                _sizeZ = Number(_local_2);
+                _sizeZ = Number(dimensionAttribute);
             };
 
             _centerX = (_sizeX / 2);
             _centerY = (_sizeY / 2);
-            _local_2 = _local_10.@centerZ;
+            dimensionAttribute = dimensions.@centerZ;
 
-            if (_local_2.length() == 1)
+            if (dimensionAttribute.length() == 1)
             {
-                _centerZ = Number(_local_2);
+                _centerZ = Number(dimensionAttribute);
             }
 
             else
@@ -133,21 +133,21 @@
                 _centerZ = (_sizeZ / 2);
             };
 
-            var _local_4:XMLList = _arg_1.model.directions.direction;
-            var _local_5:Array = ["id"];
-            _local_6 = 0;
+            var directionList:XMLList = furnitureData.model.directions.direction;
+            var requiredAttributes:Array = ["id"];
+            directionIndex = 0;
 
-            while (_local_6 < _local_4.length())
+            while (directionIndex < directionList.length())
             {
-                _local_11 = _local_4[_local_6];
+                directionXml = directionList[directionIndex];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_11, _local_5))
+                if (XmlUtil.checkRequiredAttributes(directionXml, requiredAttributes))
                 {
-                    _local_7 = parseInt(_local_11.@id);
-                    _directions.push(_local_7);
+                    directionId = parseInt(directionXml.@id);
+                    _directions.push(directionId);
                 };
 
-                _local_6++;
+                directionIndex++;
             };
 
             _directions.sort(16);
@@ -157,15 +157,15 @@
                 return;
             };
 
-            var _local_9:XMLList = _arg_1.customvars.variable;
-            var _local_8:Array = [];
+            var customVarList:XMLList = furnitureData.customvars.variable;
+            var customVarNames:Array = [];
 
-            for each (var _local_3:XML in _local_9)
+            for each (var customVarXml:XML in customVarList)
             {
-                _local_8.push(_local_3.@name.toString());
+                customVarNames.push(customVarXml.@name.toString());
             };
 
-            object.getModelController().setStringArray("furniture_custom_variables", _local_8, true);
+            object.getModelController().setStringArray("furniture_custom_variables", customVarNames, true);
             object.getModelController().setNumber("furniture_size_x", _sizeX, true);
             object.getModelController().setNumber("furniture_size_y", _sizeY, true);
 
@@ -181,12 +181,12 @@
             object.getModelController().setNumber("furniture_alpha_multiplier", 1);
         }
 
-        protected function getAdClickUrl(_arg_1:IRoomObjectModelController):String
+        protected function getAdClickUrl(modelController:IRoomObjectModelController):String
         {
-            return (_arg_1.getString("furniture_ad_url"));
+            return (modelController.getString("furniture_ad_url"));
         }
 
-        protected function handleAdClick(_arg_1:int, _arg_2:String, _arg_3:String):void
+        protected function handleAdClick(objectId:int, objectType:String, adUrl:String):void
         {
             if (eventDispatcher != null)
             {
@@ -194,11 +194,11 @@
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(spriteMouseEvent:RoomSpriteMouseEvent, roomGeometry:IRoomGeometry):void
         {
-            var _local_5:RoomObjectEvent;
+            var mouseEvent:RoomObjectEvent;
 
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((spriteMouseEvent == null) || (roomGeometry == null)))
             {
                 return;
             };
@@ -208,26 +208,26 @@
                 return;
             };
 
-            var _local_4:IRoomObjectModelController = (object.getModel() as IRoomObjectModelController);
+            var modelController:IRoomObjectModelController = (object.getModel() as IRoomObjectModelController);
 
-            if (_local_4 == null)
+            if (modelController == null)
             {
                 return;
             };
 
-            var _local_3:String = getAdClickUrl(_local_4);
-            switch (_arg_1.type)
+            var adClickUrl:String = getAdClickUrl(modelController);
+            switch (spriteMouseEvent.type)
             {
                 case "mouseMove":
 
                     if (eventDispatcher != null)
                     {
-                        _local_5 = new RoomObjectMouseEvent("ROE_MOUSE_MOVE", object, _arg_1.eventId, _arg_1.altKey, _arg_1.ctrlKey, _arg_1.shiftKey, _arg_1.buttonDown);
-                        (_local_5 as RoomObjectMouseEvent).localX = _arg_1.localX;
-                        (_local_5 as RoomObjectMouseEvent).localY = _arg_1.localY;
-                        (_local_5 as RoomObjectMouseEvent).spriteOffsetX = _arg_1.spriteOffsetX;
-                        (_local_5 as RoomObjectMouseEvent).spriteOffsetY = _arg_1.spriteOffsetY;
-                        eventDispatcher.dispatchEvent(_local_5);
+                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_MOVE", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                        (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
+                        (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
+                        (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
+                        (mouseEvent as RoomObjectMouseEvent).spriteOffsetY = spriteMouseEvent.spriteOffsetY;
+                        eventDispatcher.dispatchEvent(mouseEvent);
                     };
 
                     return;
@@ -235,19 +235,19 @@
 
                     if (!_mouseOver)
                     {
-                        if ((((!(eventDispatcher == null)) && (!(_local_3 == null))) && (_local_3.indexOf("http") == 0)))
+                        if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.indexOf("http") == 0)))
                         {
                             eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_SHOW", object));
                         };
 
                         if (eventDispatcher != null)
                         {
-                            _local_5 = new RoomObjectMouseEvent("ROE_MOUSE_ENTER", object, _arg_1.eventId, _arg_1.altKey, _arg_1.ctrlKey, _arg_1.shiftKey, _arg_1.buttonDown);
-                            (_local_5 as RoomObjectMouseEvent).localX = _arg_1.localX;
-                            (_local_5 as RoomObjectMouseEvent).localY = _arg_1.localY;
-                            (_local_5 as RoomObjectMouseEvent).spriteOffsetX = _arg_1.spriteOffsetX;
-                            (_local_5 as RoomObjectMouseEvent).spriteOffsetY = _arg_1.spriteOffsetY;
-                            eventDispatcher.dispatchEvent(_local_5);
+                            mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_ENTER", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                            (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
+                            (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
+                            (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
+                            (mouseEvent as RoomObjectMouseEvent).spriteOffsetY = spriteMouseEvent.spriteOffsetY;
+                            eventDispatcher.dispatchEvent(mouseEvent);
                         };
 
                         _mouseOver = true;
@@ -258,19 +258,19 @@
 
                     if (_mouseOver)
                     {
-                        if ((((!(eventDispatcher == null)) && (!(_local_3 == null))) && (_local_3.indexOf("http") == 0)))
+                        if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.indexOf("http") == 0)))
                         {
                             eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_HIDE", object));
                         };
 
                         if (eventDispatcher != null)
                         {
-                            _local_5 = new RoomObjectMouseEvent("ROE_MOUSE_LEAVE", object, _arg_1.eventId, _arg_1.altKey, _arg_1.ctrlKey, _arg_1.shiftKey, _arg_1.buttonDown);
-                            (_local_5 as RoomObjectMouseEvent).localX = _arg_1.localX;
-                            (_local_5 as RoomObjectMouseEvent).localY = _arg_1.localY;
-                            (_local_5 as RoomObjectMouseEvent).spriteOffsetX = _arg_1.spriteOffsetX;
-                            (_local_5 as RoomObjectMouseEvent).spriteOffsetY = _arg_1.spriteOffsetY;
-                            eventDispatcher.dispatchEvent(_local_5);
+                            mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_LEAVE", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                            (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
+                            (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
+                            (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
+                            (mouseEvent as RoomObjectMouseEvent).spriteOffsetY = spriteMouseEvent.spriteOffsetY;
+                            eventDispatcher.dispatchEvent(mouseEvent);
                         };
 
                         _mouseOver = false;
@@ -284,22 +284,22 @@
 
                     if (eventDispatcher != null)
                     {
-                        _local_5 = new RoomObjectMouseEvent("ROE_MOUSE_CLICK", object, _arg_1.eventId, _arg_1.altKey, _arg_1.ctrlKey, _arg_1.shiftKey, _arg_1.buttonDown);
-                        (_local_5 as RoomObjectMouseEvent).localX = _arg_1.localX;
-                        (_local_5 as RoomObjectMouseEvent).localY = _arg_1.localY;
-                        (_local_5 as RoomObjectMouseEvent).spriteOffsetX = _arg_1.spriteOffsetX;
-                        (_local_5 as RoomObjectMouseEvent).spriteOffsetY = _arg_1.spriteOffsetY;
-                        eventDispatcher.dispatchEvent(_local_5);
+                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_CLICK", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                        (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
+                        (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
+                        (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
+                        (mouseEvent as RoomObjectMouseEvent).spriteOffsetY = spriteMouseEvent.spriteOffsetY;
+                        eventDispatcher.dispatchEvent(mouseEvent);
                     };
 
-                    if ((((!(eventDispatcher == null)) && (!(_local_3 == null))) && (_local_3.indexOf("http") == 0)))
+                    if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.indexOf("http") == 0)))
                     {
                         eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_HIDE", object));
                     };
 
-                    if (((!(eventDispatcher == null)) && (!(_local_3 == null))))
+                    if (((!(eventDispatcher == null)) && (!(adClickUrl == null))))
                     {
-                        handleAdClick(object.getId(), object.getType(), _local_3);
+                        handleAdClick(object.getId(), object.getType(), adClickUrl);
                     };
 
                     if ((((!(eventDispatcher == null)) && (!(object == null))) && (!(contextMenu == null))))
@@ -312,8 +312,8 @@
 
                     if (eventDispatcher != null)
                     {
-                        _local_5 = new RoomObjectMouseEvent("ROE_MOUSE_DOWN", object, _arg_1.eventId, _arg_1.altKey, _arg_1.ctrlKey, _arg_1.shiftKey, _arg_1.buttonDown);
-                        eventDispatcher.dispatchEvent(_local_5);
+                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_DOWN", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                        eventDispatcher.dispatchEvent(mouseEvent);
                     };
 
                     return;
@@ -324,20 +324,20 @@
 
         override public function useObject():void
         {
-            var _local_2:IRoomObjectModelController;
-            var _local_1:String;
+            var modelController:IRoomObjectModelController;
+            var adClickUrl:String;
 
             if (object != null)
             {
-                _local_2 = (object.getModel() as IRoomObjectModelController);
+                modelController = (object.getModel() as IRoomObjectModelController);
 
-                if (_local_2 != null)
+                if (modelController != null)
                 {
-                    _local_1 = getAdClickUrl(_local_2);
+                    adClickUrl = getAdClickUrl(modelController);
 
-                    if ((((!(eventDispatcher == null)) && (!(_local_1 == null))) && (_local_1.length > 0)))
+                    if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.length > 0)))
                     {
-                        eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_FURNI_DOUBLE_CLICK", object, null, _local_1));
+                        eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_FURNI_DOUBLE_CLICK", object, null, adClickUrl));
                     };
                 };
 
@@ -353,44 +353,44 @@
             };
         }
 
-        private function handleDataUpdateMessage(_arg_1:RoomObjectDataUpdateMessage):void
+        private function handleDataUpdateMessage(dataUpdateMessage:RoomObjectDataUpdateMessage):void
         {
-            var _local_2:IRoomObjectModelController = object.getModelController();
-            object.setState(_arg_1.state, 0);
+            var modelController:IRoomObjectModelController = object.getModelController();
+            object.setState(dataUpdateMessage.state, 0);
 
-            if (_local_2 != null)
+            if (modelController != null)
             {
-                if (_arg_1.data != null)
+                if (dataUpdateMessage.data != null)
                 {
-                    _arg_1.data.writeRoomObjectModel(_local_2);
+                    dataUpdateMessage.data.writeRoomObjectModel(modelController);
                 };
 
-                if (!isNaN(_arg_1.extra))
+                if (!isNaN(dataUpdateMessage.extra))
                 {
-                    _local_2.setString("furniture_extras", String(_arg_1.extra));
+                    modelController.setString("furniture_extras", String(dataUpdateMessage.extra));
                 };
 
-                _local_2.setNumber("furniture_state_update_time", lastUpdateTime);
+                modelController.setNumber("furniture_state_update_time", lastUpdateTime);
             };
         }
 
-        private function handleHeightUpdateMessage(_arg_1:RoomObjectHeightUpdateMessage):void
+        private function handleHeightUpdateMessage(heightUpdateMessage:RoomObjectHeightUpdateMessage):void
         {
-            var _local_2:IRoomObjectModelController = object.getModelController();
+            var modelController:IRoomObjectModelController = object.getModelController();
 
-            if (_local_2 != null)
+            if (modelController != null)
             {
-                _local_2.setNumber("furniture_size_z", _arg_1.height);
+                modelController.setNumber("furniture_size_z", heightUpdateMessage.height);
             };
         }
 
-        private function handleItemDataUpdateMessage(_arg_1:RoomObjectItemDataUpdateMessage):void
+        private function handleItemDataUpdateMessage(itemDataUpdateMessage:RoomObjectItemDataUpdateMessage):void
         {
-            var _local_2:IRoomObjectModelController = object.getModelController();
+            var modelController:IRoomObjectModelController = object.getModelController();
 
-            if (_local_2 != null)
+            if (modelController != null)
             {
-                _local_2.setString("furniture_itemdata", _arg_1.itemData);
+                modelController.setString("furniture_itemdata", itemDataUpdateMessage.itemData);
             };
         }
 

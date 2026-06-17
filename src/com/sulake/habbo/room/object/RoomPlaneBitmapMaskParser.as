@@ -1,8 +1,8 @@
-﻿package com.sulake.habbo.room.object
+package com.sulake.habbo.room.object
 {
     import com.sulake.core.utils.Map;
     import com.sulake.room.utils.Vector3d;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.room.utils.IVector3d;
 
     public class RoomPlaneBitmapMaskParser 
@@ -30,62 +30,62 @@
             };
         }
 
-        public function initialize(_arg_1:XML):Boolean
+        public function initialize(xml:XML):Boolean
         {
-            var _local_3:int;
-            var _local_14:XML;
-            var _local_12:String;
-            var _local_5:String;
-            var _local_10:Vector3d;
-            var _local_13:String;
-            var _local_6:XMLList;
-            var _local_11:XML;
-            var _local_2:RoomPlaneBitmapMaskData;
+            var index:int;
+            var maskNode:XML;
+            var maskId:String;
+            var maskType:String;
+            var location:Vector3d;
+            var maskCategory:String;
+            var locationList:XMLList;
+            var locationNode:XML;
+            var mask:RoomPlaneBitmapMaskData;
 
-            if (_arg_1 == null)
+            if (xml == null)
             {
                 return (false);
             };
 
             _masks.reset();
 
-            var _local_7:Array = ["id", "type", "category"];
-            var _local_8:Array = ["x", "y", "z"];
-            var _local_9:XMLList;
-            var _local_4:XMLList = _arg_1.planeMask;
-            _local_3 = 0;
+            var requiredMaskAttributes:Array = ["id", "type", "category"];
+            var requiredLocationAttributes:Array = ["x", "y", "z"];
+            var unusedLocationList:XMLList;
+            var maskNodes:XMLList = xml.planeMask;
+            index = 0;
 
-            while (_local_3 < _local_4.length())
+            while (index < maskNodes.length())
             {
-                _local_14 = _local_4[_local_3];
+                maskNode = maskNodes[index];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_14, _local_7))
+                if (!XmlUtil.checkRequiredAttributes(maskNode, requiredMaskAttributes))
                 {
                     return (false);
                 };
 
-                _local_12 = _local_14.@id;
-                _local_5 = _local_14.@type;
-                _local_10 = null;
-                _local_13 = _local_14.@category;
-                _local_6 = _local_14.location;
+                maskId = maskNode.@id;
+                maskType = maskNode.@type;
+                location = null;
+                maskCategory = maskNode.@category;
+                locationList = maskNode.location;
 
-                if (_local_6.length() != 1)
+                if (locationList.length() != 1)
                 {
                     return (false);
                 };
 
-                _local_11 = _local_6[0];
+                locationNode = locationList[0];
 
-                if (!_SafeStr_93.checkRequiredAttributes(_local_11, _local_8))
+                if (!XmlUtil.checkRequiredAttributes(locationNode, requiredLocationAttributes))
                 {
                     return (false);
                 };
 
-                _local_10 = new Vector3d(Number(_local_11.@x), Number(_local_11.@y), Number(_local_11.@z));
-                _local_2 = new RoomPlaneBitmapMaskData(_local_5, _local_10, _local_13);
-                _masks.add(_local_12, _local_2);
-                _local_3++;
+                location = new Vector3d(Number(locationNode.@x), Number(locationNode.@y), Number(locationNode.@z));
+                mask = new RoomPlaneBitmapMaskData(maskType, location, maskCategory);
+                _masks.add(maskId, mask);
+                index++;
             };
 
             return (true);
@@ -93,39 +93,39 @@
 
         public function reset():void
         {
-            var _local_1:int;
-            var _local_2:RoomPlaneBitmapMaskData;
-            _local_1 = 0;
+            var index:int;
+            var mask:RoomPlaneBitmapMaskData;
+            index = 0;
 
-            while (_local_1 < _masks.length)
+            while (index < _masks.length)
             {
-                _local_2 = (_masks.getWithIndex(_local_1) as RoomPlaneBitmapMaskData);
+                mask = (_masks.getWithIndex(index) as RoomPlaneBitmapMaskData);
 
-                if (_local_2 != null)
+                if (mask != null)
                 {
-                    _local_2.dispose();
+                    mask.dispose();
                 };
 
-                _local_1++;
+                index++;
             };
 
             _masks.reset();
         }
 
-        public function addMask(_arg_1:String, _arg_2:String, _arg_3:IVector3d, _arg_4:String):void
+        public function addMask(id:String, type:String, loc:IVector3d, category:String):void
         {
-            var _local_5:RoomPlaneBitmapMaskData = new RoomPlaneBitmapMaskData(_arg_2, _arg_3, _arg_4);
-            _masks.remove(_arg_1);
-            _masks.add(_arg_1, _local_5);
+            var mask:RoomPlaneBitmapMaskData = new RoomPlaneBitmapMaskData(type, loc, category);
+            _masks.remove(id);
+            _masks.add(id, mask);
         }
 
-        public function removeMask(_arg_1:String):Boolean
+        public function removeMask(id:String):Boolean
         {
-            var _local_2:RoomPlaneBitmapMaskData = (_masks.remove(_arg_1) as RoomPlaneBitmapMaskData);
+            var mask:RoomPlaneBitmapMaskData = (_masks.remove(id) as RoomPlaneBitmapMaskData);
 
-            if (_local_2 != null)
+            if (mask != null)
             {
-                _local_2.dispose();
+                mask.dispose();
                 return (true);
             };
 
@@ -134,81 +134,81 @@
 
         public function getXML():XML
         {
-            var _local_4:int;
-            var _local_5:String;
-            var _local_6:String;
-            var _local_3:XML;
-            var _local_1:IVector3d;
-            var _local_2:XML = <planeMasks/>
-			
+            var index:int;
+            var maskType:String;
+            var maskCategory:String;
+            var maskXml:XML;
+            var location:IVector3d;
+            var rootXml:XML = <planeMasks/>
+
             ;
-            _local_4 = 0;
+            index = 0;
 
-            while (_local_4 < maskCount)
+            while (index < maskCount)
             {
-                _local_5 = getMaskType(_local_4);
-                _local_6 = getMaskCategory(_local_4);
-                _local_3 = new XML((((((("<planeMask id=" + (('"' + _local_4) + '"')) + " type=") + (('"' + _local_5) + '"')) + " category=") + (('"' + _local_6) + '"')) + "/>\r\n\t\t\t\t"));
-                _local_1 = getMaskLocation(_local_4);
+                maskType = getMaskType(index);
+                maskCategory = getMaskCategory(index);
+                maskXml = new XML((((((("<planeMask id=" + (('"' + index) + '"')) + " type=") + (('"' + maskType) + '"')) + " category=") + (('"' + maskCategory) + '"')) + "/>\r\n\t\t\t\t"));
+                location = getMaskLocation(index);
 
-                if (_local_1 != null)
+                if (location != null)
                 {
-                    _local_3.appendChild(new XML((((((("<location x=" + (('"' + _local_1.x) + '"')) + " y=") + (('"' + _local_1.y) + '"')) + " z=") + (('"' + _local_1.z) + '"')) + "/> ")));
-                    _local_2.appendChild(_local_3);
+                    maskXml.appendChild(new XML((((((("<location x=" + (('"' + location.x) + '"')) + " y=") + (('"' + location.y) + '"')) + " z=") + (('"' + location.z) + '"')) + "/> ")));
+                    rootXml.appendChild(maskXml);
                 };
 
-                _local_4++;
+                index++;
             };
 
-            return (_local_2);
+            return (rootXml);
         }
 
-        public function getMaskLocation(_arg_1:int):IVector3d
+        public function getMaskLocation(index:int):IVector3d
         {
-            if (((_arg_1 < 0) || (_arg_1 >= maskCount)))
+            if (((index < 0) || (index >= maskCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneBitmapMaskData = (_masks.getWithIndex(_arg_1) as RoomPlaneBitmapMaskData);
+            var mask:RoomPlaneBitmapMaskData = (_masks.getWithIndex(index) as RoomPlaneBitmapMaskData);
 
-            if (_local_2 != null)
+            if (mask != null)
             {
-                return (_local_2.loc);
+                return (mask.loc);
             };
 
             return (null);
         }
 
-        public function getMaskType(_arg_1:int):String
+        public function getMaskType(index:int):String
         {
-            if (((_arg_1 < 0) || (_arg_1 >= maskCount)))
+            if (((index < 0) || (index >= maskCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneBitmapMaskData = (_masks.getWithIndex(_arg_1) as RoomPlaneBitmapMaskData);
+            var mask:RoomPlaneBitmapMaskData = (_masks.getWithIndex(index) as RoomPlaneBitmapMaskData);
 
-            if (_local_2 != null)
+            if (mask != null)
             {
-                return (_local_2.type);
+                return (mask.type);
             };
 
             return (null);
         }
 
-        public function getMaskCategory(_arg_1:int):String
+        public function getMaskCategory(index:int):String
         {
-            if (((_arg_1 < 0) || (_arg_1 >= maskCount)))
+            if (((index < 0) || (index >= maskCount)))
             {
                 return (null);
             };
 
-            var _local_2:RoomPlaneBitmapMaskData = (_masks.getWithIndex(_arg_1) as RoomPlaneBitmapMaskData);
+            var mask:RoomPlaneBitmapMaskData = (_masks.getWithIndex(index) as RoomPlaneBitmapMaskData);
 
-            if (_local_2 != null)
+            if (mask != null)
             {
-                return (_local_2.category);
+                return (mask.category);
             };
 
             return (null);
@@ -216,4 +216,4 @@
 
     }
 }
-
+

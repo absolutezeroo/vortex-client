@@ -10,13 +10,13 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROWRE_PLACEHOLDER"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var eventTypes:Array = ["ROWRE_PLACEHOLDER"];
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(mouseEvent:RoomSpriteMouseEvent, geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((mouseEvent == null) || (geometry == null)))
             {
                 return;
             };
@@ -26,25 +26,25 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (mouseEvent.type)
             {
                 case "doubleClick":
                     useObject();
                     return;
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(mouseEvent, geometry);
                     return;
             };
         }
 
         override public function useObject():void
         {
-            var _local_1:RoomObjectEvent;
+            var widgetRequestEvent:RoomObjectEvent;
 
             if (((!(eventDispatcher == null)) && (!(object == null))))
             {
-                _local_1 = new RoomObjectWidgetRequestEvent("ROWRE_PLACEHOLDER", object);
-                eventDispatcher.dispatchEvent(_local_1);
+                widgetRequestEvent = new RoomObjectWidgetRequestEvent("ROWRE_PLACEHOLDER", object);
+                eventDispatcher.dispatchEvent(widgetRequestEvent);
             };
         }
 

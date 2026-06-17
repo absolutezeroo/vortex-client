@@ -11,13 +11,13 @@
         private var _visible:Boolean;
         private var _toggleVisibility:Boolean;
 
-        public function RoomObjectTileCursorUpdateMessage(_arg_1:Vector3d, _arg_2:Number, _arg_3:Boolean, _arg_4:String, _arg_5:Boolean=false)
+        public function RoomObjectTileCursorUpdateMessage(location:Vector3d, height:Number, visible:Boolean, sourceEventId:String, toggleVisibility:Boolean=false)
         {
-            super(_arg_1, null);
-            _height = _arg_2;
-            _visible = _arg_3;
-            _sourceEventId = _arg_4;
-            _toggleVisibility = _arg_5;
+            super(location, null);
+            _height = height;
+            _visible = visible;
+            _sourceEventId = sourceEventId;
+            _toggleVisibility = toggleVisibility;
         }
 
         public function get height():Number

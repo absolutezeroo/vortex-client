@@ -53,66 +53,66 @@
         private var _widths:Vector.<int>;
         private var _heights:Vector.<int>;
 
-        public function NineSplitSprite(_arg_1:BitmapData, _arg_2:Vector.<int>, _arg_3:Vector.<int>)
+        public function NineSplitSprite(sourceBitmapData:BitmapData, sourceWidths:Vector.<int>, sourceHeights:Vector.<int>)
         {
-            _bitmapData = _arg_1;
-            _widths = _arg_2;
-            _heights = _arg_3;
+            _bitmapData = sourceBitmapData;
+            _widths = sourceWidths;
+            _heights = sourceHeights;
         }
 
-        public function render(_arg_1:int, _arg_2:int):Bitmap
+        public function render(targetWidth:int, targetHeight:int):Bitmap
         {
-            var _local_3:Bitmap = new Bitmap(new BitmapData(_arg_1, _arg_2, true, 0xFFFFFF));
-            renderOn(_local_3, new Rectangle(0, 0, _arg_1, _arg_2));
-            return (_local_3);
+            var targetBitmap:Bitmap = new Bitmap(new BitmapData(targetWidth, targetHeight, true, 0xFFFFFF));
+            renderOn(targetBitmap, new Rectangle(0, 0, targetWidth, targetHeight));
+            return (targetBitmap);
         }
 
-        public function renderOn(_arg_1:Bitmap, _arg_2:Rectangle):void
+        public function renderOn(targetBitmap:Bitmap, targetArea:Rectangle):void
         {
-            var _local_10:int;
-            var _local_11:int;
-            var _local_7:Rectangle;
-            var _local_5:Rectangle;
-            var _local_17:int = _arg_2.x;
-            var _local_18:int = _arg_2.y;
-            var _local_16:int = _arg_2.width;
-            var _local_9:int = _arg_2.height;
-            var _local_6:Vector.<int> = new <int>[0, _widths[0], (_widths[0] + _widths[1])];
-            var _local_8:Vector.<int> = new <int>[0, _heights[0], (_heights[0] + _heights[1])];
-            var _local_3:Vector.<int> = _widths;
-            var _local_14:Vector.<int> = _heights;
-            var _local_13:Vector.<int> = new <int>[_local_17, (_local_17 + _widths[0]), ((_local_17 + _local_16) - _widths[2])];
-            var _local_15:Vector.<int> = new <int>[_local_18, (_local_18 + _heights[0]), ((_local_18 + _local_9) - _heights[2])];
-            var _local_12:Vector.<int> = new <int>[_widths[0], ((_local_16 - _widths[0]) - _widths[2]), _widths[2]];
-            var _local_4:Vector.<int> = new <int>[_heights[0], ((_local_9 - _heights[0]) - _heights[2]), _heights[2]];
-            _local_10 = 0;
+            var column:int;
+            var row:int;
+            var sourceRect:Rectangle;
+            var destinationRect:Rectangle;
+            var originX:int = targetArea.x;
+            var originY:int = targetArea.y;
+            var targetWidth:int = targetArea.width;
+            var targetHeight:int = targetArea.height;
+            var sourceXStarts:Vector.<int> = new <int>[0, _widths[0], (_widths[0] + _widths[1])];
+            var sourceYStarts:Vector.<int> = new <int>[0, _heights[0], (_heights[0] + _heights[1])];
+            var sourceWidths:Vector.<int> = _widths;
+            var sourceHeights:Vector.<int> = _heights;
+            var targetXStarts:Vector.<int> = new <int>[originX, (originX + _widths[0]), ((originX + targetWidth) - _widths[2])];
+            var targetYStarts:Vector.<int> = new <int>[originY, (originY + _heights[0]), ((originY + targetHeight) - _heights[2])];
+            var targetWidths:Vector.<int> = new <int>[_widths[0], ((targetWidth - _widths[0]) - _widths[2]), _widths[2]];
+            var targetHeights:Vector.<int> = new <int>[_heights[0], ((targetHeight - _heights[0]) - _heights[2]), _heights[2]];
+            column = 0;
 
-            while (_local_10 < 3)
+            while (column < 3)
             {
-                _local_11 = 0;
+                row = 0;
 
-                while (_local_11 < 3)
+                while (row < 3)
                 {
-                    if (!((((_local_12[_local_10] < 1) || (_local_4[_local_11] < 1)) || (_local_3[_local_10] < 1)) || (_local_14[_local_11] < 1)))
+                    if (!((((targetWidths[column] < 1) || (targetHeights[row] < 1)) || (sourceWidths[column] < 1)) || (sourceHeights[row] < 1)))
                     {
-                        _local_7 = new Rectangle(_local_6[_local_10], _local_8[_local_11], _local_3[_local_10], _local_14[_local_11]);
+                        sourceRect = new Rectangle(sourceXStarts[column], sourceYStarts[row], sourceWidths[column], sourceHeights[row]);
 
-                        if (((!(_local_10 == 1)) && (!(_local_11 == 1))))
+                        if (((!(column == 1)) && (!(row == 1))))
                         {
-                            _arg_1.bitmapData.copyPixels(_bitmapData, _local_7, new Point(_local_13[_local_10], _local_15[_local_11]));
+                            targetBitmap.bitmapData.copyPixels(_bitmapData, sourceRect, new Point(targetXStarts[column], targetYStarts[row]));
                         }
 
                         else
                         {
-                            _local_5 = new Rectangle(_local_13[_local_10], _local_15[_local_11], _local_12[_local_10], _local_4[_local_11]);
-                            _arg_1.bitmapData.draw(_bitmapData, _SafeStr_25.rectangleTransformMatrix(_local_7, _local_5), null, null, _local_5, false);
+                            destinationRect = new Rectangle(targetXStarts[column], targetYStarts[row], targetWidths[column], targetHeights[row]);
+                            targetBitmap.bitmapData.draw(_bitmapData, _SafeStr_25.rectangleTransformMatrix(sourceRect, destinationRect), null, null, destinationRect, false);
                         };
                     };
 
-                    _local_11++;
+                    row++;
                 };
 
-                _local_10++;
+                column++;
             };
         }
 

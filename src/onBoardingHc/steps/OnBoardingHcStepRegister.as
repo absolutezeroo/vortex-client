@@ -26,9 +26,9 @@ package onBoardingHc.steps
         private var _confirmField:InputField;
         private var _initialized:Boolean;
 
-        public function OnBoardingHcStepRegister(_arg_1:IOnBoardingHcContext)
+        public function OnBoardingHcStepRegister(context:IOnBoardingHcContext)
         {
-            _context = _arg_1;
+            _context = context;
             addEventListener("addedToStage", onAddedToStage);
         }
 
@@ -41,14 +41,14 @@ package onBoardingHc.steps
                 _cancelButton.dispose();
         }
 
-        private function onAddedToStage(_arg_1:Event):void
+        private function onAddedToStage(stageEvent:Event):void
         {
-            var _local_2:Timer = new Timer(20, 1);
-            _local_2.addEventListener("timerComplete", onAlignElements);
-            _local_2.start();
+            var alignTimer:Timer = new Timer(20, 1);
+            alignTimer.addEventListener("timerComplete", onAlignElements);
+            alignTimer.start();
         }
 
-        private function onAlignElements(_arg_1:TimerEvent):void
+        private function onAlignElements(alignEvent:TimerEvent):void
         {
             LoaderUI.lineUpVertically(_emailField, -20, _passwordField);
             LoaderUI.lineUpVertically(_passwordField, -20, _confirmField);
@@ -106,31 +106,31 @@ package onBoardingHc.steps
             addChild(_registerButton);
         }
 
-        private function onRegister(_arg_1:Button):void
+        private function onRegister(registerButton:Button):void
         {
-            var _local_2:String = _emailField.text;
-            var _local_3:String = _passwordField.text;
-            var _local_4:String = _confirmField.text;
+            var emailAddress:String = _emailField.text;
+            var passwordValue:String = _passwordField.text;
+            var confirmPasswordValue:String = _confirmField.text;
 
-            if (!_local_2 || _local_2.length == 0)
+            if (!emailAddress || emailAddress.length == 0)
             {
                 return;
             };
 
-            if (!_local_3 || _local_3.length < 6)
+            if (!passwordValue || passwordValue.length < 6)
             {
                 return;
             };
 
-            if (_local_3 != _local_4)
+            if (passwordValue != confirmPasswordValue)
             {
                 return;
             };
 
-            _context.registerAccount(_local_2, _local_3);
+            _context.registerAccount(emailAddress, passwordValue);
         }
 
-        private function onCancel(_arg_1:Button):void
+        private function onCancel(cancelButton:Button):void
         {
             _context.showScreen(OnBoardingHc.SCREEN_LOGIN);
         }

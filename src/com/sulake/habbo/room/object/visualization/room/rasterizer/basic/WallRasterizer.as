@@ -1,6 +1,6 @@
-﻿package com.sulake.habbo.room.object.visualization.room.rasterizer.basic
+package com.sulake.habbo.room.object.visualization.room.rasterizer.basic
 {
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import flash.display.BitmapData;
     import com.sulake.habbo.room.object.visualization.room.utils.PlaneBitmapData;
     import com.sulake.room.utils.IVector3d;
@@ -43,7 +43,7 @@
             {
                 _local_2 = _local_3[_local_5];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_2, ["id"]))
+                if (XmlUtil.checkRequiredAttributes(_local_2, ["id"]))
                 {
                     _local_6 = _local_2.@id;
                     _local_4 = _local_2.visualization;

@@ -15,10 +15,10 @@
         private var _amount:int = -1;
         private var _alpha:int;
 
-        public function ExperienceData(_arg_1:BitmapData, _arg_2:Boolean=true)
+        public function ExperienceData(image:BitmapData, ownCanvas:Boolean=true)
         {
-            _image = _arg_1;
-            _ownCanvas = _arg_2;
+            _image = image;
+            _ownCanvas = ownCanvas;
 
             if (_image != null)
             {
@@ -52,9 +52,9 @@
             return (_alpha);
         }
 
-        public function set alpha(_arg_1:int):void
+        public function set alpha(value:int):void
         {
-            _alpha = _arg_1;
+            _alpha = value;
         }
 
         public function get image():BitmapData
@@ -62,32 +62,32 @@
             return (_image);
         }
 
-        public function setExperience(_arg_1:int):void
+        public function setExperience(amount:int):void
         {
-            if (((_amount == _arg_1) || (_image == null)))
+            if (((_amount == amount) || (_image == null)))
             {
                 return;
             };
 
             _image.copyPixels(_copy, _copy.rect, new Point(0, 0));
 
-            var _local_2:TextFormat = new TextFormat();
-            _local_2.font = "Volter";
-            _local_2.color = 0xFFFFFF;
-            _local_2.size = 9;
+            var textFormat:TextFormat = new TextFormat();
+            textFormat.font = "Volter";
+            textFormat.color = 0xFFFFFF;
+            textFormat.size = 9;
 
-            var _local_3:TextField = new TextField();
-            _local_3.embedFonts = true;
-            _local_3.width = 30;
-            _local_3.height = 12;
-            _local_3.background = true;
-            _local_3.backgroundColor = 0xE6C0B500;
-            _local_3.defaultTextFormat = _local_2;
-            _local_3.text = ("+" + _arg_1);
+            var textField:TextField = new TextField();
+            textField.embedFonts = true;
+            textField.width = 30;
+            textField.height = 12;
+            textField.background = true;
+            textField.backgroundColor = 0xE6C0B500;
+            textField.defaultTextFormat = textFormat;
+            textField.text = ("+" + amount);
 
-            var _local_4:Matrix = new Matrix();
-            _local_4.translate(15, 19);
-            _image.draw(_local_3, _local_4);
+            var matrix:Matrix = new Matrix();
+            matrix.translate(15, 19);
+            _image.draw(textField, matrix);
         }
 
     }

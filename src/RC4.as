@@ -5,29 +5,29 @@ package
    public class RC4
    {
 
-      private const _SafeStr_4585:uint = 0x0100;
+      private const _stateSize:uint = 0x0100;
 
       private var i:int = 0;
-      private var _SafeStr_4583:int = 0;
-      private var _SafeStr_4584:ByteArray;
+      private var _j:int = 0;
+      private var _state:ByteArray;
 
-      public function RC4(_arg_1:ByteArray = null)
+      public function RC4(seed:ByteArray = null)
       {
          super();
-         this._SafeStr_4584 = new ByteArray();
+         this._state = new ByteArray();
 
-         if(_arg_1)
+         if(seed)
          {
-            this._SafeStr_249(_arg_1);
+            this.initialize(seed);
          }
       }
 
-      public function _SafeStr_4586() : uint
+      public function getStateSize() : uint
       {
-         return this._SafeStr_4585;
+         return this._stateSize;
       }
 
-      public function _SafeStr_249(_arg_1:ByteArray) : void
+      public function initialize(key:ByteArray) : void
       {
          var _local_2:int = 0;
          var _local_3:int = 0;
@@ -36,7 +36,7 @@ package
 
          while(_local_2 < 0x0100)
          {
-            this._SafeStr_4584[_local_2] = _local_2;
+            this._state[_local_2] = _local_2;
             _local_2++;
          }
 
@@ -45,69 +45,69 @@ package
 
          while(_local_2 < 0x0100)
          {
-            _local_3 = _local_3 + this._SafeStr_4584[_local_2] + _arg_1[_local_2 % _arg_1.length] & 0xFF;
-            _local_4 = this._SafeStr_4584[_local_2];
-            this._SafeStr_4584[_local_2] = this._SafeStr_4584[_local_3];
-            this._SafeStr_4584[_local_3] = _local_4;
+            _local_3 = _local_3 + this._state[_local_2] + key[_local_2 % key.length] & 0xFF;
+            _local_4 = this._state[_local_2];
+            this._state[_local_2] = this._state[_local_3];
+            this._state[_local_3] = _local_4;
             _local_2++;
          }
 
          this.i = 0;
-         this._SafeStr_4583 = 0;
+         this._j = 0;
       }
 
-      private function _SafeStr_4587() : uint
+      private function getKeyStreamByte() : uint
       {
          var _local_1:int = 0;
          this.i = this.i + 1 & 0xFF;
-         this._SafeStr_4583 = this._SafeStr_4583 + this._SafeStr_4584[this.i] & 0xFF;
-         _local_1 = this._SafeStr_4584[this.i];
-         this._SafeStr_4584[this.i] = this._SafeStr_4584[this._SafeStr_4583];
-         this._SafeStr_4584[this._SafeStr_4583] = _local_1;
-         return this._SafeStr_4584[_local_1 + this._SafeStr_4584[this.i] & 0xFF];
+         this._j = this._j + this._state[this.i] & 0xFF;
+         _local_1 = this._state[this.i];
+         this._state[this.i] = this._state[this._j];
+         this._state[this._j] = _local_1;
+         return this._state[_local_1 + this._state[this.i] & 0xFF];
       }
 
-      public function _SafeStr_4588() : uint
+      public function getVersion() : uint
       {
          return 1;
       }
 
-      public function _SafeStr_250(_arg_1:ByteArray) : void
+      public function transform(data:ByteArray) : void
       {
          var _local_2:uint = 0;
 
-         while(_local_2 < _arg_1.length)
+         while(_local_2 < data.length)
          {
             var _local_3:int = _local_2++;
-            _arg_1[_local_3] ^= this._SafeStr_4587();
+            data[_local_3] ^= this.getKeyStreamByte();
          }
       }
 
-      public function _SafeStr_248(_arg_1:ByteArray) : void
+      public function decrypt(data:ByteArray) : void
       {
-         this._SafeStr_250(_arg_1);
+         this.transform(data);
       }
 
-      public function _SafeStr_4589() : void
+      public function dispose() : void
       {
          var _local_1:uint = 0;
 
-         if(this._SafeStr_4584 != null)
+         if(this._state != null)
          {
             _local_1 = 0;
 
-            while(_local_1 < this._SafeStr_4584.length)
+            while(_local_1 < this._state.length)
             {
-               this._SafeStr_4584[_local_1] = Math.random() * 0x0100;
+               this._state[_local_1] = Math.random() * 0x0100;
                _local_1++;
             }
 
-            this._SafeStr_4584.length = 0;
-            this._SafeStr_4584 = null;
+            this._state.length = 0;
+            this._state = null;
          }
 
          this.i = 0;
-         this._SafeStr_4583 = 0;
+         this._j = 0;
       }
    }
 }

@@ -22,14 +22,14 @@
         private var _spriteOffsetX:int;
         private var _spriteOffsetY:int;
 
-        public function RoomObjectMouseEvent(_arg_1:String, _arg_2:IRoomObject, _arg_3:String, _arg_4:Boolean=false, _arg_5:Boolean=false, _arg_6:Boolean=false, _arg_7:Boolean=false, _arg_8:Boolean=false, _arg_9:Boolean=false)
+        public function RoomObjectMouseEvent(type:String, roomObject:IRoomObject, eventId:String, altKey:Boolean=false, ctrlKey:Boolean=false, shiftKey:Boolean=false, buttonDown:Boolean=false, bubbles:Boolean=false, cancelable:Boolean=false)
         {
-            super(_arg_1, _arg_2, _arg_8, _arg_9);
-            _eventId = _arg_3;
-            _altKey = _arg_4;
-            _ctrlKey = _arg_5;
-            _shiftKey = _arg_6;
-            _buttonDown = _arg_7;
+            super(type, roomObject, bubbles, cancelable);
+            _eventId = eventId;
+            _altKey = altKey;
+            _ctrlKey = ctrlKey;
+            _shiftKey = shiftKey;
+            _buttonDown = buttonDown;
         }
 
         public function get eventId():String
@@ -77,24 +77,24 @@
             return (_spriteOffsetY);
         }
 
-        public function set localX(_arg_1:int):void
+        public function set localX(localX:int):void
         {
-            _localX = _arg_1;
+            _localX = localX;
         }
 
-        public function set localY(_arg_1:int):void
+        public function set localY(localY:int):void
         {
-            _localY = _arg_1;
+            _localY = localY;
         }
 
-        public function set spriteOffsetX(_arg_1:int):void
+        public function set spriteOffsetX(spriteOffsetX:int):void
         {
-            _spriteOffsetX = _arg_1;
+            _spriteOffsetX = spriteOffsetX;
         }
 
-        public function set spriteOffsetY(_arg_1:int):void
+        public function set spriteOffsetY(spriteOffsetY:int):void
         {
-            _spriteOffsetY = _arg_1;
+            _spriteOffsetY = spriteOffsetY;
         }
 
     }

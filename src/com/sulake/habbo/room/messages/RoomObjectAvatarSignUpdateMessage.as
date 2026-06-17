@@ -5,9 +5,9 @@
 
         private var _signType:int;
 
-        public function RoomObjectAvatarSignUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarSignUpdateMessage(signType:int)
         {
-            _signType = _arg_1;
+            _signType = signType;
         }
 
         public function get signType():int

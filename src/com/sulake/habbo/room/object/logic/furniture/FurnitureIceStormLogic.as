@@ -11,62 +11,62 @@
         private var _nextStateExtra:Number = 0;
         private var _nextStateTimeStamp:int = 0;
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_arg_updateMessage:RoomObjectUpdateMessage):void
         {
-            if (_arg_1 == null)
+            if (_arg_updateMessage == null)
             {
                 return;
             };
 
-            var _local_2:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (_arg_updateMessage as RoomObjectDataUpdateMessage);
 
-            if (_local_2 != null)
+            if (dataUpdateMessage != null)
             {
-                handleDataUpdateMessage(_local_2);
+                handleDataUpdateMessage(dataUpdateMessage);
                 return;
             };
 
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(_arg_updateMessage);
         }
 
-        private function handleDataUpdateMessage(_arg_1:RoomObjectDataUpdateMessage):void
+        private function handleDataUpdateMessage(_arg_dataUpdateMessage:RoomObjectDataUpdateMessage):void
         {
-            var _local_3:LegacyStuffData;
-            var _local_4:int = int((_arg_1.state / 1000));
-            var _local_2:int = (_arg_1.state % 1000);
+            var legacyStuffData:LegacyStuffData;
+            var state:int = int((_arg_dataUpdateMessage.state / 1000));
+            var delay:int = (_arg_dataUpdateMessage.state % 1000);
 
-            if (_local_2 == 0)
+            if (delay == 0)
             {
                 _nextStateTimeStamp = 0;
-                _local_3 = new LegacyStuffData();
-                _local_3.setString(String(_local_4));
-                _arg_1 = new RoomObjectDataUpdateMessage(_local_4, _local_3, _arg_1.extra);
-                super.processUpdateMessage(_arg_1);
+                legacyStuffData = new LegacyStuffData();
+                legacyStuffData.setString(String(state));
+                _arg_dataUpdateMessage = new RoomObjectDataUpdateMessage(state, legacyStuffData, _arg_dataUpdateMessage.extra);
+                super.processUpdateMessage(_arg_dataUpdateMessage);
             }
 
             else
             {
-                _nextState = _local_4;
-                _nextStateExtra = _arg_1.extra;
-                _nextStateTimeStamp = (lastUpdateTime + _local_2);
+                _nextState = state;
+                _nextStateExtra = _arg_dataUpdateMessage.extra;
+                _nextStateTimeStamp = (lastUpdateTime + delay);
             };
         }
 
-        override public function update(_arg_1:int):void
+        override public function update(_arg_time:int):void
         {
-            var _local_2:LegacyStuffData;
-            var _local_3:RoomObjectDataUpdateMessage;
+            var legacyStuffData:LegacyStuffData;
+            var dataUpdateMessage:RoomObjectDataUpdateMessage;
 
-            if (((_nextStateTimeStamp > 0) && (_arg_1 >= _nextStateTimeStamp)))
+            if (((_nextStateTimeStamp > 0) && (_arg_time >= _nextStateTimeStamp)))
             {
                 _nextStateTimeStamp = 0;
-                _local_2 = new LegacyStuffData();
-                _local_2.setString(String(_nextState));
-                _local_3 = new RoomObjectDataUpdateMessage(_nextState, _local_2, _nextStateExtra);
-                super.processUpdateMessage(_local_3);
+                legacyStuffData = new LegacyStuffData();
+                legacyStuffData.setString(String(_nextState));
+                dataUpdateMessage = new RoomObjectDataUpdateMessage(_nextState, legacyStuffData, _nextStateExtra);
+                super.processUpdateMessage(dataUpdateMessage);
             };
 
-            super.update(_arg_1);
+            super.update(_arg_time);
         }
 
     }

@@ -22,59 +22,59 @@
 
         override public function getEventTypes():Array
         {
-            var _local_1:Array = ["ROGBE_LOAD_BADGE", "ROWRE_GUILD_FURNI_CONTEXT_MENU", "ROWRE_CLOSE_FURNI_CONTEXT_MENU"];
-            return (getAllEventTypes(super.getEventTypes(), _local_1));
+            var eventTypes:Array = ["ROGBE_LOAD_BADGE", "ROWRE_GUILD_FURNI_CONTEXT_MENU", "ROWRE_CLOSE_FURNI_CONTEXT_MENU"];
+            return (getAllEventTypes(super.getEventTypes(), eventTypes));
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(_arg_updateMessage:RoomObjectUpdateMessage):void
         {
-            var _local_3:StringArrayStuffData;
-            var _local_6:RoomObjectEvent;
-            super.processUpdateMessage(_arg_1);
+            var stringArrayStuffData:StringArrayStuffData;
+            var closeContextMenuEvent:RoomObjectEvent;
+            super.processUpdateMessage(_arg_updateMessage);
 
-            var _local_5:RoomObjectDataUpdateMessage = (_arg_1 as RoomObjectDataUpdateMessage);
+            var dataUpdateMessage:RoomObjectDataUpdateMessage = (_arg_updateMessage as RoomObjectDataUpdateMessage);
 
-            if (_local_5 != null)
+            if (dataUpdateMessage != null)
             {
-                _local_3 = (_local_5.data as StringArrayStuffData);
+                stringArrayStuffData = (dataUpdateMessage.data as StringArrayStuffData);
 
-                if (_local_3 != null)
+                if (stringArrayStuffData != null)
                 {
-                    updateGuildId(_local_3.getValue(1));
-                    updateGuildBadge(_local_3.getValue(2));
-                    updateGuildColors(_local_3.getValue(3), _local_3.getValue(4));
+                    updateGuildId(stringArrayStuffData.getValue(1));
+                    updateGuildBadge(stringArrayStuffData.getValue(2));
+                    updateGuildColors(stringArrayStuffData.getValue(3), stringArrayStuffData.getValue(4));
                 };
             };
 
-            var _local_4:RoomObjectGroupBadgeUpdateMessage = (_arg_1 as RoomObjectGroupBadgeUpdateMessage);
+            var groupBadgeUpdateMessage:RoomObjectGroupBadgeUpdateMessage = (_arg_updateMessage as RoomObjectGroupBadgeUpdateMessage);
 
-            if (_local_4 != null)
+            if (groupBadgeUpdateMessage != null)
             {
-                if (_local_4.assetName != "loading_icon")
+                if (groupBadgeUpdateMessage.assetName != "loading_icon")
                 {
-                    object.getModelController().setString("furniture_guild_customized_asset_name", _local_4.assetName);
+                    object.getModelController().setString("furniture_guild_customized_asset_name", groupBadgeUpdateMessage.assetName);
                     this.update(getTimer());
                 };
             };
 
-            var _local_2:RoomObjectSelectedMessage = (_arg_1 as RoomObjectSelectedMessage);
+            var selectedMessage:RoomObjectSelectedMessage = (_arg_updateMessage as RoomObjectSelectedMessage);
 
-            if (_local_2)
+            if (selectedMessage)
             {
                 if (((!(eventDispatcher == null)) && (!(object == null))))
                 {
-                    if (!_local_2.selected)
+                    if (!selectedMessage.selected)
                     {
-                        _local_6 = new RoomObjectWidgetRequestEvent("ROWRE_CLOSE_FURNI_CONTEXT_MENU", object);
-                        eventDispatcher.dispatchEvent(_local_6);
+                        closeContextMenuEvent = new RoomObjectWidgetRequestEvent("ROWRE_CLOSE_FURNI_CONTEXT_MENU", object);
+                        eventDispatcher.dispatchEvent(closeContextMenuEvent);
                     };
                 };
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_arg_mouseEvent:RoomSpriteMouseEvent, _arg_geometry:IRoomGeometry):void
         {
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((_arg_mouseEvent == null) || (_arg_geometry == null)))
             {
                 return;
             };
@@ -84,36 +84,36 @@
                 return;
             };
 
-            switch (_arg_1.type)
+            switch (_arg_mouseEvent.type)
             {
                 case "click":
                     openContextMenu();
                 default:
-                    super.mouseEvent(_arg_1, _arg_2);
+                    super.mouseEvent(_arg_mouseEvent, _arg_geometry);
                     return;
             };
         }
 
         protected function openContextMenu():void
         {
-            var _local_1:RoomObjectEvent = new RoomObjectWidgetRequestEvent("ROWRE_GUILD_FURNI_CONTEXT_MENU", object);
-            eventDispatcher.dispatchEvent(_local_1);
+            var contextMenuEvent:RoomObjectEvent = new RoomObjectWidgetRequestEvent("ROWRE_GUILD_FURNI_CONTEXT_MENU", object);
+            eventDispatcher.dispatchEvent(contextMenuEvent);
         }
 
-        private function updateGuildColors(_arg_1:String, _arg_2:String):void
+        private function updateGuildColors(_arg_color1:String, _arg_color2:String):void
         {
-            object.getModelController().setNumber("furniture_guild_customized_color_1", parseInt(_arg_1, 16));
-            object.getModelController().setNumber("furniture_guild_customized_color_2", parseInt(_arg_2, 16));
+            object.getModelController().setNumber("furniture_guild_customized_color_1", parseInt(_arg_color1, 16));
+            object.getModelController().setNumber("furniture_guild_customized_color_2", parseInt(_arg_color2, 16));
         }
 
-        private function updateGuildBadge(_arg_1:String):void
+        private function updateGuildBadge(_arg_badgeCode:String):void
         {
-            eventDispatcher.dispatchEvent(new RoomObjectBadgeAssetEvent("ROGBE_LOAD_BADGE", object, _arg_1, true));
+            eventDispatcher.dispatchEvent(new RoomObjectBadgeAssetEvent("ROGBE_LOAD_BADGE", object, _arg_badgeCode, true));
         }
 
-        protected function updateGuildId(_arg_1:String):void
+        protected function updateGuildId(_arg_guildId:String):void
         {
-            object.getModelController().setNumber("furniture_guild_customized_guild_id", parseInt(_arg_1));
+            object.getModelController().setNumber("furniture_guild_customized_guild_id", parseInt(_arg_guildId));
         }
 
     }

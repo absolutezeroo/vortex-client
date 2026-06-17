@@ -11,9 +11,9 @@
 
         protected var _localized:Boolean = false;
 
-        public static function set localizationManager(_arg_1:ICoreLocalizationManager):void
+        public static function set localizationManager(manager:ICoreLocalizationManager):void
         {
-            _localizationManager = _arg_1;
+            _localizationManager = manager;
         }
 
         public static function get localizationManager():ICoreLocalizationManager
@@ -23,39 +23,39 @@
 
         public function dispose():void
         {
-            var _local_1:String = "";
+            var labelOrKey:String = "";
 
             if ((this is Button))
             {
-                _local_1 = (this as Button).label;
+                labelOrKey = (this as Button).label;
             };
 
-            removeOldLocalization(_local_1);
+            removeOldLocalization(labelOrKey);
         }
 
-        public function set localization(_arg_1:String):void
+        public function set localization(localizationKey:String):void
         {
             if ((this is Button))
             {
-                (this as Button).localizedText = _arg_1;
+                (this as Button).localizedText = localizationKey;
             };
         }
 
-        protected function removeOldLocalization(_arg_1:String):void
+        protected function removeOldLocalization(localizationKey:String):void
         {
             if (_localized)
             {
-                localizationManager.removeListener(_arg_1.slice(2, _arg_1.indexOf("}")), this);
+                localizationManager.removeListener(localizationKey.slice(2, localizationKey.indexOf("}")), this);
                 _localized = false;
             };
         }
 
-        protected function checkLocalization(_arg_1:String):void
+        protected function checkLocalization(localizationKey:String):void
         {
-            if (((((localizationManager) && (_arg_1)) && (_arg_1.charAt(0) == "$")) && (_arg_1.charAt(1) == "{")))
+            if (((((localizationManager) && (localizationKey)) && (localizationKey.charAt(0) == "$")) && (localizationKey.charAt(1) == "{")))
             {
                 _localized = true;
-                localizationManager.registerListener(_arg_1.slice(2, _arg_1.indexOf("}")), this);
+                localizationManager.registerListener(localizationKey.slice(2, localizationKey.indexOf("}")), this);
             };
         }
 

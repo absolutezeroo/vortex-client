@@ -20,21 +20,21 @@
         private var _animFrame:int = -1;
         private var _posture:String = null;
 
-        public function SelectedRoomObjectData(_arg_1:int, _arg_2:int, _arg_3:String, _arg_4:IVector3d, _arg_5:IVector3d, _arg_6:int=0, _arg_7:String=null, _arg_8:IStuffData=null, _arg_9:int=-1, _arg_10:int=-1, _arg_11:String=null)
+        public function SelectedRoomObjectData(id:int, category:int, operation:String, loc:IVector3d, dir:IVector3d, typeId:int=0, instanceData:String=null, stuffData:IStuffData=null, state:int=-1, animFrame:int=-1, posture:String=null)
         {
-            _id = _arg_1;
-            _category = _arg_2;
-            _operation = _arg_3;
+            _id = id;
+            _category = category;
+            _operation = operation;
             _loc = new Vector3d();
-            _loc.assign(_arg_4);
+            _loc.assign(loc);
             _dir = new Vector3d();
-            _dir.assign(_arg_5);
-            _typeId = _arg_6;
-            _instanceData = _arg_7;
-            _stuffData = _arg_8;
-            _state = _arg_9;
-            _animFrame = _arg_10;
-            _posture = _arg_11;
+            _dir.assign(dir);
+            _typeId = typeId;
+            _instanceData = instanceData;
+            _stuffData = stuffData;
+            _state = state;
+            _animFrame = animFrame;
+            _posture = posture;
         }
 
         public function get id():int

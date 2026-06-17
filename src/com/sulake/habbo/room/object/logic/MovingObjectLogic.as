@@ -34,56 +34,56 @@
             _locDelta = null;
         }
 
-        override public function set object(_arg_1:IRoomObjectController):void
+        override public function set object(controller:IRoomObjectController):void
         {
-            super.object = _arg_1;
+            super.object = controller;
 
-            if (_arg_1 != null)
+            if (controller != null)
             {
-                _loc.assign(_arg_1.getLocation());
+                _loc.assign(controller.getLocation());
             };
         }
 
-        protected function set moveUpdateInterval(_arg_1:int):void
+        protected function set moveUpdateInterval(interval:int):void
         {
-            if (_arg_1 <= 0)
+            if (interval <= 0)
             {
-                _arg_1 = 1;
+                interval = 1;
             };
 
-            _updateInterval = _arg_1;
+            _updateInterval = interval;
         }
 
-        override public function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void
+        override public function processUpdateMessage(message:RoomObjectUpdateMessage):void
         {
-            var _local_3:IVector3d;
+            var targetLoc:IVector3d;
 
-            if (_arg_1 == null)
+            if (message == null)
             {
                 return;
             };
 
-            super.processUpdateMessage(_arg_1);
+            super.processUpdateMessage(message);
 
-            if (_arg_1.loc != null)
+            if (message.loc != null)
             {
-                _loc.assign(_arg_1.loc);
+                _loc.assign(message.loc);
             };
 
-            var _local_2:RoomObjectMoveUpdateMessage = (_arg_1 as RoomObjectMoveUpdateMessage);
+            var moveMessage:RoomObjectMoveUpdateMessage = (message as RoomObjectMoveUpdateMessage);
 
-            if (_local_2 == null)
+            if (moveMessage == null)
             {
                 return;
             };
 
             if (object != null)
             {
-                if (_arg_1.loc != null)
+                if (message.loc != null)
                 {
-                    _local_3 = _local_2.targetLoc;
+                    targetLoc = moveMessage.targetLoc;
                     _changeTime = _lastUpdateTime;
-                    if (_local_3 == null)
+                    if (targetLoc == null)
                     {
                         _locDelta.x = 0;
                         _locDelta.y = 0;
@@ -91,7 +91,7 @@
                     }
                     else
                     {
-                        _locDelta.assign(_local_3);
+                        _locDelta.assign(targetLoc);
                         _locDelta.sub(_loc);
                     };
                 };
@@ -103,20 +103,20 @@
             return (null);
         }
 
-        override public function update(_arg_1:int):void
+        override public function update(time:int):void
         {
-            var _local_3:int;
-            var _local_2:IVector3d = getLocationOffset();
-            var _local_4:IRoomObjectModelController = object.getModelController();
+            var elapsedTime:int;
+            var locationOffset:IVector3d = getLocationOffset();
+            var modelController:IRoomObjectModelController = object.getModelController();
 
-            if (_local_4 != null)
+            if (modelController != null)
             {
-                if (_local_2 != null)
+                if (locationOffset != null)
                 {
-                    if (_liftAmount != _local_2.z)
+                    if (_liftAmount != locationOffset.z)
                     {
-                        _liftAmount = _local_2.z;
-                        _local_4.setNumber("furniture_lift_amount", _liftAmount);
+                        _liftAmount = locationOffset.z;
+                        modelController.setNumber("furniture_lift_amount", _liftAmount);
                     };
                 }
 
@@ -125,29 +125,29 @@
                     if (_liftAmount != 0)
                     {
                         _liftAmount = 0;
-                        _local_4.setNumber("furniture_lift_amount", _liftAmount);
+                        modelController.setNumber("furniture_lift_amount", _liftAmount);
                     };
                 };
             };
 
-            if (((_locDelta.length > 0) || (!(_local_2 == null))))
+            if (((_locDelta.length > 0) || (!(locationOffset == null))))
             {
-                _local_3 = (_arg_1 - _changeTime);
+                elapsedTime = (time - _changeTime);
 
-                if (_local_3 == (_updateInterval >> 1))
+                if (elapsedTime == (_updateInterval >> 1))
                 {
-                    _local_3++;
+                    elapsedTime++;
                 };
 
-                if (_local_3 > _updateInterval)
+                if (elapsedTime > _updateInterval)
                 {
-                    _local_3 = _updateInterval;
+                    elapsedTime = _updateInterval;
                 };
 
                 if (_locDelta.length > 0)
                 {
                     helper_vector.assign(_locDelta);
-                    helper_vector.mul((_local_3 / _updateInterval));
+                    helper_vector.mul((elapsedTime / _updateInterval));
                     helper_vector.add(_loc);
                 }
 
@@ -156,9 +156,9 @@
                     helper_vector.assign(_loc);
                 };
 
-                if (_local_2 != null)
+                if (locationOffset != null)
                 {
-                    helper_vector.add(_local_2);
+                    helper_vector.add(locationOffset);
                 };
 
                 if (object != null)
@@ -166,7 +166,7 @@
                     object.setLocation(helper_vector);
                 };
 
-                if (_local_3 == _updateInterval)
+                if (elapsedTime == _updateInterval)
                 {
                     _locDelta.x = 0;
                     _locDelta.y = 0;
@@ -174,7 +174,7 @@
                 };
             };
 
-            _lastUpdateTime = _arg_1;
+            _lastUpdateTime = time;
         }
 
     }

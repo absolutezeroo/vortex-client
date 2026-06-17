@@ -25,14 +25,14 @@
             return (_loc);
         }
 
-        public function set loc(_arg_1:IVector3d):void
+        public function set loc(value:IVector3d):void
         {
             if (_loc == null)
             {
                 _loc = new Vector3d();
             };
 
-            _loc.assign(_arg_1);
+            _loc.assign(value);
         }
 
         public function get type():String

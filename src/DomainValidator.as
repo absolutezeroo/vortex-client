@@ -113,7 +113,7 @@ package
         {
             var data:ByteArray = new this._encryptedDomainsClass() as ByteArray;
             var cipher:RC4 = new RC4(new this._encryptionKeyClass() as ByteArray);
-            cipher._SafeStr_248(data);
+            cipher.decrypt(data);
             data.position = 0;
             return data.readUTFBytes(data.length);
         }

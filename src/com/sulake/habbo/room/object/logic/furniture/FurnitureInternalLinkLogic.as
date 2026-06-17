@@ -11,22 +11,22 @@
         private var _showStateOneOnceRendered:Boolean = false;
         private var _updateCount:int = 0;
 
-        override public function initialize(_arg_1:XML):void
+        override public function initialize(_arg_xml:XML):void
         {
-            super.initialize(_arg_1);
+            super.initialize(_arg_xml);
 
-            if (_arg_1 == null)
+            if (_arg_xml == null)
             {
                 return;
             };
 
-            var _local_2:XMLList = _arg_1.action;
+            var actionList:XMLList = _arg_xml.action;
 
-            if (_local_2.length() != 0)
+            if (actionList.length() != 0)
             {
-                object.getModelController().setString("furniture_internal_link", _local_2.@link);
+                object.getModelController().setString("furniture_internal_link", actionList.@link);
 
-                if (_local_2.@startState == "1")
+                if (actionList.@startState == "1")
                 {
                     _showStateOneOnceRendered = true;
                 };
@@ -46,9 +46,9 @@
             };
         }
 
-        override public function update(_arg_1:int):void
+        override public function update(_arg_time:int):void
         {
-            super.update(_arg_1);
+            super.update(_arg_time);
 
             if (!_showStateOneOnceRendered)
             {
@@ -63,34 +63,34 @@
             };
         }
 
-        public function setAnimationState(_arg_1:int):void
+        public function setAnimationState(_arg_state:int):void
         {
             if (object == null)
             {
                 return;
             };
 
-            var _local_2:IRoomObjectModelController = object.getModelController();
+            var modelController:IRoomObjectModelController = object.getModelController();
 
-            if (_local_2 != null)
+            if (modelController != null)
             {
-                _local_2.setNumber("furniture_automatic_state_index", _arg_1, false);
+                modelController.setNumber("furniture_automatic_state_index", _arg_state, false);
             };
         }
 
-        override public function mouseEvent(_arg_1:RoomSpriteMouseEvent, _arg_2:IRoomGeometry):void
+        override public function mouseEvent(_arg_mouseEvent:RoomSpriteMouseEvent, _arg_geometry:IRoomGeometry):void
         {
-            if (_arg_1 == null)
+            if (_arg_mouseEvent == null)
             {
                 return;
             };
 
-            if (((_arg_1.type == "doubleClick") && (_showStateOneOnceRendered)))
+            if (((_arg_mouseEvent.type == "doubleClick") && (_showStateOneOnceRendered)))
             {
                 setAnimationState(0);
             };
 
-            super.mouseEvent(_arg_1, _arg_2);
+            super.mouseEvent(_arg_mouseEvent, _arg_geometry);
         }
 
     }

@@ -19,25 +19,25 @@
         private var _isCached:Boolean = false;
         private var _hasAnimationLayers:Boolean = false;
 
-        public function PlaneVisualization(_arg_1:Number, _arg_2:int, _arg_3:IRoomGeometry)
+        public function PlaneVisualization(scale:Number, layerCount:int, geometry:IRoomGeometry)
         {
-            var _local_4:int;
+            var index:int;
             super();
 
-            if (_arg_2 < 0)
+            if (layerCount < 0)
             {
-                _arg_2 = 0;
+                layerCount = 0;
             };
 
-            _local_4 = 0;
+            index = 0;
 
-            while (_local_4 < _arg_2)
+            while (index < layerCount)
             {
                 _layers.push(null);
-                _local_4++;
+                index++;
             };
 
-            _geometry = _arg_3;
+            _geometry = geometry;
             _cachedBitmapNormal = new Vector3d();
         }
 
@@ -53,23 +53,23 @@
 
         public function dispose():void
         {
-            var _local_1:int;
-            var _local_2:IDisposable;
+            var index:int;
+            var disposable:IDisposable;
 
             if (_layers != null)
             {
-                _local_1 = 0;
+                index = 0;
 
-                while (_local_1 < _layers.length)
+                while (index < _layers.length)
                 {
-                    _local_2 = (_layers[_local_1] as IDisposable);
+                    disposable = (_layers[index] as IDisposable);
 
-                    if (_local_2 != null)
+                    if (disposable != null)
                     {
-                        _local_2.dispose();
+                        disposable.dispose();
                     };
 
-                    _local_1++;
+                    index++;
                 };
 
                 _layers = null;
@@ -90,9 +90,9 @@
 
         public function clearCache():void
         {
-            var _local_2:int;
-            var _local_3:PlaneVisualizationLayer;
-            var _local_1:PlaneVisualizationAnimationLayer;
+            var index:int;
+            var visualizationLayer:PlaneVisualizationLayer;
+            var animationLayer:PlaneVisualizationAnimationLayer;
 
             if (!_isCached)
             {
@@ -112,70 +112,70 @@
 
             if (_layers != null)
             {
-                _local_2 = 0;
+                index = 0;
 
-                while (_local_2 < _layers.length)
+                while (index < _layers.length)
                 {
-                    _local_3 = (_layers[_local_2] as PlaneVisualizationLayer);
-                    _local_1 = (_layers[_local_2] as PlaneVisualizationAnimationLayer);
+                    visualizationLayer = (_layers[index] as PlaneVisualizationLayer);
+                    animationLayer = (_layers[index] as PlaneVisualizationAnimationLayer);
 
-                    if (_local_3 != null)
+                    if (visualizationLayer != null)
                     {
-                        _local_3.clearCache();
+                        visualizationLayer.clearCache();
                     }
 
                     else
                     {
-                        if (_local_1 != null)
+                        if (animationLayer != null)
                         {
-                            _local_1.clearCache();
+                            animationLayer.clearCache();
                         };
                     };
 
-                    _local_2++;
+                    index++;
                 };
             };
 
             _isCached = false;
         }
 
-        public function setLayer(_arg_1:int, _arg_2:PlaneMaterial, _arg_3:uint, _arg_4:int, _arg_5:int=0):Boolean
+        public function setLayer(layerIndex:int, material:PlaneMaterial, color:uint, align:int, offset:int=0):Boolean
         {
-            if (((_arg_1 < 0) || (_arg_1 > _layers.length)))
+            if (((layerIndex < 0) || (layerIndex > _layers.length)))
             {
                 return (false);
             };
 
-            var _local_6:IDisposable = (_layers[_arg_1] as IDisposable);
+            var disposable:IDisposable = (_layers[layerIndex] as IDisposable);
 
-            if (_local_6 != null)
+            if (disposable != null)
             {
-                _local_6.dispose();
-                _local_6 = null;
+                disposable.dispose();
+                disposable = null;
             };
 
-            _local_6 = new PlaneVisualizationLayer(_arg_2, _arg_3, _arg_4, _arg_5);
-            _layers[_arg_1] = _local_6;
+            disposable = new PlaneVisualizationLayer(material, color, align, offset);
+            _layers[layerIndex] = disposable;
             return (true);
         }
 
-        public function setAnimationLayer(_arg_1:int, _arg_2:XML, _arg_3:IGraphicAssetCollection):Boolean
+        public function setAnimationLayer(layerIndex:int, xml:XML, assetCollection:IGraphicAssetCollection):Boolean
         {
-            if (((_arg_1 < 0) || (_arg_1 > _layers.length)))
+            if (((layerIndex < 0) || (layerIndex > _layers.length)))
             {
                 return (false);
             };
 
-            var _local_4:IDisposable = (_layers[_arg_1] as IDisposable);
+            var disposable:IDisposable = (_layers[layerIndex] as IDisposable);
 
-            if (_local_4 != null)
+            if (disposable != null)
             {
-                _local_4.dispose();
-                _local_4 = null;
+                disposable.dispose();
+                disposable = null;
             };
 
-            _local_4 = new PlaneVisualizationAnimationLayer(_arg_2, _arg_3);
-            _layers[_arg_1] = _local_4;
+            disposable = new PlaneVisualizationAnimationLayer(xml, assetCollection);
+            _layers[layerIndex] = disposable;
             _hasAnimationLayers = true;
             return (true);
         }
@@ -187,9 +187,9 @@
 
         public function render(canvas:BitmapData, width:int, height:int, normal:IVector3d, useTexture:Boolean, offsetX:int=0, offsetY:int=0, maxX:int=0, maxY:int=0, dimensionX:Number=0, dimensionY:Number=0, timeSinceStartMs:int=0):BitmapData
         {
-            var _local_14:int;
-            var _local_15:PlaneVisualizationLayer;
-            var _local_13:PlaneVisualizationAnimationLayer;
+            var index:int;
+            var visualizationLayer:PlaneVisualizationLayer;
+            var animationLayer:PlaneVisualizationAnimationLayer;
 
             if (width < 1)
             {
@@ -218,12 +218,12 @@
                             {
                                 canvas.copyPixels(_cachedBitmapData, _cachedBitmapData.rect, new Point(0, 0), null, null, false);
 
-                                var _local_17:BitmapData = canvas;
-                                return (_local_17);
+                                var resultCanvas:BitmapData = canvas;
+                                return (resultCanvas);
                             };
 
-                            var _local_18:BitmapData = _cachedBitmapData;
-                            return (_local_18);
+                            var resultBitmapData:BitmapData = _cachedBitmapData;
+                            return (resultBitmapData);
                         };
                     }
 
@@ -274,27 +274,27 @@
             };
 
             _cachedBitmapNormal.assign(normal);
-            _local_14 = 0;
+            index = 0;
 
-            while (_local_14 < _layers.length)
+            while (index < _layers.length)
             {
-                _local_15 = (_layers[_local_14] as PlaneVisualizationLayer);
-                _local_13 = (_layers[_local_14] as PlaneVisualizationAnimationLayer);
+                visualizationLayer = (_layers[index] as PlaneVisualizationLayer);
+                animationLayer = (_layers[index] as PlaneVisualizationAnimationLayer);
 
-                if (_local_15 != null)
+                if (visualizationLayer != null)
                 {
-                    _local_15.render(canvas, width, height, normal, useTexture, offsetX, offsetY);
+                    visualizationLayer.render(canvas, width, height, normal, useTexture, offsetX, offsetY);
                 }
 
                 else
                 {
-                    if (_local_13 != null)
+                    if (animationLayer != null)
                     {
-                        _local_13.render(canvas, width, height, normal, offsetX, offsetY, maxX, maxY, dimensionX, dimensionY, timeSinceStartMs);
+                        animationLayer.render(canvas, width, height, normal, offsetX, offsetY, maxX, maxY, dimensionX, dimensionY, timeSinceStartMs);
                     };
                 };
 
-                _local_14++;
+                index++;
             };
 
             if (((!(canvas == null)) && (!(canvas == _cachedBitmapData))))

@@ -12,73 +12,76 @@
         public static const STATE_RUNNING:int = 2;
         public static const STATE_OVER:int = 3;
 
-        private static var _SafeStr_448:int = 0;
-        private static var _SafeStr_4512:Boolean = false;
-        private static var _SafeStr_4513:Number;
-        private static var _SafeStr_4514:int = 0;
-        private static var _SafeStr_4515:int = 20000;
-        private static var _SafeStr_4516:int = 5000;
-        private static var _SafeStr_4524:Timer;
+        private static var _state:int = 0;
+        private static var _isVisible:Boolean = false;
+        private static var _delta:Number;
+        private static var _startTime:int = 0;
+        private static var _startDelay:int = 20000;
+        private static var _duration:int = 5000;
+        private static var _hideTimer:Timer;
 
-        public static function init(_arg_1:int, _arg_2:int):void
+        public static function init(startDelay:int, duration:int):void
         {
-            _SafeStr_4513 = 0;
-            _SafeStr_4515 = _arg_1;
-            _SafeStr_4516 = _arg_2;
-            _SafeStr_4514 = getTimer();
-            _SafeStr_448 = 1;
+            _delta = 0;
+            _startDelay = startDelay;
+            _duration = duration;
+            _startTime = getTimer();
+            _state = 1;
         }
 
         public static function turnVisualizationOn():void
         {
-            if (((_SafeStr_448 == 0) || (_SafeStr_448 == 3)))
+            if (((_state == 0) || (_state == 3)))
             {
                 return;
             };
 
-            if (((_SafeStr_4524 == null) || (!(_SafeStr_4524.running))))
+            if (((_hideTimer == null) || (!(_hideTimer.running))))
             {
-                _SafeStr_4524 = new Timer(_SafeStr_4516, 1);
-                _SafeStr_4524.addEventListener("timerComplete", turnVisualizationOff);
-                _SafeStr_4524.start();
+                _hideTimer = new Timer(_duration, 1);
+                _hideTimer.addEventListener("timerComplete", turnVisualizationOff);
+                _hideTimer.start();
             };
 
-            var _local_1:int = (getTimer() - _SafeStr_4514);
+            var elapsed:int = (getTimer() - _startTime);
 
-            if (_local_1 > (_SafeStr_4515 + _SafeStr_4516))
+            if (elapsed > (_startDelay + _duration))
             {
-                _SafeStr_448 = 3;
+                _state = 3;
                 return;
             };
 
-            _SafeStr_4512 = true;
+            _isVisible = true;
 
-            if (_local_1 < _SafeStr_4515)
+            if (elapsed < _startDelay)
             {
-                _SafeStr_448 = 1;
+                _state = 1;
                 return;
             };
 
-            _SafeStr_448 = 2;
-            _SafeStr_4513 = ((_local_1 - _SafeStr_4515) / _SafeStr_4516);
+            _state = 2;
+            _delta = ((elapsed - _startDelay) / _duration);
         }
 
-        public static function turnVisualizationOff(_arg_1:TimerEvent):void
+        public static function turnVisualizationOff(_event:TimerEvent):void
         {
-            _SafeStr_4512 = false;
-            _SafeStr_4524.stop();
-            _SafeStr_4524.removeEventListener("timerComplete", turnVisualizationOff);
-            _SafeStr_4524 = null;
+            _isVisible = false;
+            if (_hideTimer != null)
+            {
+                _hideTimer.stop();
+                _hideTimer.removeEventListener("timerComplete", turnVisualizationOff);
+                _hideTimer = null;
+            };
         }
 
         public static function isVisualizationOn():Boolean
         {
-            return ((_SafeStr_4512) && (isRunning()));
+            return ((_isVisible) && (isRunning()));
         }
 
         private static function isRunning():Boolean
         {
-            if (((_SafeStr_448 == 1) || (_SafeStr_448 == 2)))
+            if (((_state == 1) || (_state == 2)))
             {
                 return (true);
             };
@@ -88,4 +91,4 @@
 
     }
 }
-
+

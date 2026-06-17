@@ -1,8 +1,9 @@
-﻿package com.sulake.room.object
+package com.sulake.room.object
 {
     import com.sulake.room.utils.Vector3d;
     import com.sulake.room.object.visualization.IRoomObjectVisualization;
     import com.sulake.room.object.logic.IRoomObjectEventHandler;
+    import Logger;
     import com.sulake.room.utils.IVector3d;
     import com.sulake.room.object.logic.IRoomObjectMouseHandler;
     import com.sulake.room.utils.*;
@@ -10,117 +11,117 @@
     public class RoomObject implements IRoomObjectController 
     {
 
-        private static var _SafeStr_4460:int = 0;
+        private static var _nextRoomObjectInstanceId:int = 0;
 
-        private var _SafeStr_698:int;
-        private var _SafeStr_741:String = "";
-        private var _SafeStr_3181:Vector3d;
-        private var _SafeStr_1925:Vector3d;
-        private var _SafeStr_4465:Vector3d;
-        private var _SafeStr_4466:Vector3d;
-        private var _SafeStr_4464:Array;
-        private var _SafeStr_1275:RoomObjectModel;
+        private var _id:int;
+        private var _type:String = "";
+        private var _location:Vector3d;
+        private var _direction:Vector3d;
+        private var _cachedLocation:Vector3d;
+        private var _cachedDirection:Vector3d;
+        private var _states:Array;
+        private var _model:RoomObjectModel;
         private var _visualization:IRoomObjectVisualization;
-        private var _SafeStr_4467:IRoomObjectEventHandler;
-        private var _SafeStr_4463:int;
+        private var _eventHandler:IRoomObjectEventHandler;
+        private var _updateCounter:int;
         private var _avatarLibraryAssetName:String;
-        private var _SafeStr_4462:int = 0;
-        private var _SafeStr_573:Boolean = false;
+        private var _instanceId:int = 0;
+        private var _initialized:Boolean = false;
 
-        public function RoomObject(_arg_1:int, _arg_2:int, _arg_3:String)
+        public function RoomObject(id:int, stateCount:int, type:String)
         {
-            var _local_4:Number;
+            var stateIndex:Number;
             super();
-            _SafeStr_698 = _arg_1;
-            _SafeStr_3181 = new Vector3d();
-            _SafeStr_1925 = new Vector3d();
-            _SafeStr_4465 = new Vector3d();
-            _SafeStr_4466 = new Vector3d();
-            _SafeStr_4464 = new Array(_arg_2);
-            _local_4 = (_arg_2 - 1);
+            _id = id;
+            _location = new Vector3d();
+            _direction = new Vector3d();
+            _cachedLocation = new Vector3d();
+            _cachedDirection = new Vector3d();
+            _states = new Array(stateCount);
+            stateIndex = (stateCount - 1);
 
-            while (_local_4 >= 0)
+            while (stateIndex >= 0)
             {
-                _SafeStr_4464[_local_4] = 0;
-                _local_4--;
+                _states[stateIndex] = 0;
+                stateIndex--;
             };
 
-            _SafeStr_741 = _arg_3;
-            _SafeStr_1275 = new RoomObjectModel();
+            _type = type;
+            _model = new RoomObjectModel();
             _visualization = null;
-            _SafeStr_4467 = null;
-            _SafeStr_4463 = 0;
-            _SafeStr_4462 = _SafeStr_4460++;
+            _eventHandler = null;
+            _updateCounter = 0;
+            _instanceId = _nextRoomObjectInstanceId++;
         }
 
         public function dispose():void
         {
-            _SafeStr_3181 = null;
-            _SafeStr_1925 = null;
-            _SafeStr_4464 = null;
+            _location = null;
+            _direction = null;
+            _states = null;
             _avatarLibraryAssetName = null;
             setVisualization(null);
             setEventHandler(null);
 
-            if (_SafeStr_1275 != null)
+            if (_model != null)
             {
-                _SafeStr_1275.dispose();
-                _SafeStr_1275 = null;
+                _model.dispose();
+                _model = null;
             };
         }
 
-        public function setInitialized(_arg_1:Boolean):void
+        public function setInitialized(_initialized:Boolean):void
         {
-            _SafeStr_573 = _arg_1;
+            this._initialized = _initialized;
         }
 
         public function isInitialized():Boolean
         {
-            return (_SafeStr_573);
+            return (_initialized);
         }
 
         public function getId():int
         {
-            return (_SafeStr_698);
+            return (_id);
         }
 
         public function getInstanceId():int
         {
-            return (_SafeStr_4462);
+            return (_instanceId);
         }
 
         public function getType():String
         {
-            return (_SafeStr_741);
+            return (_type);
         }
 
         public function getLocation():IVector3d
         {
-            _SafeStr_4465.assign(_SafeStr_3181);
-            return (_SafeStr_4465);
+            _cachedLocation.assign(_location);
+            return (_cachedLocation);
         }
 
         public function getDirection():IVector3d
         {
-            _SafeStr_4466.assign(_SafeStr_1925);
-            return (_SafeStr_4466);
+            _cachedDirection.assign(_direction);
+            return (_cachedDirection);
         }
 
         public function getModel():IRoomObjectModel
         {
-            return (_SafeStr_1275);
+            return (_model);
         }
 
         public function getModelController():IRoomObjectModelController
         {
-            return (_SafeStr_1275);
+            return (_model);
         }
 
-        public function getState(_arg_1:int):int
+        public function getState(_stateIndex:int):int
         {
-            if (((_arg_1 >= 0) && (_arg_1 < _SafeStr_4464.length)))
+            if (((_stateIndex >= 0) && (_stateIndex < _states.length)))
             {
-                return (_SafeStr_4464[_arg_1]);
+                return (_states[_stateIndex]);
             };
 
             return (-1);
@@ -131,46 +132,46 @@
             return (_visualization);
         }
 
-        public function setLocation(_arg_1:IVector3d):void
+        public function setLocation(_newLocation:IVector3d):void
         {
-            if (_arg_1 == null)
+            if (_newLocation == null)
             {
                 return;
             };
 
-            if ((((!(_SafeStr_3181.x == _arg_1.x)) || (!(_SafeStr_3181.y == _arg_1.y))) || (!(_SafeStr_3181.z == _arg_1.z))))
+            if ((((!(_location.x == _newLocation.x)) || (!(_location.y == _newLocation.y))) || (!(_location.z == _newLocation.z))))
             {
-                _SafeStr_3181.x = _arg_1.x;
-                _SafeStr_3181.y = _arg_1.y;
-                _SafeStr_3181.z = _arg_1.z;
-                _SafeStr_4463++;
+                this._location.x = _newLocation.x;
+                this._location.y = _newLocation.y;
+                this._location.z = _newLocation.z;
+                _updateCounter++;
             };
         }
 
-        public function setDirection(_arg_1:IVector3d):void
+        public function setDirection(_newDirection:IVector3d):void
         {
-            if (_arg_1 == null)
+            if (_newDirection == null)
             {
                 return;
             };
 
-            if ((((!(_SafeStr_1925.x == _arg_1.x)) || (!(_SafeStr_1925.y == _arg_1.y))) || (!(_SafeStr_1925.z == _arg_1.z))))
+            if ((((!(_direction.x == _newDirection.x)) || (!(_direction.y == _newDirection.y))) || (!(_direction.z == _newDirection.z))))
             {
-                _SafeStr_1925.x = (((_arg_1.x % 360) + 360) % 360);
-                _SafeStr_1925.y = (((_arg_1.y % 360) + 360) % 360);
-                _SafeStr_1925.z = (((_arg_1.z % 360) + 360) % 360);
-                _SafeStr_4463++;
+                this._direction.x = (((_newDirection.x % 360) + 360) % 360);
+                this._direction.y = (((_newDirection.y % 360) + 360) % 360);
+                this._direction.z = (((_newDirection.z % 360) + 360) % 360);
+                _updateCounter++;
             };
         }
 
-        public function setState(_arg_1:int, _arg_2:int):Boolean
+        public function setState(_state:int, _stateIndex:int):Boolean
         {
-            if (((_arg_2 >= 0) && (_arg_2 < _SafeStr_4464.length)))
+            if (((_stateIndex >= 0) && (_stateIndex < _states.length)))
             {
-                if (_SafeStr_4464[_arg_2] != _arg_1)
+                if (_states[_stateIndex] != _state)
                 {
-                    _SafeStr_4464[_arg_2] = _arg_1;
-                    _SafeStr_4463++;
+                    _states[_stateIndex] = _state;
+                    _updateCounter++;
                 };
 
                 return (true);
@@ -179,55 +180,62 @@
             return (false);
         }
 
-        public function setVisualization(_arg_1:IRoomObjectVisualization):void
+        public function setVisualization(_visualization:IRoomObjectVisualization):void
         {
-            if (_arg_1 != _visualization)
+            if (_visualization != this._visualization)
             {
                 if (_visualization != null)
                 {
-                    _visualization.dispose();
+                    try
+                    {
+                        this._visualization.dispose();
+                    }
+                    catch (error:Error)
+                    {
+                        Logger.log(("RoomObject#setVisualization failed to dispose previous visualization for #" + _id + ": " + error));
+                    }
                 };
 
-                _visualization = _arg_1;
+                this._visualization = _visualization;
 
-                if (_visualization != null)
+                if (this._visualization != null)
                 {
-                    _visualization.object = this;
+                    this._visualization.object = this;
                 };
             };
         }
 
-        public function setEventHandler(_arg_1:IRoomObjectEventHandler):void
+        public function setEventHandler(_handler:IRoomObjectEventHandler):void
         {
-            if (_arg_1 == _SafeStr_4467)
+            if (_handler == _eventHandler)
             {
                 return;
             };
 
-            var _local_2:IRoomObjectEventHandler = _SafeStr_4467;
+            var _previousHandler:IRoomObjectEventHandler = _eventHandler;
 
-            if (_local_2 != null)
+            if (_previousHandler != null)
             {
-                _SafeStr_4467 = null;
-                _local_2.object = null;
+                _eventHandler = null;
+                _previousHandler.object = null;
             };
 
-            _SafeStr_4467 = _arg_1;
+            _eventHandler = _handler;
 
-            if (_SafeStr_4467 != null)
+            if (_eventHandler != null)
             {
-                _SafeStr_4467.object = this;
+                _eventHandler.object = this;
             };
         }
 
         public function getEventHandler():IRoomObjectEventHandler
         {
-            return (_SafeStr_4467);
+            return (_eventHandler);
         }
 
         public function getUpdateID():int
         {
-            return (_SafeStr_4463);
+            return (_updateCounter);
         }
 
         public function getMouseHandler():IRoomObjectMouseHandler
@@ -247,12 +255,13 @@
 
         public function tearDown():void
         {
-            if (_SafeStr_4467)
+            if (_eventHandler)
             {
-                _SafeStr_4467.tearDown();
+                _eventHandler.tearDown();
             };
         }
 
     }
 }
-
+
+

@@ -6,10 +6,10 @@
         private var _itemType:int;
         private var _itemName:String;
 
-        public function RoomObjectAvatarCarryObjectUpdateMessage(_arg_1:int, _arg_2:String)
+        public function RoomObjectAvatarCarryObjectUpdateMessage(itemType:int, itemName:String)
         {
-            _itemType = _arg_1;
-            _itemName = _arg_2;
+            _itemType = itemType;
+            _itemName = itemName;
         }
 
         public function get itemType():int

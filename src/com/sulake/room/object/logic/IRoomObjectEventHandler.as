@@ -1,4 +1,4 @@
-﻿package com.sulake.room.object.logic
+package com.sulake.room.object.logic
 {
     import com.sulake.room.object.IRoomObjectController;
     import com.sulake.room.messages.RoomObjectUpdateMessage;
@@ -7,15 +7,15 @@
     public /*dynamic*/ interface IRoomObjectEventHandler extends IRoomObjectMouseHandler 
     {
 
-        function set object(_arg_1:IRoomObjectController):void;
+        function set object(_object:IRoomObjectController):void;
         function get object():IRoomObjectController;
         function dispose():void;
-        function initialize(_arg_1:XML):void;
+        function initialize(_data:XML):void;
         function tearDown():void;
-        function update(_arg_1:int):void;
-        function processUpdateMessage(_arg_1:RoomObjectUpdateMessage):void;
+        function update(_timeSinceUpdate:int):void;
+        function processUpdateMessage(_message:RoomObjectUpdateMessage):void;
         function useObject():void;
-        function set eventDispatcher(_arg_1:IEventDispatcher):void;
+        function set eventDispatcher(_dispatcher:IEventDispatcher):void;
         function get eventDispatcher():IEventDispatcher;
         function getEventTypes():Array;
         function get widget():String;
@@ -23,3 +23,4 @@
 
     }
 }
+

@@ -37,34 +37,34 @@ package onBoardingHc
             return (_disposed);
         }
 
-        private function onRemovedFromStage(_arg_1:Event):void
+        private function onRemovedFromStage(stageEvent:Event):void
         {
         }
 
-        protected function onAddedToStage(_arg_1:Event):void
+        protected function onAddedToStage(stageEvent:Event):void
         {
             _tileSprite = new Sprite();
 
-            var _local_2:Bitmap = new background_tiles_png();
-            _backgroundImage = _local_2.bitmapData;
+            var tileBitmap:Bitmap = new background_tiles_png();
+            _backgroundImage = tileBitmap.bitmapData;
             addChild(_tileSprite);
             resize();
         }
 
         public function resize():void
         {
-            var _local_1:Matrix;
+            var transform:Matrix;
 
             if (stage)
             {
-                var _local_2:Array = [809599, 801381];
-                var _local_3:Array = [1, 1];
-                var _local_4:Array = [127, 0xFF];
-                _local_1 = new Matrix();
-                _local_1.createGradientBox(50, 100, 0, 0, 0);
-                _local_1.rotate((3.14159265358979 / 2));
-                _local_1.scale((stage.stageWidth / 50), (stage.stageHeight / 100));
-                graphics.beginGradientFill("linear", _local_2, _local_3, _local_4, _local_1, "pad");
+                var gradientColors:Array = [809599, 801381];
+                var gradientAlphas:Array = [1, 1];
+                var gradientRatios:Array = [127, 0xFF];
+                transform = new Matrix();
+                transform.createGradientBox(50, 100, 0, 0, 0);
+                transform.rotate((3.14159265358979 / 2));
+                transform.scale((stage.stageWidth / 50), (stage.stageHeight / 100));
+                graphics.beginGradientFill("linear", gradientColors, gradientAlphas, gradientRatios, transform, "pad");
                 graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
 
                 if (_tileSprite != null)

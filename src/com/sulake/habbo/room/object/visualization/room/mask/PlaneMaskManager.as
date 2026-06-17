@@ -1,8 +1,8 @@
-﻿package com.sulake.habbo.room.object.visualization.room.mask
+package com.sulake.habbo.room.object.visualization.room.mask
 {
     import com.sulake.room.object.visualization.utils.IGraphicAssetCollection;
     import com.sulake.core.utils.Map;
-    import com.sulake.room.utils._SafeStr_93;
+    import com.sulake.room.utils.XmlUtil;
     import com.sulake.room.object.visualization.utils.IGraphicAsset;
     import com.sulake.core.assets.BitmapDataAsset;
     import flash.display.BitmapData;
@@ -98,7 +98,7 @@
             {
                 _local_16 = _local_6[_local_5];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_16, _local_10))
+                if (XmlUtil.checkRequiredAttributes(_local_16, _local_10))
                 {
                     _local_14 = _local_16.@id;
 
@@ -112,7 +112,7 @@
                         {
                             _local_13 = _local_9[_local_7];
 
-                            if (_SafeStr_93.checkRequiredAttributes(_local_13, _local_8))
+                            if (XmlUtil.checkRequiredAttributes(_local_13, _local_8))
                             {
                                 _local_11 = parseInt(_local_13.@size);
                                 _local_4 = _local_15.createMaskVisualization(_local_11);
@@ -159,7 +159,7 @@
             {
                 _local_4 = _arg_1[_local_8];
 
-                if (_SafeStr_93.checkRequiredAttributes(_local_4, ["assetName"]))
+                if (XmlUtil.checkRequiredAttributes(_local_4, ["assetName"]))
                 {
                     _local_6 = -1;
                     _local_12 = 1;

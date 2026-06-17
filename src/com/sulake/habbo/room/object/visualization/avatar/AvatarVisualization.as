@@ -97,6 +97,9 @@
         private var _SafeStr_3268:IAvatarImage = null;
         private var _SafeStr_3269:Boolean = false;
         private var _disposed:Boolean;
+        private var _SafeStr_3270:int = -1;
+        private var _SafeStr_3271:int = -1;
+        private var _SafeStr_3272:Number = NaN;
 
         public function AvatarVisualization()
         {

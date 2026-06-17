@@ -15,14 +15,14 @@
         private var _normalMaxY:Number = 1;
         private var _assetName:String = null;
 
-        public function PlaneTextureBitmap(_arg_1:BitmapData, _arg_2:Number=-1, _arg_3:Number=1, _arg_4:Number=-1, _arg_5:Number=1, _arg_6:String=null)
+        public function PlaneTextureBitmap(bitmapData:BitmapData, normalMinX:Number=-1, normalMaxX:Number=1, normalMinY:Number=-1, normalMaxY:Number=1, assetName:String=null)
         {
-            _normalMinX = _arg_2;
-            _normalMaxX = _arg_3;
-            _normalMinY = _arg_4;
-            _normalMaxY = _arg_5;
-            _assetName = _arg_6;
-            _bitmap = _arg_1;
+            _normalMinX = normalMinX;
+            _normalMaxX = normalMaxX;
+            _normalMinY = normalMinY;
+            _normalMaxY = normalMaxY;
+            _assetName = assetName;
+            _bitmap = bitmapData;
         }
 
         public function get bitmap():BitmapData

@@ -12,12 +12,12 @@
         private var _speedY:Number = 0;
         private var _bitmapData:BitmapData = null;
 
-        public function AnimationItem(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number, _arg_5:BitmapData)
+        public function AnimationItem(posX:Number, posY:Number, speedX:Number, speedY:Number, bitmapData:BitmapData)
         {
-            _x = _arg_1;
-            _y = _arg_2;
-            _speedX = _arg_3;
-            _speedY = _arg_4;
+            _x = posX;
+            _y = posY;
+            _speedX = speedX;
+            _speedY = speedY;
 
             if (isNaN(_x))
             {
@@ -39,7 +39,7 @@
                 _speedY = 0;
             };
 
-            _bitmapData = _arg_5;
+            _bitmapData = bitmapData;
         }
 
         public function get bitmapData():BitmapData
@@ -52,24 +52,24 @@
             _bitmapData = null;
         }
 
-        public function getPosition(_arg_1:int, _arg_2:int, _arg_3:Number, _arg_4:Number, _arg_5:int):Point
+        public function getPosition(width:int, height:int, maxX:Number, maxY:Number, timeSinceStartMs:int):Point
         {
-            var _local_6:Number = _x;
-            var _local_7:Number = _y;
+            var posX:Number = _x;
+            var posY:Number = _y;
 
-            if (_arg_3 > 0)
+            if (maxX > 0)
             {
-                _local_6 = (_local_6 + (((_speedX / _arg_3) * _arg_5) / 1000));
+                posX = (posX + (((_speedX / maxX) * timeSinceStartMs) / 1000));
             };
 
-            if (_arg_4 > 0)
+            if (maxY > 0)
             {
-                _local_7 = (_local_7 + (((_speedY / _arg_4) * _arg_5) / 1000));
+                posY = (posY + (((_speedY / maxY) * timeSinceStartMs) / 1000));
             };
 
-            var _local_8:int = ((_local_6 % 1) * _arg_1);
-            var _local_9:int = ((_local_7 % 1) * _arg_2);
-            return (new Point(_local_8, _local_9));
+            var pixelX:int = ((posX % 1) * width);
+            var pixelY:int = ((posY % 1) * height);
+            return (new Point(pixelX, pixelY));
         }
 
     }

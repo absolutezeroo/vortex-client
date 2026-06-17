@@ -11,9 +11,9 @@
         private var _commonAssets:IAssetLibrary = null;
         private var _isAllowedToTurnHead:Boolean = true;
 
-        public function set commonAssets(_arg_1:IAssetLibrary):void
+        public function set commonAssets(value:IAssetLibrary):void
         {
-            _commonAssets = _arg_1;
+            _commonAssets = value;
         }
 
         public function get commonAssets():IAssetLibrary
@@ -21,46 +21,46 @@
             return (_commonAssets);
         }
 
-        override protected function defineVisualizations(_arg_1:XML):Boolean
+        override protected function defineVisualizations(data:XML):Boolean
         {
-            _isAllowedToTurnHead = ((_arg_1.graphics.hasOwnProperty("@disableheadturn")) ? (!(_arg_1.graphics.@disableheadturn == "1")) : true);
-            return (super.defineVisualizations(_arg_1));
+            _isAllowedToTurnHead = ((data.graphics.hasOwnProperty("@disableheadturn")) ? (!(data.graphics.@disableheadturn == "1")) : true);
+            return (super.defineVisualizations(data));
         }
 
-        override protected function createSizeData(_arg_1:int, _arg_2:int, _arg_3:int):SizeData
+        override protected function createSizeData(visualizationType:int, size:int, scale:int):SizeData
         {
-            var _local_4:SizeData;
+            var sizeData:SizeData;
 
-            if (_arg_1 > 1)
+            if (visualizationType > 1)
             {
-                _local_4 = new PetAnimationSizeData(_arg_2, _arg_3);
+                sizeData = new PetAnimationSizeData(size, scale);
             }
 
             else
             {
-                _local_4 = new AnimationSizeData(_arg_2, _arg_3);
+                sizeData = new AnimationSizeData(size, scale);
             };
 
-            return (_local_4);
+            return (sizeData);
         }
 
-        override protected function processVisualizationElement(_arg_1:SizeData, _arg_2:XML):Boolean
+        override protected function processVisualizationElement(sizeData:SizeData, data:XML):Boolean
         {
-            var _local_3:PetAnimationSizeData;
+            var petSizeData:PetAnimationSizeData;
 
-            if (((_arg_1 == null) || (_arg_2 == null)))
+            if (((sizeData == null) || (data == null)))
             {
                 return (false);
             };
 
-            switch (String(_arg_2.name()))
+            switch (String(data.name()))
             {
                 case "postures":
-                    _local_3 = (_arg_1 as PetAnimationSizeData);
+                    petSizeData = (sizeData as PetAnimationSizeData);
 
-                    if (_local_3 != null)
+                    if (petSizeData != null)
                     {
-                        if (!_local_3.definePostures(_arg_2))
+                        if (!petSizeData.definePostures(data))
                         {
                             return (false);
                         };
@@ -68,11 +68,11 @@
 
                     break;
                 case "gestures":
-                    _local_3 = (_arg_1 as PetAnimationSizeData);
+                    petSizeData = (sizeData as PetAnimationSizeData);
 
-                    if (_local_3 != null)
+                    if (petSizeData != null)
                     {
-                        if (!_local_3.defineGestures(_arg_2))
+                        if (!petSizeData.defineGestures(data))
                         {
                             return (false);
                         };
@@ -81,7 +81,7 @@
                     break;
                 default:
 
-                    if (!super.processVisualizationElement(_arg_1, _arg_2))
+                    if (!super.processVisualizationElement(sizeData, data))
                     {
                         return (false);
                     };
@@ -90,91 +90,91 @@
             return (true);
         }
 
-        public function getAnimationForPosture(_arg_1:int, _arg_2:String):int
+        public function getAnimationForPosture(size:int, posture:String):int
         {
-            var _local_3:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_3 != null)
+            if (petSizeData != null)
             {
-                return (_local_3.getAnimationForPosture(_arg_2));
+                return (petSizeData.getAnimationForPosture(posture));
             };
 
             return (-1);
         }
 
-        public function getGestureDisabled(_arg_1:int, _arg_2:String):Boolean
+        public function getGestureDisabled(size:int, gesture:String):Boolean
         {
-            var _local_3:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_3 != null)
+            if (petSizeData != null)
             {
-                return (_local_3.getGestureDisabled(_arg_2));
+                return (petSizeData.getGestureDisabled(gesture));
             };
 
             return (false);
         }
 
-        public function getAnimationForGesture(_arg_1:int, _arg_2:String):int
+        public function getAnimationForGesture(size:int, gesture:String):int
         {
-            var _local_3:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_3 != null)
+            if (petSizeData != null)
             {
-                return (_local_3.getAnimationForGesture(_arg_2));
+                return (petSizeData.getAnimationForGesture(gesture));
             };
 
             return (-1);
         }
 
-        public function getPostureForAnimation(_arg_1:int, _arg_2:int, _arg_3:Boolean):String
+        public function getPostureForAnimation(size:int, animationId:int, useDefault:Boolean):String
         {
-            var _local_4:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_4 != null)
+            if (petSizeData != null)
             {
-                return (_local_4.getPostureForAnimation(_arg_2, _arg_3));
+                return (petSizeData.getPostureForAnimation(animationId, useDefault));
             };
 
             return (null);
         }
 
-        public function getGestureForAnimation(_arg_1:int, _arg_2:int):String
+        public function getGestureForAnimation(size:int, animationId:int):String
         {
-            var _local_3:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_3 != null)
+            if (petSizeData != null)
             {
-                return (_local_3.getGestureForAnimation(_arg_2));
+                return (petSizeData.getGestureForAnimation(animationId));
             };
 
             return (null);
         }
 
-        public function getGestureForAnimationId(_arg_1:int, _arg_2:int):String
+        public function getGestureForAnimationId(size:int, animationId:int):String
         {
-            var _local_3:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
-            return ((_local_3 == null) ? null : _local_3.getGestureForAnimationId(_arg_2));
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
+            return ((petSizeData == null) ? null : petSizeData.getGestureForAnimationId(animationId));
         }
 
-        public function getPostureCount(_arg_1:int):int
+        public function getPostureCount(size:int):int
         {
-            var _local_2:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_2 != null)
+            if (petSizeData != null)
             {
-                return (_local_2.getPostureCount());
+                return (petSizeData.getPostureCount());
             };
 
             return (0);
         }
 
-        public function getGestureCount(_arg_1:int):int
+        public function getGestureCount(size:int):int
         {
-            var _local_2:PetAnimationSizeData = (getSizeData(_arg_1) as PetAnimationSizeData);
+            var petSizeData:PetAnimationSizeData = (getSizeData(size) as PetAnimationSizeData);
 
-            if (_local_2 != null)
+            if (petSizeData != null)
             {
-                return (_local_2.getGestureCount());
+                return (petSizeData.getGestureCount());
             };
 
             return (0);

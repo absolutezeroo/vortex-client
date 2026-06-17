@@ -9,9 +9,9 @@
         private var _wallType:String = null;
         private var _landscapeType:String = null;
 
-        public function RoomData(_arg_1:int, data:XML)
+        public function RoomData(roomId:int, data:XML)
         {
-            _roomId = _arg_1;
+            _roomId = roomId;
             _data = data;
         }
 
@@ -30,9 +30,9 @@
             return (_floorType);
         }
 
-        public function set floorType(_arg_1:String):void
+        public function set floorType(floorType:String):void
         {
-            _floorType = _arg_1;
+            _floorType = floorType;
         }
 
         public function get wallType():String
@@ -40,9 +40,9 @@
             return (_wallType);
         }
 
-        public function set wallType(_arg_1:String):void
+        public function set wallType(wallType:String):void
         {
-            _wallType = _arg_1;
+            _wallType = wallType;
         }
 
         public function get landscapeType():String
@@ -50,9 +50,9 @@
             return (_landscapeType);
         }
 
-        public function set landscapeType(_arg_1:String):void
+        public function set landscapeType(landscapeType:String):void
         {
-            _landscapeType = _arg_1;
+            _landscapeType = landscapeType;
         }
 
     }

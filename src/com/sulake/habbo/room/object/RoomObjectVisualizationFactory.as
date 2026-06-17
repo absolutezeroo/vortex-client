@@ -64,25 +64,25 @@
         private var _visualizationDatas:Map;
         private var _enableCaching:Boolean = true;
 
-        public function RoomObjectVisualizationFactory(_arg_1:IContext, _arg_2:uint=0, _arg_3:IAssetLibrary=null)
+        public function RoomObjectVisualizationFactory(context:IContext, id:uint=0, library:IAssetLibrary=null)
         {
-            super(_arg_1, _arg_2, _arg_3);
-            _enableCaching = (_arg_2 == 0);
+            super(context, id, library);
+            _enableCaching = (id == 0);
             _visualizationDatas = new Map();
         }
 
         override protected function get dependencies():Vector.<ComponentDependency>
         {
-            return (super.dependencies.concat(new <ComponentDependency>[new ComponentDependency(new IIDAvatarRenderManager(), function (_arg_1:IAvatarRenderManager):void
+            return (super.dependencies.concat(new <ComponentDependency>[new ComponentDependency(new IIDAvatarRenderManager(), function (avatarRenderManager:IAvatarRenderManager):void
             {
-                _habboAvatar = _arg_1;
+                _habboAvatar = avatarRenderManager;
             }, false)]));
         }
 
         override public function dispose():void
         {
-            var _local_1:IRoomObjectVisualizationData;
-            var _local_2:int;
+            var visualizationData:IRoomObjectVisualizationData;
+            var index:int;
 
             if (disposed)
             {
@@ -91,19 +91,19 @@
 
             if (_visualizationDatas != null)
             {
-                _local_1 = null;
-                _local_2 = 0;
+                visualizationData = null;
+                index = 0;
 
-                while (_local_2 < _visualizationDatas.length)
+                while (index < _visualizationDatas.length)
                 {
-                    _local_1 = (_visualizationDatas.getWithIndex(_local_2) as IRoomObjectVisualizationData);
+                    visualizationData = (_visualizationDatas.getWithIndex(index) as IRoomObjectVisualizationData);
 
-                    if (_local_1 != null)
+                    if (visualizationData != null)
                     {
-                        _local_1.dispose();
+                        visualizationData.dispose();
                     };
 
-                    _local_2++;
+                    index++;
                 };
 
                 _visualizationDatas.dispose();
@@ -113,155 +113,155 @@
             super.dispose();
         }
 
-        public function createRoomObjectVisualization(_arg_1:String):IRoomObjectGraphicVisualization
+        public function createRoomObjectVisualization(visualizationType:String):IRoomObjectGraphicVisualization
         {
-            var _local_3:Class;
-            switch (_arg_1)
+            var visualizationClass:Class;
+            switch (visualizationType)
             {
                 case "room":
-                    _local_3 = RoomVisualization;
+                    visualizationClass = RoomVisualization;
                     break;
                 case "tile_cursor":
-                    _local_3 = TileCursorVisualization;
+                    visualizationClass = TileCursorVisualization;
                     break;
                 case "user":
-                    _local_3 = AvatarVisualization;
+                    visualizationClass = AvatarVisualization;
                     break;
                 case "bot":
                 case "rentable_bot":
-                    _local_3 = AvatarVisualization;
+                    visualizationClass = AvatarVisualization;
                     break;
                 case "pet_animated":
-                    _local_3 = AnimatedPetVisualization;
+                    visualizationClass = AnimatedPetVisualization;
                     break;
                 case "furniture_static":
-                    _local_3 = FurnitureVisualization;
+                    visualizationClass = FurnitureVisualization;
                     break;
                 case "furniture_animated":
-                    _local_3 = AnimatedFurnitureVisualization;
+                    visualizationClass = AnimatedFurnitureVisualization;
                     break;
                 case "furniture_resetting_animated":
-                    _local_3 = ResettingAnimatedFurnitureVisualization;
+                    visualizationClass = ResettingAnimatedFurnitureVisualization;
                     break;
                 case "furniture_poster":
-                    _local_3 = FurniturePosterVisualization;
+                    visualizationClass = FurniturePosterVisualization;
                     break;
                 case "furniture_habbowheel":
-                    _local_3 = FurnitureHabboWheelVisualization;
+                    visualizationClass = FurnitureHabboWheelVisualization;
                     break;
                 case "furniture_val_randomizer":
-                    _local_3 = FurnitureValRandomizerVisualization;
+                    visualizationClass = FurnitureValRandomizerVisualization;
                     break;
                 case "furniture_bottle":
-                    _local_3 = FurnitureBottleVisualization;
+                    visualizationClass = FurnitureBottleVisualization;
                     break;
                 case "furniture_planet_system":
-                    _local_3 = FurniturePlanetSystemVisualization;
+                    visualizationClass = FurniturePlanetSystemVisualization;
                     break;
                 case "furniture_queue_tile":
-                    _local_3 = FurnitureQueueTileVisualization;
+                    visualizationClass = FurnitureQueueTileVisualization;
                     break;
                 case "furniture_party_beamer":
-                    _local_3 = FurniturePartyBeamerVisualization;
+                    visualizationClass = FurniturePartyBeamerVisualization;
                     break;
                 case "furniture_cuboid":
-                    _local_3 = FurnitureCuboidVisualization;
+                    visualizationClass = FurnitureCuboidVisualization;
                     break;
                 case "furniture_gift_wrapped":
-                    _local_3 = FurnitureGiftWrappedVisualization;
+                    visualizationClass = FurnitureGiftWrappedVisualization;
                     break;
                 case "furniture_counter_clock":
-                    _local_3 = FurnitureCounterClockVisualization;
+                    visualizationClass = FurnitureCounterClockVisualization;
                     break;
                 case "furniture_water_area":
-                    _local_3 = FurnitureWaterAreaVisualization;
+                    visualizationClass = FurnitureWaterAreaVisualization;
                     break;
                 case "furniture_score_board":
-                    _local_3 = FurnitureScoreBoardVisualization;
+                    visualizationClass = FurnitureScoreBoardVisualization;
                     break;
                 case "furniture_fireworks":
-                    _local_3 = FurnitureFireworksVisualization;
+                    visualizationClass = FurnitureFireworksVisualization;
                     break;
                 case "furniture_gift_wrapped_fireworks":
-                    _local_3 = FurnitureGiftWrappedFireworksVisualization;
+                    visualizationClass = FurnitureGiftWrappedFireworksVisualization;
                     break;
                 case "furniture_bb":
-                    _local_3 = FurnitureRoomBillboardVisualization;
+                    visualizationClass = FurnitureRoomBillboardVisualization;
                     break;
                 case "furniture_bg":
-                    _local_3 = FurnitureRoomBackgroundVisualization;
+                    visualizationClass = FurnitureRoomBackgroundVisualization;
                     break;
                 case "furniture_stickie":
-                    _local_3 = FurnitureStickieVisualization;
+                    visualizationClass = FurnitureStickieVisualization;
                     break;
                 case "furniture_mannequin":
-                    _local_3 = FurnitureMannequinVisualization;
+                    visualizationClass = FurnitureMannequinVisualization;
                     break;
                 case "furniture_guild_customized":
-                    _local_3 = FurnitureGuildCustomizedVisualization;
+                    visualizationClass = FurnitureGuildCustomizedVisualization;
                     break;
                 case "furniture_guild_isometric_badge":
-                    _local_3 = FurnitureGuildIsometricBadgeVisualization;
+                    visualizationClass = FurnitureGuildIsometricBadgeVisualization;
                     break;
                 case "game_snowball":
-                    _local_3 = SnowballVisualization;
+                    visualizationClass = SnowballVisualization;
                     break;
                 case "game_snowsplash":
-                    _local_3 = SnowSplashVisualization;
+                    visualizationClass = SnowSplashVisualization;
                     break;
                 case "furniture_vote_counter":
-                    _local_3 = FurnitureVoteCounterVisualization;
+                    visualizationClass = FurnitureVoteCounterVisualization;
                     break;
                 case "furniture_vote_majority":
-                    _local_3 = FurnitureVoteMajorityVisualization;
+                    visualizationClass = FurnitureVoteMajorityVisualization;
                     break;
                 case "furniture_soundblock":
-                    _local_3 = FurnitureSoundBlockVisualization;
+                    visualizationClass = FurnitureSoundBlockVisualization;
                     break;
                 case "furniture_badge_display":
-                    _local_3 = FurnitureBadgeDisplayVisualization;
+                    visualizationClass = FurnitureBadgeDisplayVisualization;
                     break;
                 case "furniture_youtube":
-                    _local_3 = FurnitureYoutubeDisplayVisualization;
+                    visualizationClass = FurnitureYoutubeDisplayVisualization;
                     break;
                 case "furniture_external_image":
-                    _local_3 = FurnitureExternalImageVisualization;
+                    visualizationClass = FurnitureExternalImageVisualization;
                     break;
                 case "furniture_builder_placeholder":
-                    _local_3 = FurnitureBuilderPlaceholderVisualization;
+                    visualizationClass = FurnitureBuilderPlaceholderVisualization;
             };
 
-            if (_local_3 == null)
+            if (visualizationClass == null)
             {
                 return (null);
             };
 
-            var _local_2:Object = new _local_3();
+            var visualizationInstance:Object = new visualizationClass();
 
-            if ((_local_2 is IRoomObjectGraphicVisualization))
+            if ((visualizationInstance is IRoomObjectGraphicVisualization))
             {
-                return (_local_2 as IRoomObjectGraphicVisualization);
+                return (visualizationInstance as IRoomObjectGraphicVisualization);
             };
 
             return (null);
         }
 
-        public function getRoomObjectVisualizationData(_arg_1:String, _arg_2:String, _arg_3:XML):IRoomObjectVisualizationData
+        public function getRoomObjectVisualizationData(cacheKey:String, visualizationType:String, xml:XML):IRoomObjectVisualizationData
         {
-            var _local_7:IRoomObjectVisualizationData;
-            var _local_6:AvatarVisualizationData;
-            var _local_5:AnimatedPetVisualizationData;
-            var _local_9:AvatarFurnitureVisualizationData;
-            var _local_4:IRoomObjectVisualizationData;
-            _local_4 = (_visualizationDatas.getValue(_arg_1) as IRoomObjectVisualizationData);
+            var visualizationData:IRoomObjectVisualizationData;
+            var avatarVisualizationData:AvatarVisualizationData;
+            var petVisualizationData:AnimatedPetVisualizationData;
+            var furnitureVisualizationData:AvatarFurnitureVisualizationData;
+            var cachedVisualizationData:IRoomObjectVisualizationData;
+            cachedVisualizationData = (_visualizationDatas.getValue(cacheKey) as IRoomObjectVisualizationData);
 
-            if (_local_4 != null)
+            if (cachedVisualizationData != null)
             {
-                return (_local_4);
+                return (cachedVisualizationData);
             };
 
-            var _local_8:Class;
-            switch (_arg_2)
+            var visualizationDataClass:Class;
+            switch (visualizationType)
             {
                 case "furniture_static":
                 case "furniture_gift_wrapped":
@@ -269,7 +269,7 @@
                 case "furniture_bg":
                 case "furniture_stickie":
                 case "furniture_builder_placeholder":
-                    _local_8 = FurnitureVisualizationData;
+                    visualizationDataClass = FurnitureVisualizationData;
                     break;
                 case "furniture_animated":
                 case "furniture_resetting_animated":
@@ -294,72 +294,72 @@
                 case "furniture_external_image":
                 case "furniture_youtube":
                 case "tile_cursor":
-                    _local_8 = AnimatedFurnitureVisualizationData;
+                    visualizationDataClass = AnimatedFurnitureVisualizationData;
                     break;
                 case "furniture_mannequin":
-                    _local_8 = AvatarFurnitureVisualizationData;
+                    visualizationDataClass = AvatarFurnitureVisualizationData;
                     break;
                 case "room":
-                    _local_8 = RoomVisualizationData;
+                    visualizationDataClass = RoomVisualizationData;
                     break;
                 case "user":
                 case "bot":
                 case "rentable_bot":
-                    _local_8 = AvatarVisualizationData;
+                    visualizationDataClass = AvatarVisualizationData;
                     break;
                 case "pet_animated":
-                    _local_8 = AnimatedPetVisualizationData;
+                    visualizationDataClass = AnimatedPetVisualizationData;
                     break;
                 case "game_snowball":
                 case "game_snowsplash":
-                    _local_8 = SnowballVisualizationData;
+                    visualizationDataClass = SnowballVisualizationData;
             };
 
-            if (_local_8 == null)
+            if (visualizationDataClass == null)
             {
                 return (null);
             };
 
-            _local_4 = new _local_8();
+            cachedVisualizationData = new visualizationDataClass();
 
-            if (_local_4 != null)
+            if (cachedVisualizationData != null)
             {
-                _local_7 = null;
-                _local_7 = (_local_4 as IRoomObjectVisualizationData);
+                visualizationData = null;
+                visualizationData = (cachedVisualizationData as IRoomObjectVisualizationData);
 
-                if (!_local_7.initialize(_arg_3))
+                if (!visualizationData.initialize(xml))
                 {
-                    _local_7.dispose();
+                    visualizationData.dispose();
                     return (null);
                 };
 
-                if ((_local_7 is AvatarVisualizationData))
+                if ((visualizationData is AvatarVisualizationData))
                 {
-                    _local_6 = (_local_4 as AvatarVisualizationData);
-                    _local_6.avatarRenderer = _habboAvatar;
+                    avatarVisualizationData = (cachedVisualizationData as AvatarVisualizationData);
+                    avatarVisualizationData.avatarRenderer = _habboAvatar;
                 }
 
                 else
                 {
-                    if ((_local_7 is AnimatedPetVisualizationData))
+                    if ((visualizationData is AnimatedPetVisualizationData))
                     {
-                        _local_5 = (_local_4 as AnimatedPetVisualizationData);
-                        _local_5.commonAssets = assets;
+                        petVisualizationData = (cachedVisualizationData as AnimatedPetVisualizationData);
+                        petVisualizationData.commonAssets = assets;
                     }
 
                     else
                     {
-                        if ((_local_7 is AvatarFurnitureVisualizationData))
+                        if ((visualizationData is AvatarFurnitureVisualizationData))
                         {
-                            _local_9 = (_local_4 as AvatarFurnitureVisualizationData);
-                            _local_9.avatarRenderer = _habboAvatar;
+                            furnitureVisualizationData = (cachedVisualizationData as AvatarFurnitureVisualizationData);
+                            furnitureVisualizationData.avatarRenderer = _habboAvatar;
                         }
 
                         else
                         {
-                            if ((_local_7 is SnowballVisualizationData))
+                            if ((visualizationData is SnowballVisualizationData))
                             {
-                                SnowballVisualizationData(_local_7).assets = assets;
+                                SnowballVisualizationData(visualizationData).assets = assets;
                             };
                         };
                     };
@@ -367,10 +367,10 @@
 
                 if (_enableCaching)
                 {
-                    _visualizationDatas.add(_arg_1, _local_7);
+                    _visualizationDatas.add(cacheKey, visualizationData);
                 };
 
-                return (_local_7);
+                return (visualizationData);
             };
 
             return (null);

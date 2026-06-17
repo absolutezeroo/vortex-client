@@ -5,9 +5,9 @@
 
         private var _gesture:int = 0;
 
-        public function RoomObjectAvatarGestureUpdateMessage(_arg_1:int)
+        public function RoomObjectAvatarGestureUpdateMessage(gesture:int)
         {
-            _gesture = _arg_1;
+            _gesture = gesture;
         }
 
         public function get gesture():int
