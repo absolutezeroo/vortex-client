@@ -27,6 +27,9 @@
             this._confs.push(new _SafeStr_192());
             this._confs.push(new BotDestinationReached());
             this._confs.push(new BotAvatarReached());
+            this._confs.push(new ReceiveSignal());
+            this._confs.push(new AvatarClicksFurni());
+            this._confs.push(new AvatarLeavesRoom());
         }
 
         public function get confs():Array

@@ -463,6 +463,8 @@
     import com.sulake.habbo.communication.messages.outgoing.inventory.trading.AcceptTradingComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.furniture.RoomDimmerSavePresetMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.userdefinedroomevents.ApplySnapshotMessageComposer;
+    import com.sulake.habbo.communication.messages.outgoing.userdefinedroomevents.wiredmenu.WiredGetRoomLogsComposer;
+    import com.sulake.habbo.communication.messages.outgoing.userdefinedroomevents.wiredmenu.WiredClickUserMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.help.SearchFaqsMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.marketplace._SafeStr_20;
     import com.sulake.habbo.communication.messages.outgoing.room.furniture._SafeStr_37;
@@ -810,6 +812,8 @@
     import com.sulake.habbo.communication.messages.parser.game.score.Game2TotalLeaderboardEvent;
     import com.sulake.habbo.communication.messages.parser.camera.ThumbnailStatusMessageEvent;
     import com.sulake.habbo.communication.messages.incoming.userdefinedroomevents.WiredRewardResultMessageEvent;
+    import com.sulake.habbo.communication.messages.incoming.userdefinedroomevents.wiredmenu.WiredRoomLogsEvent;
+    import com.sulake.habbo.communication.messages.incoming.userdefinedroomevents.wiredmenu.WiredClickUserResponseEvent;
     import com.sulake.habbo.communication.messages.incoming.newnavigator.NavigatorLiftedRoomsEvent;
     import com.sulake.habbo.communication.messages.incoming.marketplace.MarketPlaceOffersEvent;
     import com.sulake.habbo.communication.messages.incoming.newnavigator.NavigatorCollapsedCategoriesMessageEvent;
@@ -1470,6 +1474,8 @@
             _composers[2921] = AcceptTradingComposer;
             _composers[1802] = RoomDimmerSavePresetMessageComposer;
             _composers[2146] = ApplySnapshotMessageComposer;
+            _composers[2853] = WiredGetRoomLogsComposer;
+            _composers[3049] = WiredClickUserMessageComposer;
             _composers[932] = SearchFaqsMessageComposer;
             _composers[942] = _SafeStr_20;
             // DUPLICATE_ID_DISABLED: _composers[96] = _SafeStr_37;
@@ -1817,6 +1823,8 @@
             _events[3115] = Game2TotalLeaderboardEvent;
             _events[3707] = ThumbnailStatusMessageEvent;
             _events[955] = WiredRewardResultMessageEvent;
+            _events[3761] = WiredRoomLogsEvent;
+            _events[2650] = WiredClickUserResponseEvent;
             _events[386] = NavigatorLiftedRoomsEvent;
             _events[3291] = MarketPlaceOffersEvent;
             _events[3826] = NavigatorCollapsedCategoriesMessageEvent;

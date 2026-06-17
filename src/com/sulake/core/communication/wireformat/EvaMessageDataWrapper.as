@@ -31,6 +31,13 @@
             return (_data.readInt());
         }
 
+        public function readLong():Number
+        {
+            var _local_1:int = _data.readInt();
+            var _local_2:uint = _data.readUnsignedInt();
+            return ((_local_1 * 4294967296) + _local_2);
+        }
+
         public function readBoolean():Boolean
         {
             return (_data.readBoolean());

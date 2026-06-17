@@ -38,6 +38,8 @@
             this._types.push(new BotFollowAvatar());
             this._types.push(new BotChangeFigure());
             this._types.push(new BotTalkDirectToAvatar());
+            this._types.push(new UnfreezeUser());
+            this._types.push(new TeleportToRoom());
         }
 
         public function get types():Array
@@ -50,6 +52,11 @@
             for each (var _local_2:ActionType in _types)
             {
                 if (_local_2.code == _arg_1)
+                {
+                    return (_local_2);
+                };
+
+                if (_local_2.negativeCode == _arg_1)
                 {
                     return (_local_2);
                 };

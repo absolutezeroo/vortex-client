@@ -6,6 +6,7 @@
         function getID():int;
         function readString():String;
         function readInteger():int;
+        function readLong():Number;
         function readBoolean():Boolean;
         function readShort():int;
         function readByte():int;

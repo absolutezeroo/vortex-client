@@ -10,6 +10,11 @@
             return (_SafeStr_226.CALL_ANOTHER_STACK);
         }
 
+        override public function get negativeCode():int
+        {
+            return (_SafeStr_226.NEG_CALL_ANOTHER_STACK);
+        }
+
         override public function get requiresFurni():int
         {
             return (UserDefinedRoomEventsCtrl.STUFF_SELECTION_OPTION_BY_ID);

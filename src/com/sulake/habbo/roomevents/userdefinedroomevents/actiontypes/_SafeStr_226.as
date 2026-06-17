@@ -29,6 +29,9 @@
         public static var BOT_FOLLOW_AVATAR:int = 25;
         public static var BOT_CHANGE_FIGURE:int = 26;
         public static var BOT_TALK_DIRECT_TO_AVTR:int = 27;
+        public static var UNFREEZE_USER:int = 32;
+        public static var NEG_CALL_ANOTHER_STACK:int = 36;
+        public static var TELEPORT_TO_ROOM:int = 44;
 
     }
 }

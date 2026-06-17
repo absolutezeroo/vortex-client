@@ -29,6 +29,7 @@
         public static var _SafeStr_645:int = 23;
         public static var DATE_RANGE_ACTIVE:int = 24;
         public static var ACTOR_HAS_HANDITEM:int = 25;
+        public static var CAN_PERFORM_MOVE:int = 39;
 
     }
 }

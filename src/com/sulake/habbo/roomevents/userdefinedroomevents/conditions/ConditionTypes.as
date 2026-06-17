@@ -28,6 +28,7 @@
             this._types.push(new DontHaveStackedFurnis());
             this._types.push(new DateRangeActive());
             this._types.push(new ActorHasHandItem());
+            this._types.push(new CanPerformMove());
         }
 
         public function get types():Array

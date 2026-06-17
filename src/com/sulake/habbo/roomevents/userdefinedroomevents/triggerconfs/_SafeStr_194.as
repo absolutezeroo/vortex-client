@@ -17,6 +17,9 @@
         public static var PERIODIC_LONG:int = 12;
         public static var BOT_DESTINATION_REACHED:int = 13;
         public static var BOT_AVATAR_REACHED:int = 14;
+        public static var RECEIVE_SIGNAL:int = 17;
+        public static var AVATAR_CLICKS_FURNI:int = 18;
+        public static var AVATAR_LEAVES_ROOM:int = 23;
 
     }
 }
