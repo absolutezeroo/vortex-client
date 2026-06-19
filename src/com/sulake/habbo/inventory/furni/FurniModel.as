@@ -176,12 +176,12 @@
                 _soundManager = null;
                 _localization = null;
 
-                if (_imageUpdateTimer != null)
-                {
-                    _imageUpdateTimer.removeEventListener("timerComplete", onImageUpdateTimerEvent);
+            if (_imageUpdateTimer != null)
+            {
+                    _imageUpdateTimer.removeEventListener("timer", onImageUpdateTimerEvent);
                     _imageUpdateTimer.stop();
                     _imageUpdateTimer = null;
-                };
+            };
 
                 for each (var _local_1:IWindowContainer in _thumbWindowTemplates)
                 {
@@ -1442,6 +1442,12 @@
         {
             var _local_5:Vector.<int> = undefined;
             var _local_3:FurnitureItem;
+
+            if (((_disposed) || (_view == null) || (_furniData == null)))
+            {
+                return;
+            };
+
             initListImages();
             _imageUpdateCumulativeTime = (_imageUpdateCumulativeTime + 100);
 
@@ -1464,12 +1470,16 @@
                     removeFurni(_local_4);
                 };
 
-                if (_local_5.length > 0)
+                if (((_view) && (!(_view.disposed))) &&
+                    (_local_5.length > 0))
                 {
                     _view.updateGridFilters();
                 };
 
-                _view.updateRentedItem();
+                if ((_view) && (!(_view.disposed)))
+                {
+                    _view.updateRentedItem();
+                };
                 _imageUpdateCumulativeTime = 0;
             };
         }

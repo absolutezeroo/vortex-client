@@ -22,8 +22,17 @@
             super.update(_arg_1);
 
             var _local_2:CrackableStuffData = (_arg_1.stuffData as CrackableStuffData);
+
+            if (_local_2 == null)
+            {
+                return;
+            };
+
             showButton("use", true);
-            _buttons.visible = true;
+            if (_buttons != null)
+            {
+                _buttons.visible = true;
+            };
             setHitsAndTarget(_local_2.hits, _local_2.target);
         }
 
@@ -124,4 +133,4 @@
 
     }
 }
-
+

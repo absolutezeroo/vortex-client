@@ -304,6 +304,10 @@
             {
                 return;
             };
+            if (_roomEngine == null)
+            {
+                return;
+            };
 
             var _local_7:String = _arg_2.getType();
             var _local_6:int = _roomEngine.getRoomObjectCategory(_local_7);
@@ -529,6 +533,10 @@
             var _local_6:String;
 
             if (_arg_1 == null)
+            {
+                return;
+            };
+            if (_roomEngine == null)
             {
                 return;
             };

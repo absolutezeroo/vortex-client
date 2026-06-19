@@ -897,6 +897,11 @@
 
         public function updateRentedItem():void
         {
+            if (_SafeStr_570 == null || (_SafeStr_570.disposed) || (_SafeStr_1275 == null) || (_SafeStr_1275.controller == null))
+            {
+                return;
+            };
+
             var _local_2:GroupItem = _SafeStr_1275.getSelectedItem();
             var _local_1:FurnitureItem;
 
@@ -915,7 +920,11 @@
                 return;
             };
 
-            var _local_3:IWindow = (_SafeStr_570.findChildByName("furni_extra") as ITextWindow);
+            var _local_3:ITextWindow = (_SafeStr_570.findChildByName("furni_extra") as ITextWindow);
+            if (_local_3 == null)
+            {
+                return;
+            };
             _local_3.visible = true;
 
             if (_local_1.hasRentPeriodStarted)

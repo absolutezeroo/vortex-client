@@ -197,18 +197,20 @@ package com.sulake.habbo.room.object.logic.furniture
         override public function mouseEvent(spriteMouseEvent:RoomSpriteMouseEvent, roomGeometry:IRoomGeometry):void
         {
             var mouseEvent:RoomObjectEvent;
+            var roomObject:IRoomObjectController;
 
             if (((spriteMouseEvent == null) || (roomGeometry == null)))
             {
                 return;
             };
 
-            if (object == null)
+            roomObject = object;
+            if (roomObject == null)
             {
                 return;
             };
 
-            var modelController:IRoomObjectModelController = (object.getModel() as IRoomObjectModelController);
+            var modelController:IRoomObjectModelController = (roomObject.getModel() as IRoomObjectModelController);
 
             if (modelController == null)
             {
@@ -222,7 +224,7 @@ package com.sulake.habbo.room.object.logic.furniture
 
                     if (eventDispatcher != null)
                     {
-                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_MOVE", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_MOVE", roomObject, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
                         (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
                         (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
                         (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
@@ -237,12 +239,12 @@ package com.sulake.habbo.room.object.logic.furniture
                     {
                         if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.indexOf("http") == 0)))
                         {
-                            eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_SHOW", object));
+                            eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_SHOW", roomObject));
                         };
 
                         if (eventDispatcher != null)
                         {
-                            mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_ENTER", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                            mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_ENTER", roomObject, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
                             (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
                             (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
                             (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
@@ -260,12 +262,12 @@ package com.sulake.habbo.room.object.logic.furniture
                     {
                         if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.indexOf("http") == 0)))
                         {
-                            eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_HIDE", object));
+                            eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_HIDE", roomObject));
                         };
 
                         if (eventDispatcher != null)
                         {
-                            mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_LEAVE", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                            mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_LEAVE", roomObject, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
                             (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
                             (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
                             (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
@@ -284,7 +286,7 @@ package com.sulake.habbo.room.object.logic.furniture
 
                     if (eventDispatcher != null)
                     {
-                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_CLICK", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_CLICK", roomObject, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
                         (mouseEvent as RoomObjectMouseEvent).localX = spriteMouseEvent.localX;
                         (mouseEvent as RoomObjectMouseEvent).localY = spriteMouseEvent.localY;
                         (mouseEvent as RoomObjectMouseEvent).spriteOffsetX = spriteMouseEvent.spriteOffsetX;
@@ -294,17 +296,17 @@ package com.sulake.habbo.room.object.logic.furniture
 
                     if ((((!(eventDispatcher == null)) && (!(adClickUrl == null))) && (adClickUrl.indexOf("http") == 0)))
                     {
-                        eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_HIDE", object));
+                        eventDispatcher.dispatchEvent(new RoomObjectRoomAdEvent("RORAE_ROOM_AD_TOOLTIP_HIDE", roomObject));
                     };
 
                     if (((!(eventDispatcher == null)) && (!(adClickUrl == null))))
                     {
-                        handleAdClick(object.getId(), object.getType(), adClickUrl);
+                        handleAdClick(roomObject.getId(), roomObject.getType(), adClickUrl);
                     };
 
-                    if ((((!(eventDispatcher == null)) && (!(object == null))) && (!(contextMenu == null))))
+                    if (((!(eventDispatcher == null)) && (!(contextMenu == null))))
                     {
-                        eventDispatcher.dispatchEvent(new RoomObjectWidgetRequestEvent("ROWRE_OPEN_FURNI_CONTEXT_MENU", object));
+                        eventDispatcher.dispatchEvent(new RoomObjectWidgetRequestEvent("ROWRE_OPEN_FURNI_CONTEXT_MENU", roomObject));
                     };
 
                     return;
@@ -312,7 +314,7 @@ package com.sulake.habbo.room.object.logic.furniture
 
                     if (eventDispatcher != null)
                     {
-                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_DOWN", object, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
+                        mouseEvent = new RoomObjectMouseEvent("ROE_MOUSE_DOWN", roomObject, spriteMouseEvent.eventId, spriteMouseEvent.altKey, spriteMouseEvent.ctrlKey, spriteMouseEvent.shiftKey, spriteMouseEvent.buttonDown);
                         eventDispatcher.dispatchEvent(mouseEvent);
                     };
 
