@@ -48,6 +48,7 @@ package {
         public static const ERROR_UNCAUGHT_ERROR:int = 40;
         private static const ARGUMENT_ENVIRONMENT:String = "server";
         private static const ARGUMENT_SSO_TOKEN:String = "ticket";
+        private static const PARAM_RESTART_ERROR:String = "client.restart.error";
 
         protected static var PROCESSLOG_ENABLED:Boolean = false;
         private static var _crashReportUrl:String = "http://vortex-assets.local/api/log/crash";
@@ -66,6 +67,7 @@ package {
         private var _argumentsParsed:Boolean;
         private var _loginScreenEnabled:Boolean = true;
         private var _gzipEnvironmentLogged:Boolean = false;
+        private var _restartPending:Boolean;
         private var _parameters:Dictionary;
 
         public function HabboAir() {
@@ -283,11 +285,8 @@ package {
         private function onLoginFLowFinished(event:Event):void {
             _parameters["sso.token"] = _loginFlow.ssoToken;
             _parameters["environment.id"] = CommunicationUtils.readSOLString("environment");
-            _loginFlow.removeEventListener(LoginFlow.LOGIN_FLOW_FINISHED_EVENT, onLoginFLowFinished);
-            _loginFlow.removeEventListener(OnBoardingHc.FLOW_FINISHED_EVENT, onLoginFLowFinished);
-            _loginFlow.dispose();
-            _loginFlow = null;
-            _loadingScreen = null;
+            disposeLoginFlow();
+            disposeLoadingScreen();
             createLoadingScreen();
             checkPreLoadingStatus();
         }
@@ -385,18 +384,46 @@ package {
                 _loginFlow.addEventListener(OnBoardingHc.FLOW_FINISHED_EVENT, onLoginFLowFinished);
                 stage.addChild(_loginFlow);
                 _loginFlow.init();
+                showRestartErrorIfNeeded();
                 updateLoadingBarProgress();
 
                 return;
             }
 
             createLoadingScreen();
+            checkPreLoadingStatus();
         }
 
         public function createLoadingScreen():void {
+            disposeLoadingScreen();
             _loadingScreen = new HabboLoadingScreen(stage.stageWidth, stage.stageHeight, clone(_parameters));
             updateLoadingBarProgress();
             stage.addChild(DisplayObject(_loadingScreen));
+        }
+
+        private function disposeLoginFlow():void {
+            if (_loginFlow != null) {
+                _loginFlow.removeEventListener(LoginFlow.LOGIN_FLOW_FINISHED_EVENT, onLoginFLowFinished);
+                _loginFlow.removeEventListener(OnBoardingHc.FLOW_FINISHED_EVENT, onLoginFLowFinished);
+                _loginFlow.dispose();
+                _loginFlow = null;
+            }
+        }
+
+        private function disposeLoadingScreen():void {
+            if (_loadingScreen != null) {
+                _loadingScreen.dispose();
+                _loadingScreen = null;
+            }
+        }
+
+        private function showRestartErrorIfNeeded():void {
+            var restartError:String = _parameters[PARAM_RESTART_ERROR];
+
+            if (((restartError) && (restartError.length > 0) && (_loginFlow != null))) {
+                _loginFlow.showErrorMessage("${" + restartError + "}");
+                delete _parameters[PARAM_RESTART_ERROR];
+            }
         }
 
         private function updateLoadingBarProgress():void {
@@ -433,6 +460,7 @@ package {
                 mainInstance = (new mainClass(_loadingScreen, _parameters) as HabboAirMain);
 
                 if (mainInstance) {
+                    mainInstance.addEventListener(HabboAirMain.RESTART_CLIENT, onRestartClient, false, 0, true);
                     mainInstance.addEventListener("removed", onMainRemoved, false, 0, true);
                     addChild(mainInstance);
                 }
@@ -440,7 +468,24 @@ package {
         }
 
         private function onMainRemoved(event:Event):void {
+            if (_restartPending) {
+                _restartPending = false;
+                return;
+            }
+
             dispose();
+        }
+
+        private function onRestartClient(event:Event):void {
+            if (event.currentTarget) {
+                event.currentTarget.removeEventListener(HabboAirMain.RESTART_CLIENT, onRestartClient);
+            }
+
+            _restartPending = true;
+            delete _parameters["sso.token"];
+            disposeLoginFlow();
+            disposeLoadingScreen();
+            createNewUserLobbyOrLoadingScreen();
         }
 
         private function dispose():void {
@@ -450,7 +495,7 @@ package {
                 _disposed = true;
 
                 if (_loadingScreen != null) {
-                    _loadingScreen = null;
+                    disposeLoadingScreen();
                 }
 
                 if (parent) {

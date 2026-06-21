@@ -31,6 +31,8 @@
     {
 
         private static const DEFAULT_CONNECTION_ATTEMPTS:int = 2;
+        private static const CONNECTION_TIMEOUT_MS:int = 5000;
+        private static const CONNECTION_FAILED_EVENT:String = "HABBO_CONNECTION_EVENT_CONNECTION_FAILED";
 
         private var _communication:ICoreCommunicationManager;
         private var _SafeStr_2122:IMessageConfiguration = new HabboMessages();
@@ -78,6 +80,11 @@
         {
             if (_connection)
             {
+                if (_connection.connected)
+                {
+                    _connection.send(new DisconnectMessageComposer());
+                };
+
                 _connection.close();
             };
         }
@@ -136,6 +143,12 @@
                 _connection = null;
             };
 
+            if (_SafeStr_2126)
+            {
+                _SafeStr_2126.stop();
+                _SafeStr_2126.removeEventListener("timer", onTryNextPort);
+            };
+
             if (_webApiSession)
             {
                 _webApiSession.dispose();
@@ -177,8 +190,8 @@
 
         public function renewSocket():void
         {
-            _SafeStr_2127 = 1;
-            _requiresInitialRetryAttempt = true;
+            resetConnectionAttempts();
+            _SafeStr_2130 = false;
 
             if (_connection != null)
             {
@@ -199,6 +212,7 @@
                     };
 
                     _SafeStr_2130 = true;
+                    resetConnectionAttempts();
 
                     if (allRequiredDependenciesInjected)
                     {
@@ -316,7 +330,7 @@
             {
                 ErrorReportStorage.addDebugData("ConnectionRetry", ("Connection attempt " + _SafeStr_2127));
                 _SafeStr_2127++;
-                _local_1 = 2;
+                _local_1 = DEFAULT_CONNECTION_ATTEMPTS;
 
                 if (_ports.length == 1)
                 {
@@ -336,12 +350,15 @@
                     };
 
                     _SafeStr_2129 = true;
-                    Core.error("Connection failed to host and ports", true, 30);
+                    _SafeStr_2130 = false;
+                    ErrorReportStorage.addDebugData("ConnectionRetry", "Connection failed to host and ports");
+                    events.dispatchEvent(new Event(CONNECTION_FAILED_EVENT));
                     return;
                 };
             };
 
-            _connection.timeout = (_SafeStr_2127 * 10000);
+            _connection.createSocket();
+            _connection.timeout = CONNECTION_TIMEOUT_MS;
             _connection.init(_host, _ports[_portIndex]);
 
             if (_requiresInitialRetryAttempt)
@@ -353,8 +370,23 @@
 
         private function tryNextPort():void
         {
+            _SafeStr_2126.stop();
+            _SafeStr_2126.reset();
+            _SafeStr_2126.removeEventListener("timer", onTryNextPort);
             _SafeStr_2126.addEventListener("timer", onTryNextPort);
             _SafeStr_2126.start();
+        }
+
+        private function resetConnectionAttempts():void
+        {
+            _SafeStr_2127 = 1;
+            _portIndex = -1;
+            _SafeStr_2129 = false;
+            _requiresInitialRetryAttempt = true;
+
+            _SafeStr_2126.stop();
+            _SafeStr_2126.reset();
+            _SafeStr_2126.removeEventListener("timer", onTryNextPort);
         }
 
         private function unloading(_arg_1:Event):void
@@ -384,6 +416,7 @@
 
         private function onConnect(_arg_1:Event):void
         {
+            _SafeStr_2129 = false;
             ErrorReportStorage.addDebugData("Connection", (("Connected with " + _SafeStr_2127) + " attempts"));
         }
 

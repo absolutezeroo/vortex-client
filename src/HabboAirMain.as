@@ -25,6 +25,7 @@ package {
 
     public class HabboAirMain extends Sprite {
 
+        public static const RESTART_CLIENT:String = "HABBO_AIR_MAIN_RESTART_CLIENT";
         public static const CORE_RATIO:Number = 0.6;
         private static const INIT_STEPS:int = 3;
 
@@ -37,6 +38,7 @@ package {
         private var _coreRunning:Boolean = false;
         private var _parameters:Dictionary;
         private var _prepareCoreOnNextFrame:Boolean;
+        private var _bootstrapComplete:Boolean;
 
         public function HabboAirMain(loadingScreen:IHabboLoadingScreen, parameters:Dictionary) {
             _loadingScreen = loadingScreen;
@@ -54,14 +56,12 @@ package {
             removeEventListener("addedToStage", onAddedToStage);
             removeEventListener("exitFrame", onExitFrame);
 
-            if (_loadingScreen) {
-                _loadingScreen.dispose();
-                _loadingScreen = null;
-            }
-            ;
+            disposeLoadingScreen();
 
             if (_core != null) {
                 _core.events.removeEventListener("COMPONENT_EVENT_RUNNING", onCoreRunning);
+                _core.events.removeEventListener("COMPONENT_EVENT_ERROR", onCoreError);
+                _core.events.removeEventListener("COMPONENT_EVENT_REBOOT", onCoreReboot);
             }
             ;
 
@@ -81,6 +81,7 @@ package {
             }
 
             catch (error:Error) {
+                ErrorReportStorage.addDebugData("Unload", ("Client unloading failed: " + error.message));
             }
             ;
         }
@@ -118,8 +119,8 @@ package {
             }
             ;
 
-            if (((_roomEngineReady) && (_coreRunning))) {
-                dispose();
+            if (((_roomEngineReady) && (_coreRunning) && (!(_bootstrapComplete)))) {
+                completeBootstrap();
             }
             ;
         }
@@ -201,7 +202,27 @@ package {
             }
 
             catch (error:Error) {
+                HabboAir.trackLoginStep(ClientEnum.CLIENT_CORE_INIT_FAIL);
+                HabboAir.reportCrash(("Failed to prepare the core: " + error.message), 10, true, error);
                 Core.dispose();
+                requestClientRestart("generic.error");
+            }
+            ;
+        }
+
+        private function completeBootstrap():void {
+            _bootstrapComplete = true;
+            removeEventListener("progress", onProgressEvent);
+            removeEventListener("complete", onCompleteEvent);
+            removeEventListener("addedToStage", onAddedToStage);
+            removeEventListener("exitFrame", onExitFrame);
+            disposeLoadingScreen();
+        }
+
+        private function disposeLoadingScreen():void {
+            if (_loadingScreen) {
+                _loadingScreen.dispose();
+                _loadingScreen = null;
             }
             ;
         }
@@ -253,9 +274,26 @@ package {
             Logger.log(("Reboot application! " + System.privateMemory), System.totalMemory, System.totalMemoryNumber);
             _core.events.removeEventListener("COMPONENT_EVENT_ERROR", onCoreError);
             _core.events.removeEventListener("COMPONENT_EVENT_REBOOT", onCoreReboot);
+            unloading();
             Core.dispose();
             _core = null;
             Logger.log(("Application ready for restart! " + System.privateMemory), System.totalMemory, System.totalMemoryNumber);
+            requestClientRestart();
+        }
+
+        private function requestClientRestart(errorKey:String = null):void {
+            if (_parameters)
+            {
+                delete _parameters["sso.token"];
+
+                if (((errorKey) && (errorKey.length > 0)))
+                {
+                    _parameters["client.restart.error"] = errorKey;
+                };
+            };
+
+            dispatchEvent(new Event(RESTART_CLIENT));
+            dispose();
         }
 
         private function simpleQueueInterface(iid:IID, callback:Function):void {

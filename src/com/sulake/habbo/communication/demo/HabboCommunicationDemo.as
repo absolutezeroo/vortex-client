@@ -11,6 +11,7 @@
     import com.sulake.iid.IIDHabboWindowManager;
     import com.sulake.iid.IIDHabboCommunicationManager;
     import com.sulake.iid.IIDHabboLocalizationManager;
+    import com.sulake.core.runtime.CoreComponentContext;
     import __AS3__.vec.Vector;
     import com.sulake.core.Core;
     import flash.display.Stage;
@@ -41,6 +42,7 @@
         public static const ERROR_TYPE_IO_ERROR:String = "ioError";
         public static const ERROR_CODE_MAINTENANCE:String = "maintenance";
         private static const AUTO_RECONNECT:Boolean = false;
+        private static const CONNECTION_FAILED_EVENT:String = "HABBO_CONNECTION_EVENT_CONNECTION_FAILED";
 
         private var _SafeStr_596:HabboLoginDemoScreen;
         private var _SafeStr_1660:Boolean;
@@ -133,6 +135,8 @@
             };
 
             _SafeStr_457 = new IncomingMessages(this, _communication);
+            _communication.events.removeEventListener(CONNECTION_FAILED_EVENT, onConnectionFailed);
+            _communication.events.addEventListener(CONNECTION_FAILED_EVENT, onConnectionFailed);
             context.events.addEventListener("HHVE_ERROR", onHotelViewError);
             prepareProperties();
             HabboWebTools.baseUrl = getProperty("url.prefix");
@@ -173,6 +177,11 @@
             {
                 _SafeStr_457.dispose();
                 _SafeStr_457 = null;
+            };
+
+            if (_communication)
+            {
+                _communication.events.removeEventListener(CONNECTION_FAILED_EVENT, onConnectionFailed);
             };
 
             _localization = null;
@@ -507,6 +516,7 @@
         public function disconnected(_arg_1:int, _arg_2:String):void
         {
             var _local_3:String;
+            var restartErrorKey:String;
             _SafeStr_1661 = true;
 
             if (!_SafeStr_596)
@@ -520,19 +530,60 @@
                 _localization.registerParameter(_local_3, "reason", _arg_1.toString());
                 _localization.registerParameter(_local_3, "reasonName", _arg_2);
 
+                restartErrorKey = ((_arg_1 == -3) ? "connection.login.error.-400.desc" : null);
+
+                if (_windowManager == null)
+                {
+                    requestClientRestart(restartErrorKey);
+                    return;
+                };
+
                 _windowManager.alert(DisconnectReasonEvent.resolveDisconnectedReasonLocalizationKey(_arg_1), "${connection.login.logged_out}", 0, function (_dlg:IAlertDialog, _evt:WindowEvent):void
                 {
                     _dlg.dispose();
-                    if (_communication)
-                    {
-                        _communication.disconnect();
-                    }
-                    initComponent();
+                    requestClientRestart(restartErrorKey);
                 });
                 return;
             };
 
             onBufferedDisconnected(_arg_1, _arg_2);
+        }
+
+        private function onConnectionFailed(_arg_1:Event):void
+        {
+            requestClientRestart("connection.login.error.-400.desc");
+        }
+
+        private function requestClientRestart(errorKey:String=null):void
+        {
+            var coreContext:CoreComponentContext = (context as CoreComponentContext);
+
+            if (coreContext == null)
+            {
+                if (_communication)
+                {
+                    _communication.disconnect();
+                };
+
+                return;
+            };
+
+            if (coreContext.arguments)
+            {
+                delete coreContext.arguments["sso.token"];
+
+                if (((errorKey) && (errorKey.length > 0)))
+                {
+                    coreContext.arguments["client.restart.error"] = errorKey;
+                }
+
+                else
+                {
+                    delete coreContext.arguments["client.restart.error"];
+                };
+            };
+
+            coreContext.reboot();
         }
 
         private function onBufferedDisconnected(_arg_1:int, _arg_2:String):void

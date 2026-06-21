@@ -119,6 +119,11 @@
             _dataBuffer = new ByteArray();
             _serverToClientEncryption = null;
             _clientToServerEncryption = null;
+            _authenticated = false;
+            _configurationReady = false;
+            _pendingClientMessages = null;
+            _pendingServerMessages = null;
+            _lastProcessedMessage = null;
             _socket = new Socket();
             _socket.addEventListener("connect", onConnect);
             _socket.addEventListener("complete", onComplete);
@@ -155,9 +160,31 @@
                 _stateListener.connectionInit(_arg_1, _arg_2);
             };
 
+            if (_socket == null)
+            {
+                createSocket();
+            };
+
+            _timeOutTimer.stop();
+            _timeOutTimer.reset();
             _timeOutTimer.start();
             _timeOutStarted = getTimer();
-            _socket.connect(_arg_1, _arg_2);
+
+            try
+            {
+                _socket.connect(_arg_1, _arg_2);
+            }
+
+            catch(e:Error)
+            {
+                _timeOutTimer.stop();
+
+                var _local_3:IOErrorEvent = new IOErrorEvent("ioError");
+                _local_3.text = e.message;
+                dispatchEvent(_local_3);
+                return (false);
+            };
+
             return (true);
         }
 
@@ -487,6 +514,7 @@
 
             catch(e:Error)
             {
+                Logger.log(("[SocketConnection] Failed to close socket: " + e.message));
             };
         }
 
