@@ -1,27 +1,20 @@
 {
 	"type": "app",
-	"config": "flex",
+	"config": "air",
 	"mainClass": "HabboAir",
 	"additionalOptions":[
 		"-default-background-color=#000000",
-		"-omit-trace-statements=false",
-		"--incremental=true"
+		"-omit-trace-statements=false"
 	],
 	"compilerOptions": {
 		"source-path": [
-			"src/"
+			"src/",
+			"src/generated/"
 		],
+		"allow-source-path-overlap": true,
 		"output": "bin/Habbo.swf",
 		"optimize": true,
 		"strict": false,
-		"target-player": "25.0",
-		"swf-version": 35,
-		"external-library-path": [
-			"C:/Laragon/bin/flex-sdk/frameworks/libs/player/25.0/playerglobal.swc"
-		],
-		"library-path": [
-			"C:/Laragon/bin/flex-sdk/frameworks/libs",
-			"C:/Laragon/bin/flex-sdk/frameworks/libs/mx"
-		]
+		"swf-version": 35
 	}
 }

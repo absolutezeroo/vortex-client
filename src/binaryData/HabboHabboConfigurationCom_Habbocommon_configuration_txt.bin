@@ -35,7 +35,7 @@ interstitial.enabled=false
 
 lagWarninglog.enabled=false
 monitor.garbage.collection=false
-performancetest.distribution.enabled=false
+performancetest.distribution.enabled=true
 
 hotelview.banner.url=${url.prefix}/gamedata/supersecret
 external.variables.txt=${url.prefix}/gamedata/external_variables/1

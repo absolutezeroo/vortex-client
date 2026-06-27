@@ -545,6 +545,7 @@
             <asset mimeType="text/xml" name="custom_stack_height_xml"/>
             <asset mimeType="text/xml" name="video_viewer_xml"/>
             <asset mimeType="text/xml" name="rentablespace_xml"/>
+            <asset mimeType="text/xml" name="rentablespace_config_xml"/>
             <asset mimeType="text/xml" name="vimeo_viewer_xml"/>
             <asset mimeType="text/xml" name="room_tools_toolbar_xml"/>
             <asset mimeType="text/xml" name="room_tools_info_xml"/>

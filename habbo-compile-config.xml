@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <flex-config xmlns="http://www.adobe.com/2006/flex-config">
-    <target-player>25.0</target-player>
     <swf-version>35</swf-version>
     <compiler>
-        <external-library-path>
-            <path-element>C:/Laragon/bin/flex-sdk/frameworks/libs/player/25.0/playerglobal.swc</path-element>
-        </external-library-path>
-        <library-path>
-            <path-element>C:/Laragon/bin/flex-sdk/frameworks/libs</path-element>
-            <path-element>C:/Laragon/bin/flex-sdk/frameworks/libs/mx</path-element>
-        </library-path>
+        <allow-source-path-overlap>true</allow-source-path-overlap>
         <source-path>
             <path-element>src</path-element>
             <path-element>src/generated</path-element>
         </source-path>
         <optimize>true</optimize>
         <omit-trace-statements>false</omit-trace-statements>
-        <incremental>true</incremental>
         <strict>true</strict>
     </compiler>
     <output>bin/Habbo.swf</output>
