@@ -142,7 +142,7 @@ package onBoardingHc.steps
             _playButton.active = false;
             addChild(_playButton);
 
-            _createButton = new ColouredButton("gfreen", "${connection.login.create_avatar}", new Rectangle(0, 300, 0, 40), true, onCreateAvatar, 0xD8D8D8);
+            _createButton = new ColouredButton("gfreen", "${login.select_avatar.create_avatar}", new Rectangle(0, 300, 0, 40), true, onCreateAvatar, 0xD8D8D8);
             addChild(_createButton);
         }
 

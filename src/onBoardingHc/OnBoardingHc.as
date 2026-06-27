@@ -14,11 +14,14 @@ package onBoardingHc
     import onBoardingHcUi.LocalizedSprite;
     import onBoardingHcUi.LocalizedTextField;
     import flash.utils.ByteArray;
+    import com.sulake.core.assets.AssetLoaderStruct;
     import com.sulake.core.assets.AssetLibrary;
     import com.sulake.core.assets.IAssetLibrary;
     import com.sulake.core.assets.AssetLibraryCollection;
+    import com.sulake.core.assets.loaders.AssetLoaderEvent;
     import com.sulake.habbo.communication.login.WebApiLoginProvider;
     import flash.events.Event;
+    import flash.net.URLRequest;
     import com.sulake.habbo.communication.login.SsoTokenAvailableEvent;
     import flash.display.Bitmap;
     import flash.geom.Rectangle;
@@ -40,6 +43,8 @@ package onBoardingHc
     import onBoardingHc.steps.OnBoardingHcStepSsoToken;
     import onBoardingHc.steps.OnBoardingHcStepRegister;
     import onBoardingHc.steps.OnBoardingHcStepAvatarCreate;
+    import com.sulake.habbo.avatar.AvatarRenderManager;
+    import com.sulake.habbo.avatar.IAvatarRenderManager;
 
     public class OnBoardingHc extends Sprite implements IOnBoardingHcContext, IDisposable, ILoginViewer
     {
@@ -75,6 +80,9 @@ package onBoardingHc
         private var _configuration:HabboConfigurationManager;
         private var _communication:HabboCommunicationManager;
         private var _localization:HabboLocalizationManager;
+        private var _avatarRenderManager:IAvatarRenderManager;
+        private var _avatarFigurePartListLoader:AssetLoaderStruct;
+        private var _avatarFigurePartListUrl:String;
         private var _loginProvider:ILoginProvider;
         private var _ssoToken:String;
         private var _closeButton:ColouredButton;
@@ -101,6 +109,14 @@ package onBoardingHc
 
             if (_context)
             {
+                clearAvatarFigurePartListLoader();
+
+                if (_avatarRenderManager)
+                {
+                    _avatarRenderManager.dispose();
+                    _avatarRenderManager = null;
+                };
+
                 _context.dispose();
                 _context = null;
             };
@@ -171,6 +187,288 @@ package onBoardingHc
             return (new HabboCommunicationManager(context, 0, communicationLibrary));
         }
 
+        private function createAvatarRenderManager(context:IContext):IAvatarRenderManager
+        {
+            var avatarBytes:ByteArray = (new HabboAvatarRenderLib.manifest() as ByteArray);
+            var avatarXml:XML = new XML(avatarBytes.readUTFBytes(avatarBytes.length));
+            var manifestXml:XML = createAvatarRenderManifest(avatarXml.component.assets.asset);
+
+            var avatarLibrary:IAssetLibrary = new AssetLibrary("_assetsAvatarRender@", manifestXml);
+            avatarLibrary.loadFromResource(manifestXml, HabboAvatarRenderLib);
+            (_context.assets as AssetLibraryCollection).addAssetLibrary(avatarLibrary);
+
+            var avatarRenderer:AvatarRenderManager = new AvatarRenderManager(context, 0, avatarLibrary, true);
+            avatarRenderer.mode = "local_only";
+            avatarRenderer.injectFigureData(createOnboardingFigureData(avatarXml.component.assets.asset));
+            avatarRenderer.initializeOnboardingDownloads(_configuration);
+            return (avatarRenderer);
+        }
+
+        private function loadAvatarFigurePartList():void
+        {
+            if (((!_configuration) || (!_avatarRenderManager) || (!_context)))
+                return;
+
+            var figurePartListUrl:String = _configuration.getProperty("external.figurepartlist.txt");
+
+            if (((figurePartListUrl == null) || (figurePartListUrl == "")))
+                return;
+
+            if (_avatarFigurePartListUrl == figurePartListUrl)
+                return;
+
+            clearAvatarFigurePartListLoader();
+            _avatarFigurePartListUrl = figurePartListUrl;
+
+            var assetName:String = "onboarding.avatar.figurepartlist";
+
+            if (_context.assets.hasAsset(assetName))
+            {
+                _context.assets.removeAsset(_context.assets.getAssetByName(assetName)).dispose();
+            };
+
+            _avatarFigurePartListLoader = _context.assets.loadAssetFromFile(assetName, new URLRequest(figurePartListUrl), "text/plain");
+            _avatarFigurePartListLoader.addEventListener(AssetLoaderEvent.ASSET_LOADER_EVENT_COMPLETE, onAvatarFigurePartListLoaded);
+            _avatarFigurePartListLoader.addEventListener(AssetLoaderEvent.ASSET_LOADER_EVENT_ERROR, onAvatarFigurePartListFailed);
+        }
+
+        private function onAvatarFigurePartListLoaded(event:Event):void
+        {
+            var loaderStruct:AssetLoaderStruct = (event.target as AssetLoaderStruct);
+            var figurePartList:String;
+            var figurePartListXml:XML;
+
+            clearAvatarFigurePartListLoader();
+
+            if (((loaderStruct == null) || (loaderStruct.assetLoader == null)))
+            {
+                _avatarFigurePartListUrl = null;
+                return;
+            };
+
+            figurePartList = (loaderStruct.assetLoader.content as String);
+
+            if (((figurePartList == null) || (figurePartList.length == 0)))
+            {
+                _avatarFigurePartListUrl = null;
+                return;
+            };
+
+            try
+            {
+                figurePartListXml = new XML(figurePartList);
+            }
+            catch(error:Error)
+            {
+                Logger.log(("[OnBoardingHc] figurepartlist XML error: " + error.message));
+                _avatarFigurePartListUrl = null;
+                return;
+            };
+
+            _avatarRenderManager.injectFigureData(figurePartListXml);
+            refreshAvatarCreateFigureData();
+        }
+
+        private function onAvatarFigurePartListFailed(event:Event):void
+        {
+            Logger.log(("[OnBoardingHc] figurepartlist download failed: " + _avatarFigurePartListUrl));
+            _avatarFigurePartListUrl = null;
+            clearAvatarFigurePartListLoader();
+        }
+
+        private function clearAvatarFigurePartListLoader():void
+        {
+            if (_avatarFigurePartListLoader)
+            {
+                _avatarFigurePartListLoader.removeEventListener(AssetLoaderEvent.ASSET_LOADER_EVENT_COMPLETE, onAvatarFigurePartListLoaded);
+                _avatarFigurePartListLoader.removeEventListener(AssetLoaderEvent.ASSET_LOADER_EVENT_ERROR, onAvatarFigurePartListFailed);
+                _avatarFigurePartListLoader = null;
+            };
+        }
+
+        private function refreshAvatarCreateFigureData():void
+        {
+            if (_stepAvatarCreate)
+            {
+                _stepAvatarCreate.reloadFigureData();
+            };
+        }
+
+        private function createAvatarRenderManifest(avatarAssets:XMLList):XML
+        {
+            var manifestXml:XML = <manifest><library><assets /></library></manifest>;
+            var assetsXml:XML = manifestXml.library.assets[0];
+
+            for each (var asset:XML in avatarAssets)
+            {
+                if (hasEmbeddedAvatarAsset(String(asset.@name)))
+                {
+                    assetsXml.appendChild(asset.copy());
+                };
+            };
+
+            return (manifestXml);
+        }
+
+        private function createOnboardingFigureData(avatarAssets:XMLList):XML
+        {
+            var embeddedParts:Dictionary = collectEmbeddedAvatarParts(avatarAssets);
+            var figureData:XML =
+                <figuredata>
+                    <colors>
+                        <palette id="1">
+                            <color id="1" index="1" club="0" selectable="1">FFDBAC</color>
+                            <color id="10" index="2" club="0" selectable="1">F1C27D</color>
+                            <color id="14" index="3" club="0" selectable="1">E0AC69</color>
+                            <color id="20" index="4" club="0" selectable="1">C68642</color>
+                            <color id="30" index="5" club="0" selectable="1">8D5524</color>
+                        </palette>
+                        <palette id="3">
+                            <color id="61" index="1" club="0" selectable="1">FFFFFF</color>
+                            <color id="64" index="2" club="0" selectable="1">2D2D2D</color>
+                            <color id="66" index="3" club="0" selectable="1">E53935</color>
+                            <color id="72" index="4" club="0" selectable="1">1976D2</color>
+                            <color id="73" index="5" club="0" selectable="1">43A047</color>
+                            <color id="75" index="6" club="0" selectable="1">FDD835</color>
+                            <color id="80" index="7" club="0" selectable="1">8E24AA</color>
+                            <color id="81" index="8" club="0" selectable="1">F4511E</color>
+                            <color id="82" index="9" club="0" selectable="1">6D4C41</color>
+                            <color id="84" index="10" club="0" selectable="1">00ACC1</color>
+                            <color id="85" index="11" club="0" selectable="1">D81B60</color>
+                            <color id="88" index="12" club="0" selectable="1">7CB342</color>
+                        </palette>
+                    </colors>
+                    <sets />
+                </figuredata>;
+
+            var sets:XML = figureData.sets[0];
+            sets.appendChild(createOnboardingSetType("hd", 1, getEmbeddedPartIds(embeddedParts, "hd"), ["bd", "hd", "lh", "rh"], embeddedParts));
+            sets.appendChild(createOnboardingSetType("hr", 3, getEmbeddedPartIds(embeddedParts, "hr"), ["hr", "hrb"], embeddedParts));
+            sets.appendChild(createOnboardingSetType("ch", 3, getEmbeddedPartIds(embeddedParts, "ch"), ["ch", "ls", "rs"], embeddedParts));
+            sets.appendChild(createOnboardingSetType("lg", 3, getEmbeddedPartIds(embeddedParts, "lg"), ["lg"], embeddedParts));
+            sets.appendChild(createOnboardingSetType("sh", 3, getEmbeddedPartIds(embeddedParts, "sh"), ["sh"], embeddedParts));
+            return (figureData);
+        }
+
+        private function collectEmbeddedAvatarParts(avatarAssets:XMLList):Dictionary
+        {
+            var embeddedParts:Dictionary = new Dictionary();
+            var assetName:String;
+            var match:Array;
+
+            for each (var asset:XML in avatarAssets)
+            {
+                assetName = String(asset.@name);
+                match = /^h_std_([a-z]+)_([0-9]+)_/.exec(assetName);
+
+                if (((match != null) && hasEmbeddedAvatarAsset(assetName)))
+                {
+                    addEmbeddedPart(embeddedParts, match[1], parseInt(match[2]));
+                };
+            };
+
+            return (embeddedParts);
+        }
+
+        private function hasEmbeddedAvatarAsset(assetName:String):Boolean
+        {
+            return (Object(HabboAvatarRenderLib).hasOwnProperty(assetName));
+        }
+
+        private function addEmbeddedPart(embeddedParts:Dictionary, partType:String, partId:int):void
+        {
+            var ids:Array = embeddedParts[partType];
+
+            if (ids == null)
+            {
+                ids = [];
+                embeddedParts[partType] = ids;
+            };
+
+            if (ids.indexOf(partId) == -1)
+            {
+                ids.push(partId);
+            };
+        }
+
+        private function getEmbeddedPartIds(embeddedParts:Dictionary, partType:String):Array
+        {
+            var ids:Array = embeddedParts[partType];
+
+            if (ids == null)
+            {
+                return ([]);
+            };
+
+            ids = ids.concat();
+            ids.sort(Array.NUMERIC);
+            return (ids);
+        }
+
+        private function createOnboardingSetType(setTypeName:String, paletteId:int, setIds:Array, partTypes:Array, embeddedParts:Dictionary):XML
+        {
+            var setType:XML = <settype />;
+            setType.@type = setTypeName;
+            setType.@paletteid = paletteId;
+            setType.@mand_m_0 = 1;
+            setType.@mand_f_0 = 1;
+            setType.@mand_m_1 = 1;
+            setType.@mand_f_1 = 1;
+
+            for each (var setId:int in setIds)
+            {
+                setType.appendChild(createOnboardingPartSet(setId, partTypes, embeddedParts));
+            };
+
+            return (setType);
+        }
+
+        private function createOnboardingPartSet(setId:int, partTypes:Array, embeddedParts:Dictionary):XML
+        {
+            var set:XML = <set />;
+            set.@id = setId;
+            set.@gender = "U";
+            set.@club = 0;
+            set.@colorable = 1;
+            set.@selectable = 1;
+            set.@preselectable = 1;
+
+            for each (var partType:String in partTypes)
+            {
+                var partId:int = getOnboardingPartId(partType, setId, embeddedParts);
+
+                if (partId > 0)
+                {
+                    var part:XML = <part />;
+                    part.@id = partId;
+                    part.@type = partType;
+                    part.@colorable = 1;
+                    part.@index = 0;
+                    part.@colorindex = 1;
+                    set.appendChild(part);
+                };
+            };
+
+            return (set);
+        }
+
+        private function getOnboardingPartId(partType:String, setId:int, embeddedParts:Dictionary):int
+        {
+            var ids:Array = embeddedParts[partType];
+
+            if (ids == null)
+            {
+                return (0);
+            };
+
+            if (ids.indexOf(setId) > -1)
+            {
+                return (setId);
+            };
+
+            return ((ids.length > 0) ? int(ids[0]) : 0);
+        }
+
         private function createFakeContext(config:Dictionary):void
         {
             _context = new FakeContext(config);
@@ -181,11 +479,18 @@ package onBoardingHc
             _configuration = createConfiguration(_context);
             _localization = createLocalization(_context);
             _communication = createCommunication(_context);
+            _avatarRenderManager = createAvatarRenderManager(_context);
+            loadAvatarFigurePartList();
             LocalizedSprite.localizationManager = _localization;
             LocalizedTextField.localizationManager = _localization;
             _localization.loadDefaultEmbedLocalizations(_configuration.getProperty("environment.id"));
             _loginProvider = new WebApiLoginProvider(this);
             _loginProvider.addEventListener("SSO_TOKEN_AVAILABLE", onSsoTokenAvailable);
+        }
+
+        public function get avatarRenderManager():IAvatarRenderManager
+        {
+            return (_avatarRenderManager);
         }
 
         private function onSsoTokenAvailable(ssoTokenEvent:SsoTokenAvailableEvent):void
@@ -641,6 +946,8 @@ package onBoardingHc
             _localization.loadDefaultEmbedLocalizations(_configuration.getProperty("environment.id"));
             Logger.log(("[OnBoardingHc] updated environment: " + environmentId));
             _communication.updateHostParameters();
+            _avatarRenderManager.initializeOnboardingDownloads(_configuration);
+            loadAvatarFigurePartList();
             _localization.requestLocalizationInit();
         }
 

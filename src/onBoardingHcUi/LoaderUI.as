@@ -18,14 +18,24 @@
 
         public static const STYLE_ILLUMINA:int = 1;
         public static const STYLE_HITCH:int = 2;
+        public static const _Str_2056:int = STYLE_ILLUMINA;
+        public static const _Str_1585:int = STYLE_HITCH;
         public static const ANCHOR_LEFT:String = "l";
         public static const ANCHOR_CENTRE:String = "c";
         public static const ANCHOR_RIGHT:String = "r";
         public static const ANCHOR_TOP:String = "t";
         public static const ANCHOR_MIDDLE:String = "m";
         public static const ANCHOR_BOTTOM:String = "b";
+        public static const L:String = ANCHOR_LEFT;
+        public static const C:String = ANCHOR_CENTRE;
+        public static const R:String = ANCHOR_RIGHT;
+        public static const T:String = ANCHOR_TOP;
+        public static const M:String = ANCHOR_MIDDLE;
+        public static const B:String = ANCHOR_BOTTOM;
         public static const HITCH_TEXT_BODY_COLOUR:uint = 8309486;
         public static const HITCH_TEXT_HIGHLIGHT_COLOUR:uint = 0xFFFFFF;
+        public static const _Str_1232:uint = HITCH_TEXT_BODY_COLOUR;
+        public static const _Str_1545:uint = HITCH_TEXT_HIGHLIGHT_COLOUR;
 
         private static const border_text_hitch_png:Class = HabboLoaderUI_border_text_hitch_png;
         public static var ubuntu_regular:Class = HabboLoaderUI_Habboubuntu_regular_ttf;
@@ -60,9 +70,19 @@
             return (field);
         }
 
+        public static function _Str_1132(text:String, size:int, color:uint, isBold:Boolean = false, isMultiline:Boolean = false, isInput:Boolean = false, isItalic:Boolean = false, align:String = "left", useKerning:Boolean = false, useThickness:Boolean = false):TextField
+        {
+            return (createTextField(text, size, color, isBold, isMultiline, isInput, isItalic, align, useKerning, useThickness));
+        }
+
         public static function addEtching(target:DisplayObject, isNegative:Boolean = false):void
         {
             target.filters = [((isNegative) ? NEGATIVE_ETCHING_FILTER.clone() : ETCHING_FILTER.clone())];
+        }
+
+        public static function _Str_1516(target:DisplayObject, isNegative:Boolean = false):void
+        {
+            addEtching(target, isNegative);
         }
 
         public static function lineUpHorizontally(first:DisplayObject, ...args):void
@@ -82,6 +102,11 @@
             };
         }
 
+        public static function _Str_2098(first:DisplayObject, ...args):void
+        {
+            lineUpHorizontally.apply(null, [first].concat(args));
+        }
+
         public static function lineUpHorizontallyRevers(first:DisplayObject, ...args):void
         {
             var pairIndex:int = 0;
@@ -97,6 +122,11 @@
                 first = nextItem;
                 pairIndex++;
             };
+        }
+
+        public static function _Str_2047(first:DisplayObject, ...args):void
+        {
+            lineUpVertically.apply(null, [first].concat(args));
         }
 
         public static function lineUpVerticallyRevers(first:DisplayObject, ...args):void
@@ -317,6 +347,11 @@
 
             scaleGrid.scale9Grid = sourceGrid;
             return (scaleGrid);
+        }
+
+        public static function _Str_2038(sourceBitmapData:BitmapData, sourceGrid:Rectangle):Shape
+        {
+            return (createScale9GridShapeFromImage(sourceBitmapData, sourceGrid));
         }
 
         public static function createTextBorder():Shape
