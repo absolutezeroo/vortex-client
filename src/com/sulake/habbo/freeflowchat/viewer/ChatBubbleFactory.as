@@ -171,6 +171,11 @@
                 _arg_1.text = _component.localizations.getLocalizationRaw(_local_8).value;
             };
 
+            if (_arg_1.chatType == 11)
+            {
+                _arg_1.text = _component.localizations.getLocalization(_arg_1.text, _arg_1.text);
+            };
+
             if (_chatBubblePool.length > 0)
             {
                 _local_17 = _chatBubblePool.pop();
@@ -326,6 +331,12 @@
                 _component.localizations.registerParameter(_local_8, "minutes", _local_7);
                 _component.localizations.registerParameter(_local_8, "seconds", _local_14);
                 _arg_1.text = _component.localizations.getLocalizationRaw(_local_8).value;
+                _local_5 = false;
+            };
+
+            if (_arg_1.chatType == 11)
+            {
+                _arg_1.text = _component.localizations.getLocalization(_arg_1.text, _arg_1.text);
                 _local_5 = false;
             };
 

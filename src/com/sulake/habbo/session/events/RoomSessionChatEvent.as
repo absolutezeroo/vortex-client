@@ -18,6 +18,7 @@
         public static const CHAT_TYPE_PET_REBREED_FERTILIZE:int = 8;
         public static const CHAT_TYPE_PET_SPEED_FERTILIZE:int = 9;
         public static const CHAT_TYPE_MUTE_REMAINING:int = 10;
+        public static const CHAT_TYPE_PET_VOCAL:int = 11;
 
         private var _userId:int = 0;
         private var _text:String = "";

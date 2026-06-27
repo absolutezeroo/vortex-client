@@ -19,6 +19,8 @@
     import com.sulake.habbo.communication.messages.parser.users.PetRespectNotificationParser;
     import com.sulake.habbo.communication.messages.parser.users.PetSupplementedNotificationParser;
     import com.sulake.habbo.communication.messages.parser.room.chat.FloodControlMessageParser;
+    import com.sulake.habbo.communication.messages.incoming.room.pets.PetVocalMessageEvent;
+    import com.sulake.habbo.communication.messages.parser.room.pets.PetVocalMessageParser;
 
     public class RoomChatHandler extends BaseHandler 
     {
@@ -41,6 +43,7 @@
             _arg_1.addMessageEvent(new FloodControlMessageEvent(onFloodControl));
             _arg_1.addMessageEvent(new HandItemReceivedMessageEvent(onHandItemNotification));
             _arg_1.addMessageEvent(new RemainingMutePeriodEvent(onRemainingMutePeriod));
+            _arg_1.addMessageEvent(new PetVocalMessageEvent(onPetVocal));
         }
 
         private function onRoomChat(_arg_1:IMessageEvent):void
@@ -311,6 +314,31 @@
                 Logger.log((("received flood control event for " + _local_2) + " seconds"));
                 listener.events.dispatchEvent(new RoomSessionChatEvent("RSCE_FLOOD_EVENT", _local_4, -1, ("" + _local_2), 0, 0, null));
             };
+        }
+
+        private function onPetVocal(_arg_1:PetVocalMessageEvent):void
+        {
+            if ((((_arg_1 == null) || (listener == null)) || (listener.events == null)))
+            {
+                return;
+            };
+
+            var _local_2:PetVocalMessageParser = _arg_1.getParser();
+
+            if (_local_2 == null)
+            {
+                return;
+            };
+
+            var _local_3:IRoomSession = listener.getSession(_SafeStr_586);
+
+            if (_local_3 == null)
+            {
+                return;
+            };
+
+            var _local_4:String = (("pet.vocals." + _local_2.petType) + ("." + _local_2.vocalType)) + ("." + _local_2.vocalIndex);
+            listener.events.dispatchEvent(new RoomSessionChatEvent("RSCE_CHAT_EVENT", _local_3, _local_2.petObjectId, _local_4, 11, 1));
         }
 
     }

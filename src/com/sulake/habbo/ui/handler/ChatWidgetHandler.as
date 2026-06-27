@@ -308,6 +308,12 @@
                                     _local_16 = 1;
                                 };
 
+                                if (_local_18 == 11)
+                                {
+                                    _local_14 = _container.localization.getLocalization(_local_14, _local_14);
+                                    _local_16 = 1;
+                                };
+
                                 if ((((_local_18 == 7) || (_local_18 == 8)) || (_local_18 == 9)))
                                 {
                                     _local_4 = "widget.chatbubble.petrevived";
