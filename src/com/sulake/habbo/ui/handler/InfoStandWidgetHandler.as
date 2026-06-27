@@ -26,6 +26,7 @@
     import com.sulake.habbo.communication.messages.outgoing.room.avatar.PassCarryItemMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.avatar.PassCarryItemToPetMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.engine.GiveSupplementToPetMessageComposer;
+    import com.sulake.habbo.communication.messages.outgoing.room.engine.IssuePetCommandMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.pets.RespectPetMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.avatar.DropCarryItemMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.users.GetExtendedProfileMessageComposer;
@@ -563,6 +564,7 @@
                 case "RWPCM_PET_COMMAND":
                     _local_8 = (_arg_1 as RoomWidgetPetCommandMessage);
                     _container.roomSession.sendChatMessage(_local_8.value);
+                    _container.connection.send(new IssuePetCommandMessageComposer(_local_8.petId, _local_8.commandId));
                     break;
                 case "RWVM_CHANGE_MOTTO_MESSAGE":
                     _local_23 = (_arg_1 as RoomWidgetChangeMottoMessage);

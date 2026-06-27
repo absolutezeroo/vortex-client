@@ -426,7 +426,7 @@
             var _local_5:int = _local_6.id;
             var _local_3:String = ("pet.command." + _local_5);
             var _local_2:String = _widget.localizations.getLocalization(_local_3);
-            var _local_4:RoomWidgetPetCommandMessage = new RoomWidgetPetCommandMessage("RWPCM_PET_COMMAND", _currentPetId, ((_currentPetName + " ") + _local_2));
+            var _local_4:RoomWidgetPetCommandMessage = new RoomWidgetPetCommandMessage("RWPCM_PET_COMMAND", _currentPetId, ((_currentPetName + " ") + _local_2), _local_5);
             _widget.messageListener.processWidgetMessage(_local_4);
             disableAllButtons();
             _disableTimer.start();
