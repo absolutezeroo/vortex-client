@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <layout name="rentablespace" width="256" height="224" version="0.1" uid="F435AD8F-238E-F723-A709-9F5098554C60">
   <window>
     <frame x="17" y="13" width="256" height="224" params="164097" style="3" caption="%24%7Brentablespace.widget.title%7D" color="0xff67a3bf">
@@ -25,14 +25,41 @@
               <children>
                 <itemlist_horizontal x="0" y="0" width="270" height="44" params="147472" style="3">
                   <children>
-                    <label x="0" y="11" width="56" height="21" params="16" style="3" name="price_label" caption="100%20x">
+                    <label x="0" y="11" width="90" height="21" params="16" style="3" name="price_label" caption="100%20Credits">
                       <variables>
                         <var key="text_style" value="u_headline_medium" type="String"/>
                         <var key="margin_left" value="10" type="int"/>
                       </variables>
                     </label>
-                    <icon x="61" y="10" width="28" height="24" params="16" style="10"/>
-                    <label x="94" y="11" width="176" height="21" params="16" style="3" name="rent_label" caption="%24%7Brentablespace.widget.rent%7D">
+                    <border x="0" y="4" width="28" height="26" params="16" style="0" name="currency_icon_wrapper">
+                      <children>
+                        <static_bitmap x="4" y="3" width="20" height="20" params="22" style="0" name="currency_icon_credits" visible="true">
+                          <variables>
+                            <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                            <var key="pivot_point" value="center" type="String"/>
+                            <var key="stretched_x" value="false" type="Boolean"/>
+                            <var key="stretched_y" value="false" type="Boolean"/>
+                          </variables>
+                        </static_bitmap>
+                        <static_bitmap x="4" y="3" width="20" height="20" params="22" style="0" name="currency_icon_diamonds" visible="false">
+                          <variables>
+                            <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                            <var key="pivot_point" value="center" type="String"/>
+                            <var key="stretched_x" value="false" type="Boolean"/>
+                            <var key="stretched_y" value="false" type="Boolean"/>
+                          </variables>
+                        </static_bitmap>
+                        <static_bitmap x="4" y="3" width="20" height="20" params="22" style="0" name="currency_icon_duckets" visible="false">
+                          <variables>
+                            <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                            <var key="pivot_point" value="center" type="String"/>
+                            <var key="stretched_x" value="false" type="Boolean"/>
+                            <var key="stretched_y" value="false" type="Boolean"/>
+                          </variables>
+                        </static_bitmap>
+                      </children>
+                    </border>
+                    <label x="0" y="11" width="142" height="21" params="16" style="3" name="rent_label" caption="%24%7Brentablespace.widget.rent%7D">
                       <variables>
                         <var key="text_style" value="u_headline_medium" type="String"/>
                         <var key="margin_right" value="10" type="int"/>

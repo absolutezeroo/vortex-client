@@ -505,6 +505,7 @@
         public static var custom_stack_height_xml:Class = HabboHabboRoomUICom_custom_stack_height_xml;
         public static var video_viewer_xml:Class = HabboHabboRoomUICom_video_viewer_xml;
         public static var rentablespace_xml:Class = HabboHabboRoomUICom_rentablespace_xml;
+        public static var rentablespace_config_xml:Class = HabboHabboRoomUICom_rentablespace_config_xml;
         public static var vimeo_viewer_xml:Class = HabboHabboRoomUICom_vimeo_viewer_xml;
         public static var room_tools_toolbar_xml:Class = HabboHabboRoomUICom_room_tools_toolbar_xml;
         public static var room_tools_info_xml:Class = HabboHabboRoomUICom_room_tools_info_xml;

@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<layout name="rentablespace_config" width="270" height="245" version="0.1" uid="B3C7F120-4A2E-9D31-7FE1-C820A54B3D61">
+  <window>
+    <frame x="17" y="13" width="270" height="245" params="164097" style="3" caption="${rentablespace.config.widget.title}" color="0xff67a3bf">
+      <filters>
+        <DropShadowFilter distance="4" alpha="0.34901960784313724" blurX="4" blurY="4"/>
+      </filters>
+      <children>
+        <label x="10" y="8" width="100" height="18" params="16" style="3" caption="${rentablespace.config.price}">
+          <variables>
+            <var key="text_style" value="u_headline_small" type="String"/>
+          </variables>
+        </label>
+        <border x="118" y="6" width="120" height="24" params="17" style="105">
+          <children>
+            <input x="4" y="4" width="112" height="16" params="1" style="100" name="price_input" caption="0">
+              <variables>
+                <var key="restrict" value="0123456789" type="String"/>
+              </variables>
+            </input>
+          </children>
+        </border>
+        <label x="10" y="42" width="100" height="18" params="16" style="3" caption="${rentablespace.config.currency}">
+          <variables>
+            <var key="text_style" value="u_headline_small" type="String"/>
+          </variables>
+        </label>
+        <container_button x="118" y="40" width="120" height="24" params="131089" style="3" name="currency_dropdown_button">
+          <children>
+            <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="dropdown_sel_icon_credits" visible="true">
+              <variables>
+                <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                <var key="pivot_point" value="center" type="String"/>
+                <var key="stretched_x" value="false" type="Boolean"/>
+                <var key="stretched_y" value="false" type="Boolean"/>
+              </variables>
+            </static_bitmap>
+            <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="dropdown_sel_icon_diamonds" visible="false">
+              <variables>
+                <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                <var key="pivot_point" value="center" type="String"/>
+                <var key="stretched_x" value="false" type="Boolean"/>
+                <var key="stretched_y" value="false" type="Boolean"/>
+              </variables>
+            </static_bitmap>
+            <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="dropdown_sel_icon_duckets" visible="false">
+              <variables>
+                <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                <var key="pivot_point" value="center" type="String"/>
+                <var key="stretched_x" value="false" type="Boolean"/>
+                <var key="stretched_y" value="false" type="Boolean"/>
+              </variables>
+            </static_bitmap>
+            <label x="22" y="3" width="80" height="18" params="16" style="3" name="currency_label" caption="-">
+              <variables>
+                <var key="text_style" value="u_regular" type="String"/>
+              </variables>
+            </label>
+            <label x="102" y="3" width="14" height="18" params="16" style="3" caption="v">
+              <variables>
+                <var key="text_style" value="u_regular" type="String"/>
+                <var key="align" value="center" type="String"/>
+              </variables>
+            </label>
+          </children>
+        </container_button>
+        <label x="10" y="76" width="100" height="18" params="16" style="3" caption="${rentablespace.config.duration}">
+          <variables>
+            <var key="text_style" value="u_headline_small" type="String"/>
+          </variables>
+        </label>
+        <border x="118" y="74" width="120" height="24" params="17" style="105">
+          <children>
+            <input x="4" y="4" width="112" height="16" params="1" style="100" name="duration_input" caption="3600">
+              <variables>
+                <var key="restrict" value="0123456789" type="String"/>
+              </variables>
+            </input>
+          </children>
+        </border>
+        <label x="10" y="110" width="100" height="18" params="16" style="3" caption="${rentablespace.config.requires_hc}">
+          <variables>
+            <var key="text_style" value="u_headline_small" type="String"/>
+          </variables>
+        </label>
+        <container_button x="118" y="108" width="120" height="24" params="131089" style="3" name="requires_hc_toggle">
+          <children>
+            <label x="0" y="3" width="120" height="18" params="16" style="3" name="requires_hc_label" caption="${rentablespace.config.no}">
+              <variables>
+                <var key="text_style" value="u_regular" type="String"/>
+                <var key="align" value="center" type="String"/>
+              </variables>
+            </label>
+          </children>
+        </container_button>
+        <label x="10" y="144" width="224" height="18" params="16" style="3" name="save_status_label" caption="">
+          <variables>
+            <var key="text_style" value="u_regular" type="String"/>
+            <var key="align" value="center" type="String"/>
+          </variables>
+        </label>
+        <button x="20" y="165" width="224" height="30" params="131281" style="3" name="save_button" caption="${rentablespace.config.save}"/>
+        <border x="118" y="64" width="120" height="144" params="17" style="105" name="currency_dropdown_panel" visible="false">
+          <children>
+            <container_button x="0" y="0" width="120" height="24" params="131089" style="3" name="currency_opt_0" visible="false">
+              <children>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_0_icon_credits" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_0_icon_diamonds" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_0_icon_duckets" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <label x="22" y="4" width="94" height="16" params="16" style="3" name="currency_opt_0_label" caption="">
+                  <variables>
+                    <var key="text_style" value="u_regular" type="String"/>
+                  </variables>
+                </label>
+              </children>
+            </container_button>
+            <container_button x="0" y="24" width="120" height="24" params="131089" style="3" name="currency_opt_1" visible="false">
+              <children>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_1_icon_credits" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_1_icon_diamonds" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_1_icon_duckets" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <label x="22" y="4" width="94" height="16" params="16" style="3" name="currency_opt_1_label" caption="">
+                  <variables>
+                    <var key="text_style" value="u_regular" type="String"/>
+                  </variables>
+                </label>
+              </children>
+            </container_button>
+            <container_button x="0" y="48" width="120" height="24" params="131089" style="3" name="currency_opt_2" visible="false">
+              <children>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_2_icon_credits" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_2_icon_diamonds" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_2_icon_duckets" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <label x="22" y="4" width="94" height="16" params="16" style="3" name="currency_opt_2_label" caption="">
+                  <variables>
+                    <var key="text_style" value="u_regular" type="String"/>
+                  </variables>
+                </label>
+              </children>
+            </container_button>
+            <container_button x="0" y="72" width="120" height="24" params="131089" style="3" name="currency_opt_3" visible="false">
+              <children>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_3_icon_credits" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_3_icon_diamonds" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_3_icon_duckets" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <label x="22" y="4" width="94" height="16" params="16" style="3" name="currency_opt_3_label" caption="">
+                  <variables>
+                    <var key="text_style" value="u_regular" type="String"/>
+                  </variables>
+                </label>
+              </children>
+            </container_button>
+            <container_button x="0" y="96" width="120" height="24" params="131089" style="3" name="currency_opt_4" visible="false">
+              <children>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_4_icon_credits" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_4_icon_diamonds" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_4_icon_duckets" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <label x="22" y="4" width="94" height="16" params="16" style="3" name="currency_opt_4_label" caption="">
+                  <variables>
+                    <var key="text_style" value="u_regular" type="String"/>
+                  </variables>
+                </label>
+              </children>
+            </container_button>
+            <container_button x="0" y="120" width="120" height="24" params="131089" style="3" name="currency_opt_5" visible="false">
+              <children>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_5_icon_credits" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_credits_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_5_icon_diamonds" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_diamond_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <static_bitmap x="3" y="4" width="16" height="16" params="22" style="0" name="currency_opt_5_icon_duckets" visible="false">
+                  <variables>
+                    <var key="asset_uri" value="pursearea_duckets_icon" type="String"/>
+                    <var key="pivot_point" value="center" type="String"/>
+                    <var key="stretched_x" value="false" type="Boolean"/>
+                    <var key="stretched_y" value="false" type="Boolean"/>
+                  </variables>
+                </static_bitmap>
+                <label x="22" y="4" width="94" height="16" params="16" style="3" name="currency_opt_5_label" caption="">
+                  <variables>
+                    <var key="text_style" value="u_regular" type="String"/>
+                  </variables>
+                </label>
+              </children>
+            </container_button>
+          </children>
+        </border>
+      </children>
+      <variables>
+        <var key="margin_left" value="1" type="int"/>
+        <var key="margin_top" value="30" type="int"/>
+        <var key="margin_right" value="5" type="int"/>
+        <var key="margin_bottom" value="0" type="int"/>
+      </variables>
+    </frame>
+  </window>
+</layout>

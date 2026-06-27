@@ -13,6 +13,7 @@
         private var _canRentErrorCode:int;
         private var _timeRemaining:int;
         private var _price:int;
+        private var _currencyName:String;
 
         public function flush():Boolean
         {
@@ -28,6 +29,7 @@
             _renterName = _arg_1.readString();
             _timeRemaining = _arg_1.readInteger();
             _price = _arg_1.readInteger();
+            _currencyName = _arg_1.readString();
 
             if (!_rented)
             {
@@ -71,6 +73,11 @@
         public function get canRentErrorCode():int
         {
             return (_canRentErrorCode);
+        }
+
+        public function get currencyName():String
+        {
+            return (_currencyName);
         }
 
     }

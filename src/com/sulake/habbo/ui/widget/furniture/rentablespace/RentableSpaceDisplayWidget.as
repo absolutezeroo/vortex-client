@@ -1,4 +1,4 @@
-﻿package com.sulake.habbo.ui.widget.furniture.rentablespace
+package com.sulake.habbo.ui.widget.furniture.rentablespace
 {
     import com.sulake.habbo.ui.widget.RoomWidgetBase;
     import flash.utils.Dictionary;
@@ -14,13 +14,14 @@
     import com.sulake.habbo.utils.FriendlyTime;
     import com.sulake.core.window.components.IItemListWindow;
 
-    public class RentableSpaceDisplayWidget extends RoomWidgetBase 
+    public class RentableSpaceDisplayWidget extends RoomWidgetBase
     {
 
         private static var _SafeStr_4128:Dictionary = new Dictionary();
 
         private var _mainWindow:IWindowContainer;
         private var _roomObject:IRoomObject;
+        private var _configWidget:RentableSpaceConfigWidget;
 
         {
             _SafeStr_4128[100] = "${rentablespace.widget.error_reason_already_rented}";
@@ -53,6 +54,11 @@
                 return;
             };
 
+            if (_configWidget != null)
+            {
+                _configWidget.hide();
+            };
+
             if (_mainWindow != null)
             {
                 _mainWindow.dispose();
@@ -69,6 +75,12 @@
                 return;
             };
 
+            if (_configWidget != null)
+            {
+                _configWidget.dispose();
+                _configWidget = null;
+            };
+
             hide(_roomObject);
             super.dispose();
         }
@@ -81,6 +93,32 @@
         public function show(_arg_1:IRoomObject):void
         {
             _roomObject = _arg_1;
+
+            var isOwner:Boolean = ownHandler.container.isOwnerOfFurniture(_arg_1);
+            var isAdmin:Boolean = ownHandler.container.sessionDataManager.hasSecurity(5);
+
+            if (isAdmin || isOwner)
+            {
+                if (_mainWindow != null)
+                {
+                    _mainWindow.dispose();
+                    _mainWindow = null;
+                }
+
+                if (_configWidget == null)
+                {
+                    _configWidget = new RentableSpaceConfigWidget(_SafeStr_3915, windowManager, assets, ownHandler.container.localization);
+                }
+
+                _configWidget.show(_arg_1);
+                return;
+            }
+
+            if (_configWidget != null)
+            {
+                _configWidget.hide();
+            }
+
             updateWidgetState();
         }
 
@@ -131,7 +169,7 @@
             ownHandler.getRentableSpaceStatus(_roomObject.getId());
         }
 
-        public function populateRentInfo(_arg_1:Boolean, _arg_2:Boolean, _arg_3:int, _arg_4:int, _arg_5:String, _arg_6:int, _arg_7:int):void
+        public function populateRentInfo(_arg_1:Boolean, _arg_2:Boolean, _arg_3:int, _arg_4:int, _arg_5:String, _arg_6:int, _arg_7:int, _arg_8:String = ""):void
         {
             var _local_8:Boolean;
 
@@ -140,7 +178,14 @@
                 return;
             };
 
+            if (ownHandler.container.sessionDataManager.hasSecurity(5) || ownHandler.container.isOwnerOfFurniture(_roomObject))
+            {
+                return;
+            };
+
             createWindow();
+
+            updateCurrencyIcon(_arg_8);
 
             if (_arg_1)
             {
@@ -158,7 +203,7 @@
                 _mainWindow.findChildByName("rented_view").visible = false;
                 _mainWindow.findChildByName("error_view").visible = false;
                 _mainWindow.findChildByName("rent_view").visible = true;
-                _mainWindow.findChildByName("price_label").caption = (_arg_7.toString() + " x");
+                _mainWindow.findChildByName("price_label").caption = (_arg_7.toString() + ((_arg_8.length > 0) ? (" " + _arg_8) : ""));
                 _local_8 = (_arg_7 <= ownHandler.getUsersCreditAmount());
 
                 if (!_arg_2)
@@ -189,6 +234,37 @@
             };
         }
 
+        private function updateCurrencyIcon(_arg_1:String):void
+        {
+            if (_mainWindow == null)
+            {
+                return;
+            }
+
+            var _local_2:String = _arg_1.toLowerCase();
+            var _local_3:Boolean = (_local_2.indexOf("diamond") >= 0);
+            var _local_4:Boolean = (_local_2.indexOf("ducket") >= 0 || _local_2.indexOf("pixel") >= 0);
+
+            var _local_5:IWindow = _mainWindow.findChildByName("currency_icon_credits");
+            var _local_6:IWindow = _mainWindow.findChildByName("currency_icon_diamonds");
+            var _local_7:IWindow = _mainWindow.findChildByName("currency_icon_duckets");
+
+            if (_local_5 != null)
+            {
+                _local_5.visible = (!_local_3 && !_local_4);
+            }
+
+            if (_local_6 != null)
+            {
+                _local_6.visible = _local_3;
+            }
+
+            if (_local_7 != null)
+            {
+                _local_7.visible = _local_4;
+            }
+        }
+
         public function showErrorView(_arg_1:int):void
         {
             _mainWindow.findChildByName("rent_view").visible = false;
@@ -199,4 +275,3 @@
 
     }
 }
-
