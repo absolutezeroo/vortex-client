@@ -1,6 +1,7 @@
 ﻿package com.sulake.habbo.avatar
 {
     import com.sulake.core.runtime.IUnknown;
+    import com.sulake.core.runtime.ICoreConfiguration;
     import com.sulake.core.assets.IAssetLibrary;
     import com.sulake.habbo.avatar.structure.IFigureSetData;
     import __AS3__.vec.Vector;
@@ -21,6 +22,7 @@
         function getAssetByName(_arg_1:String):IAsset;
         function get mode():String;
         function set mode(_arg_1:String):void;
+        function initializeOnboardingDownloads(_arg_1:ICoreConfiguration):void;
         function injectFigureData(_arg_1:XML):void;
         function createFigureContainer(_arg_1:String):IAvatarFigureContainer;
         function isFigureReady(_arg_1:IAvatarFigureContainer):Boolean;

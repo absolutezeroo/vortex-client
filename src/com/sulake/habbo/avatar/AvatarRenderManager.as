@@ -4,6 +4,7 @@
     import com.sulake.habbo.avatar.alias.AssetAliasCollection;
     import com.sulake.core.utils.Map;
     import com.sulake.core.runtime.IContext;
+    import com.sulake.core.runtime.ICoreConfiguration;
     import com.sulake.core.assets.IAssetLibrary;
     import com.sulake.core.runtime.ComponentDependency;
     import com.sulake.iid.IIDHabboConfigurationManager;
@@ -27,7 +28,7 @@
     import com.sulake.habbo.avatar.structure.figure.IPartColor;
     import com.sulake.iid.*;
 
-        public class AvatarRenderManager extends Component implements IAvatarRenderManager 
+        public class AvatarRenderManager extends Component implements IAvatarRenderManager
     {
 
         private const AVATAR_PLACEHOLDER_FIGURE:String = "hd-99999-99999";
@@ -444,11 +445,52 @@
             _mode = _arg_1;
         }
 
+        public function initializeOnboardingDownloads(_arg_1:ICoreConfiguration):void
+        {
+            var _local_2:String;
+            var _local_3:String;
+            var _local_4:String;
+
+            if (((_arg_1 == null) || (_SafeStr_462 == null)))
+            {
+                _mode = "local_only";
+                return;
+            };
+
+            _mode = "component";
+            _SafeStr_467 = true;
+            _SafeStr_468 = true;
+
+            _local_2 = _arg_1.getProperty("flash.dynamic.avatar.download.configuration");
+            _local_3 = _arg_1.getProperty("flash.dynamic.avatar.download.url");
+            _local_4 = _arg_1.getProperty("flash.dynamic.avatar.download.name.template");
+
+            if (((_local_2) && (_local_2.length > 0) && (_local_3) && (_local_3.length > 0) && (_local_4) && (_local_4.length > 0)))
+            {
+                if (_SafeStr_463 == null)
+                {
+                    _SafeStr_463 = new AvatarAssetDownloadManager(this, context.assets, _local_2, _local_3, _SafeStr_462, _local_4);
+                    _SafeStr_463.addEventListener("complete", onAvatarAssetsDownloadManagerReady);
+                    _SafeStr_463.addEventListener("LIBRARY_LOADED", onAvatarAssetsLibraryReady);
+                };
+            }
+            else
+            {
+                _mode = "local_only";
+                _SafeStr_466 = true;
+            };
+
+            _SafeStr_465 = true;
+            checkIfReady();
+        }
+
         public function injectFigureData(_arg_1:XML):void
         {
             if (_SafeStr_462 != null)
             {
                 _SafeStr_462.injectFigureData(_arg_1);
+                _SafeStr_467 = true;
+                checkIfReady();
             };
         }
 
@@ -588,4 +630,4 @@
 
     }
 }
-
+
