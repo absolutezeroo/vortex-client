@@ -507,7 +507,7 @@
                 };
             };
 
-            if (((!(_local_2)) || (!(_local_2.product.isColorable))))
+            if (((!(_local_2)) || (!(_local_2.product)) || (!(_local_2.product.isColorable))))
             {
                 return ([]);
             };
@@ -527,7 +527,7 @@
                 };
             };
 
-            if (((!(_local_2)) || (!(_local_2.product.isColorable))))
+            if (((!(_local_2)) || (!(_local_2.product)) || (!(_local_2.product.isColorable))))
             {
                 return (0);
             };

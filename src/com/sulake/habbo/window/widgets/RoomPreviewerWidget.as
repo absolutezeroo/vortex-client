@@ -168,7 +168,7 @@
                     _widgetWindow = null;
                 };
 
-                if (((_windowManager) && (_windowManager.roomEngine)))
+                if (((_windowManager) && (_windowManager.roomEngine) && (_windowManager.roomEngine.events)))
                 {
                     _windowManager.roomEngine.events.removeEventListener("REE_INITIALIZED", onRoomInitialized);
                 };

@@ -19,7 +19,7 @@
 
             for each (var _local_3:Object in _local_2.hashes)
             {
-                if (_local_3.name == "external_texts")
+                if (((_local_3.name == "external_texts") || (_local_3.name == "external_flash_texts")))
                 {
                     _local_4._SafeStr_822 = _local_3.url;
                     _local_4._externalTextsHash = _local_3.hash;
@@ -35,7 +35,7 @@
 
                     else
                     {
-                        if (_local_3.name == "furnidata")
+                        if (((_local_3.name == "furnidata") || (_local_3.name == "furnidata_xml")))
                         {
                             _local_4._SafeStr_823 = _local_3.url;
                             _local_4._furniDataHash = _local_3.hash;
@@ -103,4 +103,3 @@
 
     }
 }
-
