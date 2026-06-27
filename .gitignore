@@ -20,3 +20,14 @@ desktop.ini
 # Flash/AS3 temp files
 *.swp
 *.bak
+
+# IDE
+.idea/
+
+# MCP config
+.mcp.json
+.mcp.json.tmp
+
+# Large game data files (place locally, do not commit)
+FurnitureData.json
+ProductData.json
