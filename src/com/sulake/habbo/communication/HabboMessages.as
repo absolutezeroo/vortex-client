@@ -52,6 +52,9 @@
     import com.sulake.habbo.communication.messages.outgoing.game.lobby.GetUserGameAchievementsMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.groupforums.GetMessagesMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.furniture.RentableSpaceStatusMessageComposer;
+    import com.sulake.habbo.communication.messages.outgoing.room.furniture.GetRentableSpaceConfigMessageComposer;
+    import com.sulake.habbo.communication.messages.outgoing.room.furniture.ConfigureRentableSpaceMessageComposer;
+    import com.sulake.habbo.communication.messages.incoming.room.furniture.RentableSpaceConfigMessageEvent;
     import com.sulake.habbo.communication.messages.outgoing.moderator.ModMuteMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.engine.CompostPlantMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.engine.GetFurnitureAliasesMessageComposer;
@@ -367,6 +370,7 @@
     import com.sulake.habbo.communication.messages.outgoing.room.action.BanUserWithDurationMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.catalog.GetRoomAdPurchaseInfoComposer;
     import com.sulake.habbo.communication.messages.outgoing.room.engine.GetPetCommandsMessageComposer;
+    import com.sulake.habbo.communication.messages.outgoing.room.engine.IssuePetCommandMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.game.arena.Game2GameChatMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.quest.CancelQuestMessageComposer;
     import com.sulake.habbo.communication.messages.outgoing.nux.NewUserExperienceScriptProceedComposer;
@@ -860,6 +864,7 @@
     import com.sulake.habbo.communication.messages.incoming.room.engine.HeightMapMessageEvent;
     import com.sulake.habbo.communication.messages.incoming.room.furniture.YoutubeControlVideoMessageEvent;
     import com.sulake.habbo.communication.messages.incoming.room.pets.PetRespectFailedEvent;
+    import com.sulake.habbo.communication.messages.incoming.room.pets.PetVocalMessageEvent;
     import com.sulake.habbo.communication.messages.parser.room.chat.RoomFilterSettingsMessageEvent;
     import com.sulake.habbo.communication.messages.incoming.handshake.AuthenticationOKMessageEvent;
     import com.sulake.habbo.communication.messages.incoming.quest.QuestDailyMessageEvent;
@@ -1063,6 +1068,8 @@
             _composers[121] = GetUserGameAchievementsMessageComposer;
             _composers[1884] = GetMessagesMessageComposer;
             _composers[2542] = RentableSpaceStatusMessageComposer;
+            _composers[4600] = GetRentableSpaceConfigMessageComposer;
+            _composers[4601] = ConfigureRentableSpaceMessageComposer;
             _composers[1788] = ModMuteMessageComposer;
             _composers[2198] = CompostPlantMessageComposer;
             _composers[205] = GetFurnitureAliasesMessageComposer;
@@ -1378,6 +1385,7 @@
             _composers[1702] = BanUserWithDurationMessageComposer;
             _composers[876] = GetRoomAdPurchaseInfoComposer;
             _composers[2457] = GetPetCommandsMessageComposer;
+            _composers[3072] = IssuePetCommandMessageComposer;
             _composers[521] = Game2GameChatMessageComposer;
             _composers[2391] = CancelQuestMessageComposer;
             _composers[470] = NewUserExperienceScriptProceedComposer;
@@ -1504,6 +1512,7 @@
             _events[3524] = SleepMessageEvent;
             // DUPLICATE_ID_DISABLED: _events[118] = FaqCategoryMessageEvent;
             _events[1567] = RentableSpaceStatusMessageEvent;
+            _events[4600] = RentableSpaceConfigMessageEvent;
             _events[2244] = RoomReadyMessageEvent;
             _events[3278] = IssueDeletedMessageEvent;
             _events[1685] = IsUserPartOfCompetitionMessageEvent;
@@ -1871,6 +1880,7 @@
             _events[1721] = HeightMapMessageEvent;
             _events[2608] = YoutubeControlVideoMessageEvent;
             _events[3340] = PetRespectFailedEvent;
+            _events[3073] = PetVocalMessageEvent;
             _events[1328] = RoomFilterSettingsMessageEvent;
             _events[3014] = AuthenticationOKMessageEvent;
             _events[1935] = QuestDailyMessageEvent;
