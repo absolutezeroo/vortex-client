@@ -16,6 +16,16 @@ Legacy Flash/AIR client for Vortex (ActionScript 3, Flash Player 25), compiled t
 4. Launch and check runtime logs at:
    - `%APPDATA%\\Macromedia\\Flash Player\\Logs\\flashlog.txt`
 
+## Command-line build
+Set `AIR_SDK_HOME` to your Harman AIR SDK folder, then run `build.bat`:
+
+```bat
+set AIR_SDK_HOME=C:\Laragon\bin\air-sdk\AIRSDK_51.3.3
+build.bat
+```
+
+If `AIR_SDK_HOME` is not set, `build.bat` falls back to the local Laragon SDK path when it exists.
+
 ## Repository map
 - `src/` : ActionScript sources
 - `src/HabboAir.as` + `src/HabboAirMain.as` : application bootstrap and startup flow
