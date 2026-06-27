@@ -288,13 +288,39 @@
         public function get localizationName():String
         {
             var _local_1:IProductData = _catalog.getProductData(_localizationId);
-            return ((_local_1) ? _local_1.name : (("${" + _localizationId) + "}"));
+
+            if (_local_1)
+            {
+                return (_local_1.name);
+            };
+
+            var _local_2:IProduct = product;
+
+            if (((_local_2) && (_local_2.furnitureData) && (_local_2.furnitureData.localizedName.length > 0)))
+            {
+                return (_local_2.furnitureData.localizedName);
+            };
+
+            return (("${" + _localizationId) + "}");
         }
 
         public function get localizationDescription():String
         {
             var _local_1:IProductData = _catalog.getProductData(_localizationId);
-            return ((_local_1) ? _local_1.description : (("${" + _localizationId) + "}"));
+
+            if (_local_1)
+            {
+                return (_local_1.description);
+            };
+
+            var _local_2:IProduct = product;
+
+            if (((_local_2) && (_local_2.furnitureData) && (_local_2.furnitureData.description.length > 0)))
+            {
+                return (_local_2.furnitureData.description);
+            };
+
+            return (("${" + _localizationId) + "}");
         }
 
     }
