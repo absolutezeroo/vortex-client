@@ -87,6 +87,11 @@
                 parseXmlFormat(_local_2);
             }
 
+            else if (_local_2.charAt(0) == "{")
+            {
+                parseJsonFormat(_local_2);
+            }
+
             else
             {
                 parseLingoFormat(_local_2);
@@ -118,6 +123,42 @@
             {
                 _local_2 = _local_3.@code;
                 _products[_local_2] = new ProductData(_local_2, _local_3.name);
+            };
+
+            dispatchEvent(new Event("PDP_product_data_ready"));
+        }
+
+        private function parseJsonFormat(_arg_1:String):void
+        {
+            var _local_2:Object;
+            var _local_3:Array;
+            var _local_4:Object;
+            var _local_5:String;
+
+            try
+            {
+                _local_2 = JSON.parse(_arg_1);
+            }
+            catch (e:Error)
+            {
+                Core.error(("JSON product data was malformed: " + e.message), true, 7);
+                return;
+            };
+
+            if (_local_2 == null)
+            {
+                return;
+            };
+
+            if (_local_2.productdata && _local_2.productdata.product)
+            {
+                _local_3 = (_local_2.productdata.product as Array);
+
+                for each (_local_4 in _local_3)
+                {
+                    _local_5 = String(_local_4.code || "");
+                    _products[_local_5] = new ProductData(_local_5, String(_local_4.name || ""));
+                };
             };
 
             dispatchEvent(new Event("PDP_product_data_ready"));

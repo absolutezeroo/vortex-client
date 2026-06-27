@@ -99,6 +99,11 @@
                 parseXmlFormat(_local_2);
             }
 
+            else if (_local_2.charAt(0) == "{")
+            {
+                parseJsonFormat(_local_2);
+            }
+
             else
             {
                 parseLingoFormat(_local_2);
@@ -324,6 +329,148 @@
             };
 
             dispatchEvent(new Event("FDP_furniture_data_ready"));
+        }
+
+        private function parseJsonFormat(_arg_1:String):void
+        {
+            var _local_2:Object;
+            var _local_3:Array;
+            var _local_4:Object;
+            var _local_5:FurnitureData;
+
+            try
+            {
+                _local_2 = JSON.parse(_arg_1);
+            }
+            catch (e:Error)
+            {
+                Core.error(("JSON furni data was malformed: " + e.message), true, 12);
+                return;
+            };
+
+            if (_local_2 == null)
+            {
+                return;
+            };
+
+            if (_local_2.roomitemtypes && _local_2.roomitemtypes.furnitype)
+            {
+                _local_3 = (_local_2.roomitemtypes.furnitype as Array);
+
+                for each (_local_4 in _local_3)
+                {
+                    _local_5 = buildJsonFloorItem(_local_4);
+                    storeItem(_local_5);
+                    registerFurnitureLocalization(_local_5);
+                };
+            };
+
+            if (_local_2.wallitemtypes && _local_2.wallitemtypes.furnitype)
+            {
+                _local_3 = (_local_2.wallitemtypes.furnitype as Array);
+
+                for each (_local_4 in _local_3)
+                {
+                    _local_5 = buildJsonWallItem(_local_4);
+                    storeItem(_local_5);
+                    registerFurnitureLocalization(_local_5);
+                };
+            };
+
+            dispatchEvent(new Event("FDP_furniture_data_ready"));
+        }
+
+        private function buildJsonFloorItem(_arg_1:Object):FurnitureData
+        {
+            var _local_1:int = int(_arg_1.id);
+            var _local_2:String = String(_arg_1.classname || "");
+            var _local_3:Array = _local_2.split("*");
+            var _local_4:String = _local_3[0];
+            var _local_5:int = ((_local_3.length > 1) ? int(_local_3[1]) : 0);
+            var _local_6:Boolean = (_local_3.length > 1);
+            var _local_7:Array = [];
+
+            if (_arg_1.partcolors && _arg_1.partcolors.color)
+            {
+                var _local_8:Array = (_arg_1.partcolors.color as Array);
+                var _local_9:String;
+
+                for each (_local_9 in _local_8)
+                {
+                    if (_local_9.charAt(0) == "#")
+                    {
+                        _local_7.push(parseInt(_local_9.substr(1), 16));
+                    }
+                    else
+                    {
+                        _local_7.push(-(parseInt(_local_9)));
+                    };
+                };
+            };
+
+            return new FurnitureData(
+                "s",
+                _local_1,
+                _local_2,
+                _local_4,
+                String(_arg_1.name || ""),
+                "",
+                int(_arg_1.revision || 0),
+                int(_arg_1.xdim || 1),
+                int(_arg_1.ydim || 1),
+                0,
+                _local_7,
+                _local_6,
+                _local_5,
+                String(_arg_1.adurl || ""),
+                int(_arg_1.offerid || -1),
+                Boolean(_arg_1.buyout),
+                int(_arg_1.rentofferid || -1),
+                Boolean(_arg_1.rentbuyout),
+                Boolean(_arg_1.bc),
+                String(_arg_1.customparams || ""),
+                int(_arg_1.specialtype || 0),
+                Boolean(_arg_1.canstandon),
+                Boolean(_arg_1.cansiton),
+                Boolean(_arg_1.canlayon),
+                Boolean(_arg_1.excludeddynamic),
+                String(_arg_1.furniline || "")
+            );
+        }
+
+        private function buildJsonWallItem(_arg_1:Object):FurnitureData
+        {
+            var _local_1:int = int(_arg_1.id);
+            var _local_2:String = String(_arg_1.classname || "");
+
+            return new FurnitureData(
+                "i",
+                _local_1,
+                _local_2,
+                _local_2,
+                String(_arg_1.name || ""),
+                "",
+                int(_arg_1.revision || 0),
+                0,
+                0,
+                0,
+                null,
+                false,
+                0,
+                String(_arg_1.adurl || ""),
+                int(_arg_1.offerid || -1),
+                Boolean(_arg_1.buyout),
+                int(_arg_1.rentofferid || -1),
+                Boolean(_arg_1.rentbuyout),
+                Boolean(_arg_1.bc),
+                null,
+                int(_arg_1.specialtype || 0),
+                false,
+                false,
+                false,
+                Boolean(_arg_1.excludeddynamic),
+                String(_arg_1.furniline || "")
+            );
         }
 
         private function storeItem(_arg_1:FurnitureData):void
